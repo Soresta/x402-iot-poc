@@ -26,7 +26,23 @@ Cloudflare Workers · Durable Objects · KV · (ileride) Workers AI · x402 · B
 ```
 
 ## Mimari
+## Proof of settlement (Base Sepolia testnet)
 
+`GET /reading` is gated with x402. An unpaid request returns `402 Payment Required`
+with the payment requirements in the `PAYMENT-REQUIRED` header. The buyer agent signs
+an EIP-3009 authorization, retries the request, and the facilitator settles on-chain.
+No human, no card, no account.
+
+| Field | Value |
+| --- | --- |
+| Network | Base Sepolia (`eip155:84532`) |
+| Price | $0.001 USDC per reading |
+| Facilitator | `https://x402.org/facilitator` |
+| First settlement | [`0xe18db476…4d1f3`](https://sepolia.basescan.org/tx/0xe18db4768d05030511485080ad850270b49e8a00df7965470a27ae2b93f4d1f3) |
+
+Full 402 response: [`docs/402-transcript.txt`](./docs/402-transcript.txt)
+
+> Testnet only — these tokens have no real value.
 > _Buraya bir Mermaid sequence diyagramı gelecek: keşif → mandate → x402 settlement → teslim._
 
 ## Ortam değişkenleri
