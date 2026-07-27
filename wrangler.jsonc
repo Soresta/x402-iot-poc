@@ -9,11 +9,16 @@
 	"compatibility_date": "2026-07-13",
 	"observability": {
 		"enabled": true
-	},
+	}
+	,
 	"upload_source_maps": true,
 	"compatibility_flags": [
 		"nodejs_compat"
-	]
+	],
+	"vars": {
+  	"PAY_TO": "0x219ba53AC52D99668a5c20737D1dEd60f435d99E",
+  	"FACILITATOR_URL": "https://x402.org/facilitator"}
+	
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
