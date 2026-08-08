@@ -4,13 +4,13 @@ An HTTP endpoint that sells simulated IoT sensor readings to software agents —
 
 **Testnet only.** Everything runs on Base Sepolia with faucet USDC. These tokens have no real value, and no real-value settlement is wired anywhere in this repo.
 
-- **Live endpoint:** `https://x402-iot-poc.akifk-x402-26.workers.dev/reading`
-- **Stack:** Cloudflare Workers · Hono · x402 (`exact` scheme, EIP-3009) · Base Sepolia
+- **Live endpoint:** `https://x402-iot-poc.akifk-x402-26.workers.dev`
+- **Stack:** Cloudflare Workers · Hono · Durable Objects · Workers KV · x402 (`exact` scheme, EIP-3009) · Base Sepolia
 - **License:** MIT
 
 ---
 
-## Proof of settlement
+## Proof of settlement (Week 2)
 
 Two independent settlements, both verifiable on the block explorer.
 
@@ -32,147 +32,227 @@ On the explorer, the `To` field shows the USDC contract rather than the seller a
 
 ---
 
-## How it works
+## Architecture (Week 3)
 
 ```mermaid
 sequenceDiagram
     participant B as Buyer agent (Node)
     participant W as Worker (seller)
+    participant DO as DeviceTwin (Durable Object)
+    participant KV as Workers KV
     participant F as Facilitator
     participant C as Base Sepolia
 
-    B->>W: GET /reading
+    Note over B: 1. Discover
+    B->>W: GET /.well-known/agent-card.json
+    W-->>B: price, resource URL, payment scheme
+
+    Note over B: 2. Verify mandate + check budget
+    B->>B: verifyMandate() + daily cap check
+
+    Note over B: 3. Pay and consume
+    B->>W: GET /api/readings (no payment)
     W-->>B: 402 + PAYMENT-REQUIRED header
-    Note over B: Decode terms,<br/>sign EIP-3009 authorization
-    B->>W: GET /reading + PAYMENT header
-    W->>F: verify + settle
+    B->>W: GET /api/readings + X-PAYMENT header
+    W->>KV: check idempotency key
+    W->>F: verify + settle (8s timeout)
     F->>C: transferWithAuthorization
     C-->>F: transaction hash
     F-->>W: settled
+    W->>KV: write idempotency key (24h TTL)
+    W->>DO: getLatestReading()
+    DO-->>W: SensorReading
+    W->>KV: append receipt log + latest_event
     W-->>B: 200 + reading + receipt
+
+    Note over B: 4. Append to ledger
+    B->>B: append {ts, seq, price, txHash, runningTotal}
 ```
 
-The seller never holds a private key and never touches the chain directly. It only asks the facilitator whether a payment is valid, and refuses to serve until the answer is yes.
+### Three-layer separation
+
+| Layer | Responsibility |
+|---|---|
+| **Identity** | Agent Card at `/.well-known/agent-card.json` — who the seller is, what it sells, at what price |
+| **Mandate** | Signed JSON document held by the buyer — authorized spending scope with cap and expiry |
+| **Settlement** | x402 + EIP-3009 — actual on-chain payment; facilitator verifies and submits |
+
+`DeviceTwin` knows **nothing** about money — it only produces and stores telemetry. The Worker layer owns pricing, payment verification, idempotency, receipts, and rate limiting.
 
 ---
 
 ## Quickstart
 
-Requires Node 20+, a Cloudflare account (free tier is enough), and a throwaway wallet.
+Requires Node 20+, a Cloudflare account (free tier), and two throwaway wallets.
 
 **1. Clone and install**
 
-```bash
+```powershell
 git clone https://github.com/Soresta/x402-iot-poc.git
 cd x402-iot-poc
 npm install
 ```
 
-**2. Get two addresses and some test USDC**
+**2. Get two addresses and test USDC**
 
-Create two accounts in any wallet. The first is the **buyer** and needs test USDC; the second is the **seller** and needs nothing at all.
+Create two accounts. The **buyer** needs test USDC; the **seller** needs nothing.
 
-- Add the Base Sepolia network (chain ID `84532`)
-- Test USDC: [Circle faucet](https://faucet.circle.com/) · Test ETH (optional): [Coinbase Developer Platform faucet](https://portal.cdp.coinbase.com/products/faucet)
+- Base Sepolia network (chain ID `84532`)
+- Test USDC: [Circle faucet](https://faucet.circle.com/) · Test ETH: [Coinbase faucet](https://portal.cdp.coinbase.com/products/faucet)
 
-The buyer does not need ETH. Gas is paid by the facilitator — that is what EIP-3009 buys you.
+The buyer does not need ETH. Gas is paid by the facilitator (EIP-3009).
 
 **3. Configure the seller**
 
-In `wrangler.jsonc`:
-
-```jsonc
-"vars": {
-  "PAY_TO": "0xYOUR_SELLER_ADDRESS",
-  "FACILITATOR_URL": "https://x402.org/facilitator"
-}
-```
+In `wrangler.jsonc` update `vars.PAY_TO` with your seller address. All other values can stay as defaults for local development.
 
 **4. Configure the buyer**
 
-Copy `.env.example` to `.env` and fill it in. `.env` is gitignored — keep it that way even for worthless testnet keys.
-
-```
-BUYER_PRIVATE_KEY=0x...
-RESOURCE_URL=http://127.0.0.1:8787/reading
+```powershell
+Copy-Item .env.example .env
 ```
 
-**5. Run**
+Edit `.env`:
 
-```bash
+```
+BUYER_PRIVATE_KEY=0xYOUR_TESTNET_KEY
+SELLER_URL=http://127.0.0.1:8787
+DAILY_CAP=0.05
+MAX_PER_CALL=0.002
+```
+
+**5. Run the seller**
+
+```powershell
 npx wrangler dev
 ```
 
-In a **second** terminal — leave the first one alone, it treats keystrokes as shortcuts:
+**6. Run the buyer agent** (second terminal)
 
-```bash
-curl -sS -i http://127.0.0.1:8787/reading   # expect: HTTP/1.1 402 Payment Required
-node buyer/pay.mjs                          # expect: status 200 + a transaction hash
+```powershell
+node buyer/agent.mjs
 ```
 
-**6. Deploy (optional)**
+The agent will:
+1. Discover the seller via the Agent Card
+2. Create a signed mandate
+3. Loop: verify mandate → check budget → pay → log receipt
 
-```bash
+**7. Watch the live demo**
+
+Open `http://127.0.0.1:8787` in a browser. Settlement events appear live.
+
+**8. Single-purchase mode** (legacy, Week 2)
+
+```powershell
+node buyer/pay.mjs   # set RESOURCE_URL in .env
+```
+
+**9. Deploy (optional)**
+
+```powershell
 npx wrangler deploy
 ```
 
-Then point `RESOURCE_URL` at `https://<your-worker>.workers.dev/reading` and run the buyer again.
+Update `SELLER_URL` in `.env` to point at your deployed Worker URL.
 
 ---
 
 ## Configuration
 
-| Variable | Where | Secret | Purpose |
-| --- | --- | --- | --- |
-| `PAY_TO` | `wrangler.jsonc` → `vars` | No | Seller address that receives payment |
-| `FACILITATOR_URL` | `wrangler.jsonc` → `vars` | No | Service that verifies and settles |
-| `BUYER_PRIVATE_KEY` | `.env` | **Yes** | Signs the buyer's payment authorization |
-| `RESOURCE_URL` | `.env` | No | Endpoint the buyer pays |
+### Seller (wrangler.jsonc `vars`)
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PAY_TO` | — | Seller address that receives payment |
+| `FACILITATOR_URL` | `https://x402.org/facilitator` | Service that verifies and settles |
+| `DEVICE_ID` | `sim-sensor-01` | Human-readable device name; DO instance key |
+| `TICK_INTERVAL_MS` | `60000` | How often the DeviceTwin generates a new reading (ms); minimum 1000 |
+| `PRICE_PER_READING` | `$0.001` | Price per `/api/readings` call |
+| `RATE_LIMIT_QUOTA` | `10` | Max requests per buyer per window |
+| `RATE_LIMIT_WINDOW_S` | `60` | Rate-limit window (seconds) |
+
+### Buyer (`.env`)
+
+| Variable | Secret | Purpose |
+| --- | --- | --- |
+| `BUYER_PRIVATE_KEY` | **Yes** | Signs payment authorizations |
+| `RESOURCE_URL` | No | Target for single-purchase `buyer/pay.mjs` |
+| `SELLER_URL` | No | Base URL for autonomous `buyer/agent.mjs` |
+| `DAILY_CAP` | No | Max USDC per day (enforced before payment) |
+| `MAX_PER_CALL` | No | Max USDC per single call |
+| `MANDATE_EXPIRY_HOURS` | No | Hours until the mandate expires (default 24) |
+| `LOOP_INTERVAL_MS` | No | Pause between purchases (ms, default 30000) |
+| `BUYER_ENABLED` | No | Kill switch — set to `false` to stop the loop |
 
 ---
 
-## Two things that cost me time
+## Kill switch
 
-Neither is documented anywhere I could find, so they are recorded here.
+Set `BUYER_ENABLED=false` in the terminal running the agent:
 
-**1. The middleware must be built lazily on Workers.** Constructing the payment middleware at module scope fails, because Workers restricts cryptographic operations in the global scope. Build it inside the request handler instead:
-
-```ts
-let payment: MiddlewareHandler | undefined;
-
-app.use(async (c, next) => {
-  payment ??= paymentMiddleware(/* … */);
-  return payment(c, next);
-});
+```powershell
+$env:BUYER_ENABLED = "false"
 ```
 
-**2. Two incompatible package generations are in circulation.** The legacy family (`x402-hono`, `x402-fetch`) uses `network: "base-sepolia"`. The current scoped family (`@x402/hono`, `@x402/fetch`) uses CAIP-2 identifiers such as `eip155:84532`. Vendor documentation is split between them and mixing a server from one with a client from the other fails without a helpful error. This repo uses the scoped family throughout.
+The loop checks this at the **top of every iteration** and exits cleanly within one cycle. `Ctrl+C` also exits cleanly and flushes the ledger.
+
+---
+
+## Errors
+
+All error responses follow this shape:
+
+```json
+{ "error": "machine_readable_code", "docs_url": "https://github.com/Soresta/x402-iot-poc#errors" }
+```
+
+See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 
 ---
 
 ## Project layout
 
 ```
-├── src/index.ts        seller — Hono app, x402-gated /reading route
-├── buyer/pay.mjs       buyer  — discovers terms, signs, retries, logs the tx
-├── docs/               captured proof (402 transcript)
-├── wrangler.jsonc      Worker config and non-secret vars
-└── .env.example        template for the buyer's secrets
+├── src/
+│   ├── index.ts         seller — Hono router; all routes and payment logic
+│   ├── types.ts         shared interfaces (SensorReading, Env)
+│   ├── device-twin.ts   DeviceTwin Durable Object; alarm-driven telemetry
+│   ├── agent-card.ts    A2A Agent Card handler
+│   └── demo.ts          live demo page + SSE endpoint
+├── buyer/
+│   ├── pay.mjs          single-purchase buyer (Week 2, preserved)
+│   ├── mandate.mjs      createMandate(), verifyMandate()
+│   └── agent.mjs        autonomous loop with cap + kill switch
+├── docs/
+│   ├── 402-transcript.txt  Week 2 payment proof
+│   └── week3/
+│       ├── BUILD-LOG.md    graded build log (all 6 blocks)
+│       └── WEEK3-REPORT.md week 3 supervisor report
+├── wrangler.jsonc          Worker config, DO binding, KV namespace
+├── ERRORS.md               error code catalogue
+└── .env.example            template for buyer secrets
 ```
 
 ---
 
-## Scope and limitations
+## Known gotchas (collected across Week 2 and Week 3)
 
-Stated plainly, because a demo that overstates itself is worth less than one that does not:
+**1. The middleware must be built lazily on Workers.** Constructing the payment middleware at module scope fails, because Workers restricts cryptographic operations in the global scope. Build it inside the request handler instead:
 
-- **The sensor is simulated.** Values are generated in the Worker; no hardware exists.
-- **The money has no value.** Faucet USDC on a testnet, by design and by policy.
-- **No replay protection yet.** A payment proof is not currently checked against a used-proof store. This is the next change.
-- **No mandate layer yet.** The buyer has no signed spending authorization with caps and an expiry. Also next.
-- **No rate limiting, no dispute handling.** Both are known gaps rather than oversights.
+```ts
+let payment: MiddlewareHandler | undefined;
+app.use(async (c, next) => {
+  payment ??= paymentMiddleware(/* … */);
+  return payment(c, next);
+});
+```
 
-What is real: the discovery of terms, the signature, the facilitator verification, the on-chain settlement and the receipt. The claim under test is not *this device exists* — it is *when a device does exist, this is the mechanism that lets it sell to strangers*.
+**2. Two incompatible package generations are in circulation.** The legacy family (`x402-hono`, `x402-fetch`) uses `network: "base-sepolia"`. The current scoped family (`@x402/hono`, `@x402/fetch`) uses CAIP-2 identifiers such as `eip155:84532`. Mixing them fails without a helpful error. This repo uses the scoped family throughout.
+
+**3. Use `new_sqlite_classes`, not `new_classes`, for Durable Objects on the free plan.** `new_classes` causes a deploy-time error (`D1 database not found or permission denied`) on accounts without the paid Workers plan. `new_sqlite_classes` is the correct key for SQLite-backed DOs on all plan tiers.
+
+**4. Idempotency write-after-settle risk.** The idempotency key is written to KV **after** the facilitator confirms settlement (not before). Residual risk: if the Worker crashes between settle and write, the same payment proof could be accepted again. The financial exposure is bounded (one free reading per crash scenario) and is accepted for this testnet PoC. A two-phase commit pattern would eliminate it but is out of scope here.
 
 ---
 
@@ -181,12 +261,15 @@ What is real: the discovery of terms, the signature, the facilitator verificatio
 - [x] x402-gated endpoint returning `402` with machine-readable terms
 - [x] Buyer agent that signs, retries and settles on Base Sepolia
 - [x] Public deployment with a settlement against the live endpoint
-- [ ] `DeviceTwin` Durable Object with scheduled telemetry
-- [ ] Idempotency — reject replayed payment proofs
-- [ ] Signed spending mandate with `max_per_call`, `daily_cap`, `expiry`
-- [ ] Agent Card at `/.well-known/agent-card.json` for A2A discovery
-- [ ] Live demo page with an event feed and running totals
+- [x] `DeviceTwin` Durable Object with scheduled telemetry
+- [x] Idempotency — reject replayed payment proofs
+- [x] Signed spending mandate with `max_per_call`, `daily_cap`, `expiry`
+- [x] Agent Card at `/.well-known/agent-card.json` for A2A discovery
+- [x] Live demo page with an event feed and running totals
+- [x] Receipt log (`GET /api/receipts`) — verifiable on Base Sepolia
+- [x] Per-buyer rate limiting
 - [ ] Second resource type — pay-per-inference
+- [ ] Dispute handling
 
 ---
 
@@ -196,9 +279,9 @@ What is real: the discovery of terms, the signature, the facilitator verificatio
 
 **Why does the buyer need no ETH?** The `exact` scheme uses EIP-3009: the buyer signs an authorization and the facilitator submits the transaction, paying gas.
 
-**Why not just use an API key?** Because a key implies a prior relationship — an account, a contract, a billing setup. For a transaction worth a tenth of a cent, that overhead is larger than the transaction. This repo exists to test whether removing it changes what can be sold.
+**Why not just use an API key?** Because a key implies a prior relationship — an account, a contract, a billing setup. For a transaction worth a tenth of a cent, that overhead is larger than the transaction itself.
 
-**Is this production-ready?** No, and the limitations section says why.
+**Is this production-ready?** No. The sensor is simulated, the money has no value, and the limitations are listed explicitly above.
 
 ---
 
