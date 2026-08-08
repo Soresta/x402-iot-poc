@@ -170,3 +170,6 @@ dist
 
 .env
 *~
+
+# Buyer ledger — contains real testnet activity; machine state, not source
+buyer/ledger.jsonl
