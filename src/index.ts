@@ -75,12 +75,54 @@ function getTwin(c: any) {
 }
 
 // ---------------------------------------------------------------------------
-// Week 3 — GET /api/readings (x402-gated, fail-closed, receipt log)
+// Week 3 — GET /api/readings (rate limiting, x402-gated, fail-closed, receipt log)
 // ---------------------------------------------------------------------------
 
 let readingsPayment: MiddlewareHandler | undefined;
 
 app.use("/api/readings", async (c, next) => {
+  const paymentHeader = c.req.header("X-PAYMENT") || c.req.header("x-payment");
+
+  // Rate Limiting Firewall (runs BEFORE payment verification / facilitator call)
+  if (paymentHeader && c.env.IOT_KV) {
+    let payerAddress: string | null = null;
+    try {
+      const decoded = JSON.parse(atob(paymentHeader.replace(/-/g, "+").replace(/_/g, "/")));
+      payerAddress = decoded?.payload?.authorization?.from || decoded?.from || null;
+    } catch {}
+
+    if (payerAddress && c.env.IOT_KV) {
+      const windowMs = (Number(c.env.RATE_LIMIT_WINDOW_S) || 60) * 1000;
+      const quota = Number(c.env.RATE_LIMIT_QUOTA) || 10;
+      const rlKey = `rl:${payerAddress.toLowerCase()}`;
+      const now = Date.now();
+
+      const rawWindow = await c.env.IOT_KV.get(rlKey);
+      const timestamps: number[] = rawWindow ? JSON.parse(rawWindow) : [];
+      const windowStart = now - windowMs;
+      const fresh = timestamps.filter((t) => t >= windowStart);
+
+      if (fresh.length >= quota) {
+        const oldestTs = fresh[0];
+        const retryAfter = Math.ceil((oldestTs + windowMs - now) / 1000);
+        return c.json(
+          {
+            error: "rate_limit_exceeded",
+            docs_url: DOCS_URL,
+            retry_after_seconds: retryAfter,
+          },
+          429,
+          { "Retry-After": String(retryAfter) }
+        );
+      }
+
+      fresh.push(now);
+      await c.env.IOT_KV.put(rlKey, JSON.stringify(fresh), {
+        expirationTtl: Math.ceil(windowMs / 1000) + 60,
+      });
+    }
+  }
+
   readingsPayment ??= paymentMiddleware(
     {
       "GET /api/readings": {
@@ -156,7 +198,6 @@ app.use("/api/readings", async (c, next) => {
 });
 
 app.get("/api/readings", async (c) => {
-  // Check idempotency header & rate limiting inside handler
   const paymentHeader = c.req.header("X-PAYMENT") || c.req.header("x-payment");
 
   if (paymentHeader && c.env.IOT_KV) {
@@ -172,49 +213,10 @@ app.get("/api/readings", async (c) => {
       return c.json({ error: "payment_already_used", docs_url: DOCS_URL }, 402);
     }
 
-    // Per-buyer rate limiting
-    let payerAddress: string | null = null;
-    try {
-      const decoded = JSON.parse(atob(paymentHeader.replace(/-/g, "+").replace(/_/g, "/")));
-      payerAddress = decoded?.payload?.authorization?.from || decoded?.from || null;
-    } catch {}
-
-    if (payerAddress && c.env.IOT_KV) {
-      const windowMs = (Number(c.env.RATE_LIMIT_WINDOW_S) || 60) * 1000;
-      const quota = Number(c.env.RATE_LIMIT_QUOTA) || 10;
-      const rlKey = `rl:${payerAddress.toLowerCase()}`;
-      const now = Date.now();
-
-      const rawWindow = await c.env.IOT_KV.get(rlKey);
-      const timestamps: number[] = rawWindow ? JSON.parse(rawWindow) : [];
-      const windowStart = now - windowMs;
-      const fresh = timestamps.filter((t) => t >= windowStart);
-
-      if (fresh.length >= quota) {
-        const oldestTs = fresh[0];
-        const retryAfter = Math.ceil((oldestTs + windowMs - now) / 1000);
-        return c.json(
-          {
-            error: "rate_limit_exceeded",
-            docs_url: DOCS_URL,
-            retry_after_seconds: retryAfter,
-          },
-          429,
-          { "Retry-After": String(retryAfter) }
-        );
-      }
-
-      fresh.push(now);
-      await c.env.IOT_KV.put(rlKey, JSON.stringify(fresh), {
-        expirationTtl: Math.ceil(windowMs / 1000) + 60,
-      });
-    }
-
     // Save idempotency key
     await c.env.IOT_KV.put(idempotencyKey, "1", { expirationTtl: 86400 });
   }
 
-  // Fetch and return sensor reading from DeviceTwin DO
   try {
     const twin = getTwin(c);
     const reading = await twin.getLatestReading();

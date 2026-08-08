@@ -25,9 +25,13 @@ export class DeviceTwin extends DurableObject<Env> {
     // Set first alarm inside blockConcurrencyWhile to avoid race conditions
     // between concurrent constructor calls (documented Workers pattern).
     ctx.blockConcurrencyWhile(async () => {
-      const existing = await ctx.storage.getAlarm();
-      if (existing === null) {
-        await ctx.storage.setAlarm(Date.now() + this.tickInterval());
+      try {
+        const existing = await ctx.storage.getAlarm();
+        if (existing === null) {
+          await ctx.storage.setAlarm(Date.now() + this.tickInterval());
+        }
+      } catch {
+        // Safe fallback if alarm storage is initializing
       }
     });
   }

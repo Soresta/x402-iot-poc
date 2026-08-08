@@ -275,7 +275,7 @@ console.log(`[agent] Starting autonomous loop. Press Ctrl+C to stop.`);
 while (running) {
   const result = await onePurchase();
 
-  if (result === "killed" || result === "cap_reached" || result === "mandate_invalid") {
+  if (result === "killed" || result === "cap_reached" || result === "mandate_invalid" || result === "scope_rejected") {
     console.log(`[agent] Stopping loop: ${result}`);
     break;
   }
