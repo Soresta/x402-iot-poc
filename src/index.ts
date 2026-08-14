@@ -69,6 +69,73 @@ app.get("/reading", (c) =>
 // DeviceTwin helper
 // ---------------------------------------------------------------------------
 
+/**
+ * Read the signed payment proof off the request.
+ *
+ * GOTCHA (found in Week 3 verification): the installed x402 generation
+ * (@x402/core v2) sends the proof as `payment-signature`, not `X-PAYMENT`.
+ * Keying only on `X-PAYMENT` silently disabled rate limiting and the KV
+ * idempotency check for every real buyer. Accept both names.
+ */
+function getPaymentHeader(c: any): string | undefined {
+  return (
+    c.req.header("payment-signature") ||
+    c.req.header("PAYMENT-SIGNATURE") ||
+    c.req.header("X-PAYMENT") ||
+    c.req.header("x-payment")
+  );
+}
+
+/** Decode a base64 / base64url payment proof. Returns null if unreadable. */
+function decodePaymentHeader(header: string): any | null {
+  try {
+    return JSON.parse(atob(header.replace(/-/g, "+").replace(/_/g, "/")));
+  } catch {
+    return null;
+  }
+}
+
+/** "$0.001" → 1000 atomic units (USDC has 6 decimals). */
+function priceToAtomic(price: string): number {
+  return Math.round(parseFloat(price.replace(/[^0-9.]/g, "")) * 1_000_000);
+}
+
+/**
+ * Pre-verification screen: reject proofs that are structurally wrong for this
+ * resource with a distinct, machine-readable code (ERRORS.md).
+ *
+ * This never approves a payment. Anything it does not reject still goes to the
+ * facilitator for real verification, so the fail-closed path is unchanged. Its
+ * only job is to turn the middleware's opaque `{}` 402 into a usable error code.
+ */
+function screenPayment(c: any, header: string): { error: string } | null {
+  const decoded = decodePaymentHeader(header);
+  if (!decoded) return null; // unreadable → let the middleware refuse it
+
+  const auth = decoded?.payload?.authorization;
+  const accepted = decoded?.accepted;
+  if (!auth || !accepted) return null;
+
+  const expectedNetwork = "eip155:84532";
+  const expectedAsset = (c.env.USDC_ASSET || "").toLowerCase();
+  const expectedPayTo = (c.env.PAY_TO || "").toLowerCase();
+  const requiredAmount = priceToAtomic(c.env.PRICE_PER_READING);
+
+  if (accepted.network && accepted.network !== expectedNetwork) {
+    return { error: "payment_network_invalid" };
+  }
+  if (expectedAsset && accepted.asset && accepted.asset.toLowerCase() !== expectedAsset) {
+    return { error: "payment_network_invalid" };
+  }
+  if (expectedPayTo && auth.to && auth.to.toLowerCase() !== expectedPayTo) {
+    return { error: "payment_recipient_invalid" };
+  }
+  if (auth.value !== undefined && Number(auth.value) < requiredAmount) {
+    return { error: "payment_amount_invalid" };
+  }
+  return null;
+}
+
 function getTwin(c: any) {
   const id = c.env.DEVICE_TWIN.idFromName(c.env.DEVICE_ID || "sim-sensor-01");
   return c.env.DEVICE_TWIN.get(id);
@@ -81,7 +148,7 @@ function getTwin(c: any) {
 let readingsPayment: MiddlewareHandler | undefined;
 
 app.use("/api/readings", async (c, next) => {
-  const paymentHeader = c.req.header("X-PAYMENT") || c.req.header("x-payment");
+  const paymentHeader = getPaymentHeader(c);
 
   // Rate Limiting Firewall (runs BEFORE payment verification / facilitator call)
   if (paymentHeader && c.env.IOT_KV) {
@@ -120,6 +187,14 @@ app.use("/api/readings", async (c, next) => {
       await c.env.IOT_KV.put(rlKey, JSON.stringify(fresh), {
         expirationTtl: Math.ceil(windowMs / 1000) + 60,
       });
+    }
+  }
+
+  // Structured-error screen (C5). Runs after rate limiting, before settlement.
+  if (paymentHeader) {
+    const screened = screenPayment(c, paymentHeader);
+    if (screened) {
+      return c.json({ error: screened.error, docs_url: DOCS_URL }, 402);
     }
   }
 
@@ -198,7 +273,7 @@ app.use("/api/readings", async (c, next) => {
 });
 
 app.get("/api/readings", async (c) => {
-  const paymentHeader = c.req.header("X-PAYMENT") || c.req.header("x-payment");
+  const paymentHeader = getPaymentHeader(c);
 
   if (paymentHeader && c.env.IOT_KV) {
     const encoder = new TextEncoder();

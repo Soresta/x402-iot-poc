@@ -53,6 +53,9 @@ export interface Env {
 
   // Rate-limit window in seconds, e.g. "60"
   RATE_LIMIT_WINDOW_S: string;
+
+  // Expected settlement asset (Base Sepolia USDC contract address)
+  USDC_ASSET: string;
 }
 
 // ---------------------------------------------------------------------------

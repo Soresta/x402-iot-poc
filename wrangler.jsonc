@@ -30,7 +30,8 @@
     "TICK_INTERVAL_MS": "60000",
     "PRICE_PER_READING": "$0.001",
     "RATE_LIMIT_QUOTA": "10",
-    "RATE_LIMIT_WINDOW_S": "60"
+    "RATE_LIMIT_WINDOW_S": "60",
+    "USDC_ASSET": "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
   },
 
   "durable_objects": {
