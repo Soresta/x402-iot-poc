@@ -53,7 +53,7 @@ sequenceDiagram
     Note over B: 3. Pay and consume
     B->>W: GET /api/readings (no payment)
     W-->>B: 402 + PAYMENT-REQUIRED header
-    B->>W: GET /api/readings + X-PAYMENT header
+    B->>W: GET /api/readings + payment-signature header
     W->>KV: check idempotency key
     W->>F: verify + settle (8s timeout)
     F->>C: transferWithAuthorization
@@ -195,7 +195,13 @@ Set `BUYER_ENABLED=false` in the terminal running the agent:
 $env:BUYER_ENABLED = "false"
 ```
 
-The loop checks this at the **top of every iteration** and exits cleanly within one cycle. `Ctrl+C` also exits cleanly and flushes the ledger.
+The loop checks this at the **top of every iteration** and exits cleanly within one cycle — verified.
+
+`Ctrl+C` is handled by a `SIGINT` handler that appends a stop record to the
+ledger. On Windows this handler was not observed running when the signal was
+sent programmatically (Node terminates the process instead), so the graceful
+path is **not** claimed as verified. The ledger is append-only and one line per
+purchase, so it survives an abrupt stop intact — that part was checked.
 
 ---
 
@@ -211,6 +217,47 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 
 ---
 
+## Verification
+
+Every check below was executed against `wrangler dev` and, where noted, against
+the deployed Worker. Exact commands, statuses, headers and bodies are pasted in
+[`docs/week3/BUILD-LOG.md`](./docs/week3/BUILD-LOG.md) (Block 7).
+
+```bash
+node buyer/test_replay.mjs              # pay, then replay the same proof  → 402
+node buyer/test_fresh_after_replay.mjs  # replay protection must not block honest buyers
+node buyer/test_negative.mjs            # underpayment, wrong asset        → 402 + code
+node buyer/test_ratelimit.mjs --recover # quota breach → 429, then recovery
+node buyer/test_failclosed.mjs          # facilitator unreachable          → 503
+node buyer/soak.mjs                     # timed unattended run
+```
+
+The replay and fresh-after-replay scripts each spend real Base Sepolia testnet
+USDC. The others move no funds. Add
+`SELLER_URL=https://x402-iot-poc.akifk-x402-26.workers.dev` to run any of them
+against the deployed Worker.
+
+| Check | Result |
+|---|---|
+| Paid request returns data; replayed proof rejected | PASS — local and deployed |
+| Underpayment / wrong asset | PASS — `402` with a distinct code |
+| Rate-limit breach and recovery | PASS — `429` + `Retry-After`, releases after the window |
+| Facilitator unreachable | PASS — `503` + `Retry-After: 5`, no telemetry served |
+| Forced `DeviceTwin` failure | PASS — structured `503`, no stack trace |
+| Budget cap, kill switch, price above mandate | PASS — refused before any payment |
+| Unattended run | PARTIAL — 1 h, 111 settlements, 98.2 % success. 24 h not attempted |
+| Demo page comprehension by a stranger | NOT VERIFIED |
+| Graceful `Ctrl+C` exit | PARTIAL — ledger intact, handler unobserved on Windows |
+
+Two defects were found during this pass in code that had previously been marked
+as passing: the seller read the payment proof from `X-PAYMENT` while the
+installed x402 generation sends `payment-signature` (which left idempotency and
+rate limiting inert), and two documented error codes were never actually
+emitted. Both are fixed and re-verified. See gotcha 5 below and
+[`docs/week3/WEEK3-REPORT.md`](./docs/week3/WEEK3-REPORT.md) §4.
+
+---
+
 ## Project layout
 
 ```
@@ -223,12 +270,17 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ├── buyer/
 │   ├── pay.mjs          single-purchase buyer (Week 2, preserved)
 │   ├── mandate.mjs      createMandate(), verifyMandate()
-│   └── agent.mjs        autonomous loop with cap + kill switch
+│   ├── agent.mjs        autonomous loop with cap + kill switch
+│   ├── soak.mjs         timed unattended run; reports real elapsed time
+│   ├── x402-harness.mjs shared test helper (captures the payment header)
+│   └── test_*.mjs       replay, fresh-after-replay, negative, rate limit,
+│                        fail-closed — see "Verification" below
 ├── docs/
 │   ├── 402-transcript.txt  Week 2 payment proof
 │   └── week3/
-│       ├── BUILD-LOG.md    graded build log (all 6 blocks)
-│       └── WEEK3-REPORT.md week 3 supervisor report
+│       ├── BUILD-LOG.md    build log; Block 7 is the latest verification pass
+│       ├── WEEK3-REPORT.md week 3 supervisor report
+│       └── soak-run.log    raw log of the 1 h unattended run
 ├── wrangler.jsonc          Worker config, DO binding, KV namespace
 ├── ERRORS.md               error code catalogue
 └── .env.example            template for buyer secrets
@@ -254,6 +306,18 @@ app.use(async (c, next) => {
 
 **4. Idempotency write-after-settle risk.** The idempotency key is written to KV **after** the facilitator confirms settlement (not before). Residual risk: if the Worker crashes between settle and write, the same payment proof could be accepted again. The financial exposure is bounded (one free reading per crash scenario) and is accepted for this testnet PoC. A two-phase commit pattern would eliminate it but is out of scope here.
 
+
+**5. The payment proof arrives in `payment-signature`, not `X-PAYMENT`.** The
+scoped `@x402/core` v2 family sends the signed proof in a `payment-signature`
+request header; the older family used `X-PAYMENT`. Any custom logic that keys on
+`X-PAYMENT` alone — idempotency, rate limiting, logging — silently never runs
+against current clients, and it fails silently: the request still settles, so
+everything looks healthy. This repo accepts both names:
+
+```ts
+c.req.header("payment-signature") || c.req.header("PAYMENT-SIGNATURE") ||
+c.req.header("X-PAYMENT")         || c.req.header("x-payment")
+```
 ---
 
 ## Roadmap

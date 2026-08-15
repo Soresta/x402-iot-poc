@@ -173,3 +173,11 @@ dist
 
 # Buyer ledger — contains real testnet activity; machine state, not source
 buyer/ledger.jsonl
+
+# Internal working documents — not part of the public deliverable
+WEEK3-AGENT-BRIEF.md
+CLAUDE-CODE-HANDOVER.md
+machine-payments-revenue-sprint-INTERN.html
+
+# Local agent/editor tooling
+.claude/
