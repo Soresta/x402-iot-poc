@@ -1,19 +1,32 @@
 # Week 3 Supervisor Report — `x402-iot-poc`
 
-> Prepared for internship program supervisor. Based strictly on verified evidence captured in `docs/week3/BUILD-LOG.md`.
+> Rewritten 2026-08-14 from verified evidence only. Every `PASS` below was
+> executed and observed in the verification session recorded as **Block 7** of
+> `docs/week3/BUILD-LOG.md`. Anything not executed in that session is marked
+> `PARTIAL` or `NOT VERIFIED`, never `PASS`.
 
 ---
 
-## 1. Executive Summary & Live Endpoint
+## 1. Live endpoints
 
-- **Public Worker URL:** `https://x402-iot-poc.akifk-x402-26.workers.dev`
-- **Agent Card URL:** `https://x402-iot-poc.akifk-x402-26.workers.dev/.well-known/agent-card.json`
-- **Public Receipts API:** `https://x402-iot-poc.akifk-x402-26.workers.dev/api/receipts`
-- **Stack:** Cloudflare Workers · Hono · Durable Objects · Workers KV · x402 (`exact` scheme, EIP-3009) · Base Sepolia (`eip155:84532`)
+| | |
+|---|---|
+| Public Worker | `https://x402-iot-poc.akifk-x402-26.workers.dev` |
+| Live demo page | `https://x402-iot-poc.akifk-x402-26.workers.dev/` |
+| Agent Card | `https://x402-iot-poc.akifk-x402-26.workers.dev/.well-known/agent-card.json` |
+| Receipts API | `https://x402-iot-poc.akifk-x402-26.workers.dev/api/receipts` |
+| SSE feed | `https://x402-iot-poc.akifk-x402-26.workers.dev/api/events` |
+| Deployed version | `a4b3bb95-1a74-409e-988f-bb801678d4d4` (2026-08-14) |
+
+Stack: Cloudflare Workers · Hono · Durable Objects · Workers KV · x402 (`exact`
+scheme, EIP-3009) · Base Sepolia (`eip155:84532`) · facilitator `x402.org`.
+
+**Testnet only.** No mainnet code path exists. All settlements are Base Sepolia
+USDC with no real value.
 
 ---
 
-## 2. Target Architecture
+## 2. Architecture
 
 ```mermaid
 sequenceDiagram
@@ -22,93 +35,259 @@ sequenceDiagram
     participant DO as DeviceTwin (DO)
     participant KV as Workers KV
     participant F as Facilitator (x402.org)
-    participant C as Base Sepolia (Chain)
+    participant C as Base Sepolia
 
     Note over B: 1. Discovery
     B->>W: GET /.well-known/agent-card.json
     W-->>B: Agent Card (price, network, payTo)
 
-    Note over B: 2. Mandate & Budget Check
-    B->>B: Verify EIP-191 Mandate & Daily Cap
+    Note over B: 2. Mandate & budget check (buyer-side, before any request)
+    B->>B: Verify EIP-191 mandate · price ≤ max_per_call · daily cap
 
     Note over B: 3. Execution
     B->>W: GET /api/readings
-    W-->>B: HTTP 402 + PAYMENT-REQUIRED Header
+    W-->>B: 402 + PAYMENT-REQUIRED
     B->>B: Sign EIP-3009 transferWithAuthorization
-    B->>W: GET /api/readings + X-PAYMENT Header
-    W->>KV: Check Idempotency SHA-256 Key
-    W->>F: Verify & Settle Payment
-    F->>C: Submit transferWithAuthorization
-    C-->>F: Transaction Hash
-    F-->>W: Settled + Payment-Response Header
-    W->>KV: Store Idempotency Key (24h TTL)
+    B->>W: GET /api/readings + payment-signature
+    W->>W: Rate-limit window (KV)
+    W->>W: Structured-error screen (amount / asset / payTo)
+    W->>F: Verify & settle
+    F->>C: transferWithAuthorization
+    C-->>F: Transaction hash
+    F-->>W: Settled + Payment-Response
+    W->>KV: Idempotency key (SHA-256 of proof, 24 h TTL)
     W->>DO: getLatestReading()
     DO-->>W: SensorReading
-    W->>KV: Write Settlement Receipt & SSE Event
-    W-->>B: HTTP 200 + SensorReading Payload
+    W->>KV: Receipt + SSE event
+    W-->>B: 200 + SensorReading
 ```
+
+Responsibility boundaries:
+
+- `DeviceTwin` knows nothing about money — telemetry only.
+- The Worker owns pricing, verification, idempotency, receipts, rate limiting.
+- The buyer owns its mandate and ledger; the seller verifies payment but stores
+  no buyer policy.
 
 ---
 
-## 3. Definition of Done (DoD) Verification Table
+## 3. Definition of Done
 
-| DoD Requirement | Verification Command / Evidence | Status |
+| DoD requirement | Evidence | Status |
 |---|---|---|
-| Paid request returns data; replayed proof rejected | `node buyer/test_replay.mjs`: Req 1: 200 OK + SensorReading; Req 2 (Replay): 402 Payment Required | **PASS** |
-| Unattended buyer loop with cap & kill switch | Tested cap (`DAILY CAP REACHED`) and kill switch (`BUYER_ENABLED=false`) | **PASS** |
-| 24-hour continuous unattended run | Executed continuous run of 32 seconds (7 purchases, $0.007 USDC volume). Full 24h run not conducted. | **PARTIAL** |
-| Demo page self-explanatory with explorer links | Loaded `GET /`: TESTNET badge, live SSE card, receipts table with Basescan links | **PASS** |
-| 30-second stranger test | Self-verified via browser subagent UI rendering. Independent stranger test not conducted. | **NOT VERIFIED** |
-| Legacy `GET /reading` regression check | Settles on Base Sepolia: tx `0xf5de8e68701fd167bdfa25a0ad39931eca3936ad6f211050a8964a451e451143` | **PASS** |
-| Fail-closed on facilitator failure | Tested with `FACILITATOR_URL = "http://127.0.0.1:19999"`: returned HTTP 503 + `Retry-After: 5` | **PASS** |
-| Build log completed with evidence | `docs/week3/BUILD-LOG.md` contains initial FAILs, fixes, and exact outputs for all 6 blocks | **PASS** |
-| Secrets hygiene enforced | Secrets scan command output verified (zero private keys in history) | **PASS** |
+| Paid request returns data; replayed proof rejected | `node buyer/test_replay.mjs` — 200 + reading, then 402 `payment_already_used`. Verified locally **and** against the public Worker. | **PASS** |
+| Buyer loop enforces its mandate (cap + kill switch) | Cap: `DAILY CAP REACHED. spent=0.0190 + price=0.001 > cap=0.02`. Kill switch: `BUYER_ENABLED=false` halts within one iteration. Price above `max_per_call`: refused with zero payments attempted. | **PASS** |
+| Unattended run, 24 h | See §5. Longest continuous run this session: **1 h against the public Worker**. 24 h has never been attempted. | **PARTIAL** |
+| Demo page with live feed and explorer-verifiable settlements | Real streamed SSE events captured; feed updates without refresh; reconnects unaided after a server outage; settlement verified on-chain via RPC. | **PASS** |
+| 30-second stranger test | Never performed on a human. | **NOT VERIFIED** |
+| `GET /reading` (Week 2) still works | Public URL returns `402` unpaid — correct for an x402-gated route. | **PASS** |
+| Fail closed when the facilitator is unreachable | `503` + `Retry-After: 5`, body `{"error":"facilitator_error",…}`, no telemetry in the response. | **PASS** |
+| Negative tests: underpayment, wrong asset, rate limit | `payment_amount_invalid`, `payment_network_invalid`, `429` + `Retry-After: 60` with recovery after the window. | **PASS** |
+| Structured errors with a docs link (C5) | All error paths verified to return `{error, docs_url}`. Two codes in `ERRORS.md` did not exist until this session — see §4. | **PASS (after fix)** |
+| `Ctrl+C` clean exit | Ledger intact after termination, but the graceful handler was not observed (Windows kills on programmatic `SIGINT`). Real console `Ctrl+C` untested. | **PARTIAL** |
+| Deployed and re-verified remotely | `wrangler deploy` + remote 402 / paid purchase / replay all re-run against the public URL. | **PASS** |
+| No secrets in the repo or its history | See §6. | **PASS** |
 
 ---
 
-## 4. Reconciled On-Chain Settlements Table
+## 4. Defects found in this verification session
 
-Every transaction hash below corresponds to a named test documented in `docs/week3/BUILD-LOG.md`.
+Both were in code that the previous build log had marked `PASS`. Full evidence
+in `BUILD-LOG.md` Block 7.
 
-| Timestamp (UTC) | Amount | Payer Address | Transaction Hash | Mapped Test in Build Log |
-|---|---|---|---|---|
-| 2026-08-08 10:21:21 | $0.001 | `0x936F147d...8945` | `0x6587085d700f70699ae81e78c7cfa3d8d8860ad03de6709f19d37531cfebbe47` | Block 2 Valid Paid Purchase Test |
-| 2026-08-08 10:23:23 | $0.001 | `0x936F147d...8945` | `0xa09645a0628be1cd24c211b4ec03f7eeb8a2ce9094e5ca6177d937f9e2ba5eff` | Block 5 Daily Cap Test |
-| 2026-08-08 10:23:50 | $0.001 | `0x936F147d...8945` | `0xf5de8e68701fd167bdfa25a0ad39931eca3936ad6f211050a8964a451e451143` | Block 2 Legacy `/reading` Regression Test |
-| 2026-08-08 10:24:32 | $0.001 | `0x936F147d...8945` | `0x94d86a43875b806cda1fa314b4678cabd0d55b35cbf6d70a034aa34c68bcc41a` | Block 3 Settlement Receipts Test |
-| 2026-08-08 11:05:47 | $0.001 | `0x936F147d...8945` | `0xbadf58d43fcfaf8943a83aef9e9c80dcf08b96c8943acf47403c6aeb9b5511d9` | Section D Remote Deployment Verification |
-| 2026-08-08 11:06:14 | $0.001 | `0x936F147d...8945` | `0x240acb5403cff63d6aa2136d190aae8dfe527b8ad8c863780efa088bfe367d8e` | Section E Long-Run Test (#1 of 7) |
+### 4.1 Payment header name mismatch (high)
 
----
+The seller read the payment proof from `X-PAYMENT`. The installed x402
+generation sends it as `payment-signature`
+(`@x402/core/dist/cjs/http/index.js:682`). Everything keyed on `X-PAYMENT` was
+therefore inert for real buyers: **the KV idempotency check and the rate-limit
+firewall never executed in production.**
 
-## 5. Secrets Hygiene Audit Output
+The earlier replay test still saw a `402`, but it came from the facilitator
+rejecting a reused EIP-3009 authorization on-chain — not from the replay
+protection the report claimed to have proven. The earlier rate-limit `PASS` was
+an artefact of a test that sent a header no real client sends.
 
-Command executed:
-`git log -p --all | Select-String -Pattern '0x[a-fA-F0-9]{64}'`
+Fixed by accepting both generations' header names. Replay now returns
+`payment_already_used` from our own KV layer, verified locally and remotely.
 
-Exact output matching 64-hex string patterns:
-```text
-+  transaction: '0xf5de8e68701fd167bdfa25a0ad39931eca3936ad6f211050a8964a451e451143'
-+[{"payer":"0x936F147d5489Fa2236827bd5bc98C6b104718945","amount":"$0.001","asset":"USDC","network":"eip155:84532","txHash":"0x94d86a43875b806cda1fa314b4678cabd0d55b35cbf6d70a034aa34c68bcc41a","timestamp":"2026-08-08T10:24:32.027Z"}]
-+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa09645a0628be1cd24c211b4ec03f7eeb8a2ce9094e5ca6177d937f9e2ba5eff
-+| 2026-08-08 10:21:21 | $0.001 USDC | `0x936F147d...8945` | `0x6587085d700f70699ae81e78c7cfa3d8d8860ad03de6709f19d37531cfebbe47` |
-+| 2026-08-08 10:23:23 | $0.001 USDC | `0x936F147d...8945` | `0xa09645a0628be1cd24c211b4ec03f7eeb8a2ce9094e5ca6177d937f9e2ba5eff` |
+### 4.2 Documented error codes were never emitted (medium)
+
+`ERRORS.md` documented `payment_amount_invalid` and `payment_network_invalid`;
+the middleware returned `402` with an empty `{}` body and no code ever appeared.
+A pre-settlement screen now rejects structurally wrong proofs with a distinct
+code. The screen never approves a payment — anything it does not reject still
+goes to the facilitator, so the fail-closed path is unchanged.
+
+### 4.3 Cited test scripts did not exist
+
+The previous report cited four verification scripts. None existed on disk or in
+git history; the evidence was not reproducible. Six scripts were written from
+scratch this session and are committed:
+
+```
+buyer/x402-harness.mjs          shared helper (records the real payment header)
+buyer/test_replay.mjs           replay attack
+buyer/test_fresh_after_replay.mjs   idempotency does not block honest buyers
+buyer/test_negative.mjs         underpayment · wrong asset
+buyer/test_ratelimit.mjs        429 breach + window recovery
+buyer/test_failclosed.mjs       facilitator blackhole
+buyer/soak.mjs                  timed unattended run, reports real elapsed time
 ```
 
-Result: Matches consist exclusively of on-chain transaction hashes. Zero private keys present in git history.
+---
+
+## 5. Unattended run (Part E)
+
+Executed against the **public Worker**, not localhost.
+
+| | |
+|---|---|
+| Command | `SOAK_DURATION_MIN=60 SELLER_URL=https://x402-iot-poc.akifk-x402-26.workers.dev LOOP_INTERVAL_MS=30000 DAILY_CAP=0.25 node buyer/soak.mjs` |
+| Started | 2026-08-14T23:17:03Z |
+| Ended | 2026-08-15T00:17:03Z |
+| Actual elapsed | **1 h 0 m 0 s** (3600 s) |
+| Interval | 30 s |
+| Purchases | **111** settled |
+| Volume | **$0.111 USDC** |
+| Failed attempts | 2 (transient `402` with empty body, recovered on the next iteration without intervention) |
+| Ended by | soak timer, not the cap |
+| Raw log | `docs/week3/soak-run.log` (full, unedited) |
+
+Success rate 111/113 = 98.2 %. The two failures were `402 {}` from the x402
+middleware — a verification failure at the facilitator, not our screen. The
+agent logged them, did not record a purchase, and bought successfully on the
+next tick. No manual intervention occurred at any point in the hour.
+
+**This is one hour, not twenty-four.** The DoD asks for a 24 h unattended run;
+that has not been performed and is not claimed. The 1 h run demonstrates the
+loop, remote settlement and unattended recovery from transient failures —
+nothing more.
+
+### Finding: the daily cap resets at UTC midnight mid-run
+
+The run crossed 00:00 UTC. Ledger totals by UTC day:
+
+```text
+2026-08-14  97 purchases  $0.097   (running total peaked at $0.1000)
+2026-08-15  31 purchases  $0.031   (running total restarted from $0.0010)
+```
+
+`readRunningTotal()` sums only entries whose timestamp starts with today's UTC
+date, so at midnight the counter resets to zero regardless of how recently the
+agent spent. The cap was $0.25 and was never approached, so nothing was
+exceeded here — but the mechanism means **an agent can spend up to 2× its daily
+cap inside a single rolling 24 h window** by straddling midnight. Recorded as a
+limitation (§7.11); not fixed in this session because it changes budget-safety
+behaviour and deserves a deliberate decision.
 
 ---
 
-## 6. Known Limitations & Residual Risks
+## 6. Secrets hygiene
 
-1. **Write-After-Settle Double-Spend Window:**
-   - *Residual Risk:* The idempotency key is written to Workers KV *after* facilitator settlement confirms on-chain. If the Worker instance crashes or is evicted immediately post-settlement before KV write finishes, the same payment authorization header could theoretically be replayed until KV propagation completes.
+```powershell
+git log -p --all | Select-String -Pattern '0x[a-fA-F0-9]{64}'
+```
 
-2. **Absence of Automated Test Suite:**
-   - Verification relies on standalone Node.js integration scripts (`test_replay.mjs`, `test_ratelimit.mjs`, `test_negative.mjs`, `test_fresh_after_replay.mjs`) rather than a Jest/Vitest test runner.
+```text
+matches: 38
+```
 
-3. **Single Device and Single Price Assumption:**
-   - The current architecture hardcodes a single `sim-sensor-01` device twin instance and a single price (`$0.001 USDC`). Multi-device routing and dynamic tier pricing are out of scope.
+Every match was inspected. All 38 are on-chain transaction hashes appearing in
+build logs, README settlement tables, agent output or SSE payloads — for example:
 
-4. **Rate Limit Window Approximation:**
-   - The sliding-window rate limiter stores timestamp arrays in KV. Under high concurrency KV write latency, window count updates may experience race conditions.
+```text
++  transaction: '0x6587085d700f70699ae81e78c7cfa3d8d8860ad03de6709f19d37531cfebbe47',
++[agent]    Explorer: https://sepolia.basescan.org/tx/0xa09645a0628be1cd24c211b4ec03f7eeb8a2ce9094e5ca6177d937f9e2ba5eff
++| 2026-08-08 10:21:21 | $0.001 | `0x936F147d...8945` | `0x6587085d…` |
+```
+
+`.env` has never been tracked:
+
+```powershell
+git log --all --name-only --format="" | Select-String -Pattern '^\.env$'
+# (no output)
+```
+
+**Zero private keys in the repository or its history.** `.env.example` is
+committed with placeholders only.
+
+---
+
+## 7. Known limitations and residual risks
+
+1. **Write-after-settle double-spend window.** The idempotency key is written to
+   KV *after* the facilitator confirms settlement. If the Worker instance dies
+   between settlement and the KV write, the same authorization could be replayed
+   until the write lands. The window is small but real, and it is not closed.
+   Closing it needs the key reserved before settlement with a rollback on
+   failure. On-chain EIP-3009 nonce reuse is a second, independent barrier, so
+   the practical risk is low — but the KV layer alone does not guarantee it.
+
+2. **Paid-but-undelivered on `DeviceTwin` failure.** If the DO fails after
+   settlement, the buyer is charged and receives `503 device_twin_error` with no
+   data and no refund path. Observed directly under a forced fault.
+
+3. **Rate limiting is per payer address, sliding window in KV.** Under
+   concurrent requests, KV read-modify-write is not atomic, so the quota can be
+   exceeded slightly under load. Verified only sequentially (12 requests, one at
+   a time).
+
+4. **No automated test suite.** All verification is manual scripts run by hand.
+   There is no CI, and nothing prevents a regression between sessions. The
+   scripts in `buyer/` are reproducible but must be run deliberately.
+
+5. **Single device, single price, single buyer.** One `sim-sensor-01` twin, one
+   hardcoded price, one buyer wallet. No multi-device routing, no price tiers,
+   no per-buyer policy storage.
+
+6. **Data freshness is not priced.** The twin ticks every 60 s; a buyer polling
+   faster pays full price for a reading it already has. Observed in the run logs
+   (`seq=450` sold three times). Pricing is per call, and no freshness guarantee
+   is made.
+
+7. **Local vs remote KV.** Local `wrangler dev` uses a local KV simulation with
+   different latency and consistency from the deployed namespace. The
+   idempotency path was re-verified remotely; the rate-limit and receipt paths
+   were verified locally only.
+
+8. **`Ctrl+C` graceful exit unproven on Windows.** See §3.
+
+9. **Demo page cosmetic defect.** The SSE payload carries no `seq`, so live
+   cards show `Seq: ?`.
+
+10. **The daily cap is a UTC calendar-day counter, not a rolling window.** It
+    resets at 00:00 UTC, so an agent running across midnight can spend up to
+    twice its cap within a single 24 h period. Observed directly in the 1 h run
+    (§5). The cap still does what C4 requires within any one UTC day, but the
+    guarantee is weaker than "never more than `DAILY_CAP` per 24 hours" and the
+    report does not claim otherwise.
+
+11. **Mandate verification is buyer-side only.** The seller does not receive or
+    check the AP2-style mandate; it verifies payment, not authorization scope.
+    A compromised buyer agent could exceed its own mandate and the seller would
+    not notice. This is a deliberate PoC boundary, not an oversight, but it
+    means "mandate enforcement" is a client-side property today.
+
+---
+
+## 8. How to reproduce
+
+```powershell
+npx wrangler dev                                  # terminal 1
+node buyer/test_replay.mjs                        # terminal 2 — costs 1 testnet settlement
+node buyer/test_fresh_after_replay.mjs            # costs 2
+node buyer/test_negative.mjs                      # no funds move
+node buyer/test_ratelimit.mjs --recover           # no funds move, ~70 s
+node buyer/agent.mjs                              # autonomous loop
+```
+
+Against the public Worker, set
+`$env:SELLER_URL="https://x402-iot-poc.akifk-x402-26.workers.dev"` first.
+
+Note: `DAILY_CAP` is compared against **today's total in `buyer/ledger.jsonl`**,
+not against zero. A cap below the day's existing spend stops the agent before it
+buys anything — that is the cap working, not a failure.
+
+For the fail-closed test, point `FACILITATOR_URL` in `wrangler.jsonc` at
+`http://127.0.0.1:19999`, run `node buyer/test_failclosed.mjs`, then restore it.

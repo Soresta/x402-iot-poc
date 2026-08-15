@@ -1,0 +1,360 @@
+
+=== SOAK RUN START 2026-08-14T23:17:03.031Z ===
+planned duration: 60 min
+seller: https://x402-iot-poc.akifk-x402-26.workers.dev
+interval: 30000 ms | daily cap: $0.25
+[agent] Buyer address: 0x936F147d5489Fa2236827bd5bc98C6b104718945
+[agent] Seller URL: https://x402-iot-poc.akifk-x402-26.workers.dev
+[agent] Daily cap: $0.25 USDC | Max per call: $0.002 USDC
+[agent] Loop interval: 30000ms
+[agent] Kill switch: set BUYER_ENABLED=false to stop
+[agent] Mandate created. Expiry: 2026-08-15T23:17:03.553Z
+[agent] Starting autonomous loop. Press Ctrl+C to stop.
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0200)
+[agent] ✅ Purchased seq=9371 | tx=0x26783c49a9… | total=$0.0210
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x26783c49a9062253c3b1b269110a7d0d9fe19ee540da52b140f8fab6fb0b8892
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0210)
+[agent] ✅ Purchased seq=9371 | tx=0x9992b2b7f9… | total=$0.0220
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9992b2b7f931985a32a7bb27954c5a608c263b7c9c0bfe0e25b080297fa936be
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0220)
+[agent] ✅ Purchased seq=9372 | tx=0xdd1c6b7437… | total=$0.0230
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xdd1c6b7437799bd7509714bc925fed4ba4242237f374400547cc5e7e047c1123
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0230)
+[agent] ✅ Purchased seq=9372 | tx=0x805b9e6a28… | total=$0.0240
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x805b9e6a28daafce516383228b908e667827c5e095454243bf2aaa0081145e18
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0240)
+[agent] ✅ Purchased seq=9373 | tx=0x7998f1da1c… | total=$0.0250
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7998f1da1c6378b8016f4365c685da611e3a85c803890ebe895704a346234b9c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0250)
+[agent] ✅ Purchased seq=9374 | tx=0x6d0088c363… | total=$0.0260
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6d0088c3635481edadb07cbd30262be8480b0ad4c94479e0c7d0941d7cbab2b2
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0260)
+[agent] ✅ Purchased seq=9374 | tx=0xcae9092918… | total=$0.0270
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xcae9092918b7a77f880da084e463215cd81f9dc6224f16a5576ae3a0d7a3371f
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0270)
+[agent] ✅ Purchased seq=9375 | tx=0x53407938b9… | total=$0.0280
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x53407938b99c0477fb5f72c5531dc1b44b914fc0094a5c80beeeacd4ae21f535
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0280)
+[agent] ✅ Purchased seq=9375 | tx=0x25eb468f63… | total=$0.0290
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x25eb468f6382cd01b85e83c4f73eb454efdda07a18de7f6a45a0d50d3c6b2b78
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0290)
+[agent] ✅ Purchased seq=9376 | tx=0xcb89474ec0… | total=$0.0300
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xcb89474ec078cfc27d21e840849d9205ded8d684ba3254a35f8c1033c57cd3ed
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0300)
+[agent] ✅ Purchased seq=9376 | tx=0xfc2750f430… | total=$0.0310
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfc2750f43091486933e3f84e608d22e62ad1de19669e3ca33879ac6df7800b63
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0310)
+[agent] ✅ Purchased seq=9377 | tx=0xf4cb1c481f… | total=$0.0320
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf4cb1c481f948ce2fa5efec2fd0f7e1eb65bf241a810f36cc7668e12f7f8583f
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0320)
+[agent] ✅ Purchased seq=9377 | tx=0xb5fa9f0adb… | total=$0.0330
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb5fa9f0adb11f9c32e6cf666af306857c67ddd8182d8daaba7377033941a8dbb
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0330)
+[agent] ✅ Purchased seq=9378 | tx=0xe3cd501e70… | total=$0.0340
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe3cd501e703326908e58632c0fe923828c16cc655ba9b6eeb21ae5112cf244f7
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0340)
+[agent] ✅ Purchased seq=9378 | tx=0xfa1cee3f3e… | total=$0.0350
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfa1cee3f3eae85a989bf8fdc39caa73ec83ee58988640417ae73b74439c8e7a5
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0350)
+[agent] ✅ Purchased seq=9379 | tx=0xc320ba0e44… | total=$0.0360
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc320ba0e4415fe1a56e9b7af22defa0efc5571f9de4a9b61b4d5ee93c3cc841a
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0360)
+[agent] ✅ Purchased seq=9379 | tx=0xbd35eee5ab… | total=$0.0370
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbd35eee5ab2216bcb2cc7ce30b0d83c613436ffedf823f58b8413bbd5320a7b5
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0370)
+[agent] ✅ Purchased seq=9380 | tx=0xb24241d027… | total=$0.0380
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb24241d027ab7f9d6f8fd127825618f0eecc714a7b06928c083b8b786a04339c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0380)
+[agent] ✅ Purchased seq=9380 | tx=0x232c3ceb89… | total=$0.0390
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x232c3ceb89fefb3d18d67420fad494e1e4cde4529d7ea10cc4d7bddc3e79ad3c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0390)
+[agent] ✅ Purchased seq=9381 | tx=0x6a8863bded… | total=$0.0400
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6a8863bded23fc67155503dc2412692a2f5b115f22838dd1224e0edfef3a05d6
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0400)
+[agent] ✅ Purchased seq=9381 | tx=0x1c89b04098… | total=$0.0410
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1c89b04098da983805cf17f875af2a6735d973352a9dfb04af883f2ebb9818d8
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0410)
+[agent] ✅ Purchased seq=9382 | tx=0xa2ce780da1… | total=$0.0420
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa2ce780da1ca98be977b8d2a354d2da1d61888a3c58b955cec6e8dd3eb054204
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0420)
+[agent] ✅ Purchased seq=9383 | tx=0xcd991e512b… | total=$0.0430
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xcd991e512bb689880089d2e00f550f1ecad9a76bbf07d0b910a742ff1979fb85
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0430)
+[agent] ✅ Purchased seq=9383 | tx=0xff9e9254c4… | total=$0.0440
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xff9e9254c4368c4d168e9cb55bf248a5921f2174f6f745a55a91777954a3a48e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0440)
+[agent] ✅ Purchased seq=9384 | tx=0x6c9158d118… | total=$0.0450
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6c9158d1180c958ebaf7b9c39365537f90f0f121a19771b33470d50937453cec
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0450)
+[agent] ✅ Purchased seq=9384 | tx=0xb1e2612538… | total=$0.0460
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb1e261253846219ecd18d8856e9b88cd8b13dcb5d7c7789a58dfd7f5e5dc9ba4
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0460)
+[agent] ✅ Purchased seq=9385 | tx=0xd8bb86f5e9… | total=$0.0470
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd8bb86f5e97cf3a2739827689b86303a1724ad22a3aab9002b6e9d5e2973102a
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0470)
+[agent] ✅ Purchased seq=9385 | tx=0x965c6edef1… | total=$0.0480
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x965c6edef1023fc8df666966b8523177e1f2df277cb79eb0975011ea75a8f850
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0480)
+[agent] ✅ Purchased seq=9386 | tx=0x77381c3149… | total=$0.0490
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x77381c3149f2167b41579156cb70ad242cf92a9817de288f2aa0fbb615949832
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0490)
+[agent] ✅ Purchased seq=9386 | tx=0x22b1b6ffc2… | total=$0.0500
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x22b1b6ffc2377b9589f990558e22b1a40a3a8c4b6a1a250cf6fc699e7f07da6c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0500)
+[agent] ✅ Purchased seq=9387 | tx=0x2baddbc044… | total=$0.0510
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2baddbc0445285ed6fe268b5ca9cfdea3b3de9e053733e311964cd99dc66e1e9
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0510)
+[agent] ✅ Purchased seq=9387 | tx=0xaacf3527b2… | total=$0.0520
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xaacf3527b2bf361164077d5968ce4e0e6ea3691b8b91829876a1110e666cb8c3
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0520)
+[agent] ✅ Purchased seq=9388 | tx=0x5997f2868c… | total=$0.0530
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5997f2868c6f9c4e2e5c10124e4986c9ce2c0ffd2e5c328f65d9d9c21416ac23
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0530)
+[agent] ✅ Purchased seq=9388 | tx=0x562603f52c… | total=$0.0540
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x562603f52c59869cbd26d7cdf1d5c9f2b8ab8f767f8c1a5e39181f9bb0406cfa
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0540)
+[agent] ✅ Purchased seq=9389 | tx=0xc549507cd3… | total=$0.0550
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc549507cd389bebf39016f7dd0fe25aef871925ff8383b512f486f74766e8004
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0550)
+[agent] ✅ Purchased seq=9389 | tx=0x62865e86c0… | total=$0.0560
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x62865e86c025f134df81429836069a87dbcd653edbe0ceb79a0911e21de49b56
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0560)
+[agent] ✅ Purchased seq=9390 | tx=0xfd3a28472d… | total=$0.0570
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfd3a28472d401f17d5f8b294540858ee0944ba7a1c53f15be9fce450df2518e8
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0570)
+[agent] ✅ Purchased seq=9391 | tx=0x3f6d44c353… | total=$0.0580
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x3f6d44c353dae8c685da4ccbc165789591bb01265d90b987f19ed383e0c356b8
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0580)
+[agent] ✅ Purchased seq=9391 | tx=0x2947875d2f… | total=$0.0590
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2947875d2fc2c12ca34bc16d08867d7d5485e1d31a1db9d3a968a7029ebc61b4
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0590)
+[agent] ✅ Purchased seq=9392 | tx=0x3b1cace1a3… | total=$0.0600
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x3b1cace1a3b9e41c93e7d4f84e1ea72d53a7f936fba9feca8d82db29bb3c696e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0600)
+[agent] ✅ Purchased seq=9392 | tx=0xc6dfe93cd2… | total=$0.0610
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc6dfe93cd2b6a787d857d93a3115f6d1bf136f660b835d31bf6210c799fd5245
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0610)
+[agent] ✅ Purchased seq=9393 | tx=0xc6f7033197… | total=$0.0620
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc6f70331976ec27155b36b10e091b9561f42c7523a0a1decbc2a5ac1cf48dc98
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0620)
+[agent] ✅ Purchased seq=9393 | tx=0x670bc5aec1… | total=$0.0630
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x670bc5aec1d04ce58f6c28f76052e0d137ac8db8b8d61007c1bf6532e82b9fbf
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0630)
+[agent] ✅ Purchased seq=9394 | tx=0x36b7a0180b… | total=$0.0640
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x36b7a0180be31171894416b670c1a15d097a2aedc9b1e832c6d6412147d71737
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0640)
+[agent] ✅ Purchased seq=9394 | tx=0x30d4d54211… | total=$0.0650
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x30d4d54211e2bf8f60198993b89d1ebd1442d823b8cd9c9239faadfdc429239d
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0650)
+[agent] ✅ Purchased seq=9395 | tx=0xcc786d44bd… | total=$0.0660
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xcc786d44bde05a0e28c842794cc6b85a047de52a8edef102aa1749fa71e6630e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0660)
+[agent] ✅ Purchased seq=9395 | tx=0x7c30bd0c45… | total=$0.0670
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7c30bd0c451366f29c8b57194e7ff63556d0f94d77652097e4e7d43031f3c57c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0670)
+[agent] ✅ Purchased seq=9396 | tx=0xca58735e59… | total=$0.0680
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xca58735e599572b08b7bc5f24293e53b6941141b3b5e8a4efe999a686416f80a
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0680)
+[agent] ✅ Purchased seq=9396 | tx=0xb15c7d9b2d… | total=$0.0690
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb15c7d9b2dd9693b9d3471fc5d5c3609d7c9b6afd9dab14300cf3c017b0066a9
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0690)
+[agent] ✅ Purchased seq=9397 | tx=0xd07f1dbee9… | total=$0.0700
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd07f1dbee9acc83c17e4988d5895bbf9db9763d65ec6ee0e09fae65971056a1a
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0700)
+[agent] ✅ Purchased seq=9397 | tx=0x9bce994872… | total=$0.0710
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9bce994872ef74d02d7df79d33219e9ab9cd016585e9e62846ebb43e140f2baa
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0710)
+[agent] ✅ Purchased seq=9398 | tx=0x54b121e42a… | total=$0.0720
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x54b121e42a4c86db351a50d7fb6c1d85ffe5c34a47460ae2386428a80fa563c0
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0720)
+[agent] ✅ Purchased seq=9398 | tx=0xeb67a4d498… | total=$0.0730
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xeb67a4d49825e3701218a6eee7221258ffaab73d7c5ff29b24b484a440db64c6
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0730)
+[agent] ✅ Purchased seq=9399 | tx=0x2b7deb4b76… | total=$0.0740
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2b7deb4b76ca1dd2f93624b15f0824530b187ffc1a9d9c566d2fb084a3e58038
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0740)
+[agent] ✅ Purchased seq=9400 | tx=0x2869353e7a… | total=$0.0750
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2869353e7ac31e838514fcf58db7e9fd2a257aead0dcccc9c01b68418bda5797
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0750)
+[agent] ✅ Purchased seq=9400 | tx=0x4e2a9e6f97… | total=$0.0760
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4e2a9e6f97dc6ae09764602de59fc5494b9ae52c069df5ad5e8114d23a9a668b
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0760)
+[agent] ✅ Purchased seq=9401 | tx=0xeebf97b0e3… | total=$0.0770
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xeebf97b0e388b476e0d8fc1b92476c6320d3b2dfbb9c2fb74dcc0613cb2a14fb
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0770)
+[agent] ✅ Purchased seq=9401 | tx=0x63295f5df2… | total=$0.0780
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x63295f5df2a3033d78707444e8b2860536e9cc05000e7acdededd29e7b56f654
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0780)
+[agent] ✅ Purchased seq=9402 | tx=0x67465526fd… | total=$0.0790
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x67465526fdf8f78ca362670283ab934837017bead48142307e17b61b423f2888
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0790)
+[agent] ✅ Purchased seq=9402 | tx=0x233c73079c… | total=$0.0800
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x233c73079ce83fba45d94d9a4a983ba979f0e99210e3fcbf734274c36a0f693e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0800)
+[agent] ✅ Purchased seq=9403 | tx=0x84d946a5ca… | total=$0.0810
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x84d946a5cac611ce4c4bc14bcc5b23a445bfded65118a8b3b8343e3b2df1ccb9
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0810)
+[agent] ✅ Purchased seq=9403 | tx=0xa464562e9c… | total=$0.0820
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa464562e9cc976fe4ef42c2d9c30e040dc228d29db15b5c799b2b933d86d7f62
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0820)
+[agent] ✅ Purchased seq=9404 | tx=0x9dc42a9c77… | total=$0.0830
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9dc42a9c77fee56f543ea5008fc93434338910f55eb303163e30a55329067acd
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0830)
+[agent] ✅ Purchased seq=9404 | tx=0x89fdcd0dae… | total=$0.0840
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x89fdcd0daeb20192994b3b7e53fbc19374786bb8b338a72f004a409f5ad420aa
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0840)
+[agent] ✅ Purchased seq=9405 | tx=0x21ec2aba18… | total=$0.0850
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x21ec2aba18d6f7f5b0446ea3d6c1cbe492c0632947a57affd07166d2e51576d7
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0850)
+[agent] ✅ Purchased seq=9405 | tx=0x7acf72ae44… | total=$0.0860
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7acf72ae447549f9988c2bcf4cf168701ce854630d4866bcab0232bbe20773d4
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0860)
+[agent] ✅ Purchased seq=9406 | tx=0x6357b9dc7c… | total=$0.0870
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6357b9dc7cf3faadf1b05c109fdd3d1c376d902452ee613337b68a5e08690317
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0870)
+[agent] ✅ Purchased seq=9406 | tx=0x920b7f0e28… | total=$0.0880
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x920b7f0e28e27cb44074cd02cc4046513a32890862b3e088b68831046ac3a645
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0880)
+[agent] ✅ Purchased seq=9407 | tx=0x2c1427fe8b… | total=$0.0890
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2c1427fe8bb3f8a5c7732c1f4f5e3a53f2e15c41da62d3b6e8feaa52cbaa509f
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0890)
+[agent] ✅ Purchased seq=9407 | tx=0x9c19b98df6… | total=$0.0900
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9c19b98df68b00e06f8c73ba34ed7dfc20da087075bfafed661dcb156f4e299b
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0900)
+[agent] ✅ Purchased seq=9408 | tx=0x5d9a92b72b… | total=$0.0910
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5d9a92b72b68dc8f320247e3729e2432536e83b145f48f730d96e458bf5f7988
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0910)
+[agent] ✅ Purchased seq=9409 | tx=0x8c27ea4a9a… | total=$0.0920
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x8c27ea4a9a5933ac95d5dfdf854f51ebaa36efeb877b2ea6f5b5dc82e06e757b
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0920)
+[agent] ✅ Purchased seq=9409 | tx=0x5e3a663aad… | total=$0.0930
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5e3a663aadcd10cfa88ce2aaac42fd710af7686acdff385b259e651d7613d594
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0930)
+[agent] ✅ Purchased seq=9410 | tx=0x4ca54fd43d… | total=$0.0940
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4ca54fd43d6f0a03bd1535deb290dbeb256ef5fb3408e4064853000b6f301f15
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0940)
+[agent] ✅ Purchased seq=9410 | tx=0x77f355b906… | total=$0.0950
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x77f355b906c6387cdf6c8a1f3e24c5d9dd20cef700cdedecbf2ed7ba3fcc1977
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0950)
+[agent] ✅ Purchased seq=9411 | tx=0x211f2eabdb… | total=$0.0960
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x211f2eabdbe593cd5e83089b0653efa218a7d0f9201724d597f2fe7569362595
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0960)
+[agent] Unexpected status 402: {}
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0960)
+[agent] ✅ Purchased seq=9412 | tx=0xbdbfb94cf8… | total=$0.0970
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbdbfb94cf8df6ac02b67e97d33660fd9da59f2dc464aa28f6a235a0c9e389879
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0970)
+[agent] ✅ Purchased seq=9412 | tx=0x2d12ccaa1c… | total=$0.0980
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2d12ccaa1c0aaf71c09b469d6f90562a76f5b53decd51816c31041cac51cf297
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0980)
+[agent] ✅ Purchased seq=9413 | tx=0x75e67bd352… | total=$0.0990
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x75e67bd3521a19f192ad5eea91dcdcfa836a309759c6a5d62065f284c2e779ee
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0990)
+[agent] ✅ Purchased seq=9413 | tx=0xe434a58f87… | total=$0.1000
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe434a58f87b93f89fd4c32fc5c509a6473a6621c88d11dd33f25560180b125f1
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0000)
+[agent] ✅ Purchased seq=9414 | tx=0xb6de8fa33d… | total=$0.0010
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb6de8fa33d5bb809cfc040d820273646113f935c5ae4efea5ffb9f59df3d4fb6
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0010)
+[agent] ✅ Purchased seq=9414 | tx=0x6821da0927… | total=$0.0020
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6821da09270bbfb773bc5ef6d958badb0b5fbe03b45acf100a6b1268469b3676
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0020)
+[agent] ✅ Purchased seq=9415 | tx=0xdc3c5d5e01… | total=$0.0030
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xdc3c5d5e0151422541da1d38e69869393c39c47f3c072ce0d38edff907365ffe
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0030)
+[agent] ✅ Purchased seq=9415 | tx=0xc7d71b6b43… | total=$0.0040
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc7d71b6b4312c5e1110ed8e30705a4fb450ba81a5f8a697afbf75449a0379967
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0040)
+[agent] Unexpected status 402: {}
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0040)
+[agent] ✅ Purchased seq=9417 | tx=0xe41ba2d14a… | total=$0.0050
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe41ba2d14a26e90b35a232fd9541ba6c99dde3a540c3a372c6dc32bd26a54683
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0050)
+[agent] ✅ Purchased seq=9417 | tx=0x90c3cc1f46… | total=$0.0060
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x90c3cc1f463ef19992369883407de5ef91f641891c73c18e0d43365d66c4c30d
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0060)
+[agent] ✅ Purchased seq=9418 | tx=0xbfeee86180… | total=$0.0070
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbfeee86180ccf14bfec0031aff06b49ace61c4b6b6ade4afcb4909ecab48e79e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0070)
+[agent] ✅ Purchased seq=9418 | tx=0xfcd15ff490… | total=$0.0080
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfcd15ff490f94ff4424a0e81af466e93b545ccff986c2e6e252199da71432b0f
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0080)
+[agent] ✅ Purchased seq=9419 | tx=0xe6023db6a4… | total=$0.0090
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe6023db6a447aada30374ee8b033f10c6a4f11f9b989b7b97bd63c198f5d53d5
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0090)
+[agent] ✅ Purchased seq=9419 | tx=0x42ee5e0d31… | total=$0.0100
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x42ee5e0d31a7b8eb16d34e36711a551f605874f663382fe46d0f1590f4f8a41c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0100)
+[agent] ✅ Purchased seq=9420 | tx=0x1042ffe1b4… | total=$0.0110
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1042ffe1b4f7236030be5b73565c9330eb8aa73901c0616b2b3f664fb50d63b0
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0110)
+[agent] ✅ Purchased seq=9420 | tx=0x2c5bd6f0e0… | total=$0.0120
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2c5bd6f0e0ee88714eb09c752e5910378e6d2ae42bc7efe35f6f777d7d59398c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0120)
+[agent] ✅ Purchased seq=9421 | tx=0x1049a0f84a… | total=$0.0130
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1049a0f84ac07fc8120cc3679e3dd4801664e1f70699d043653742fd6edc4d3e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0130)
+[agent] ✅ Purchased seq=9421 | tx=0xdda5135f8b… | total=$0.0140
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xdda5135f8b568fa70f3b673af1d401c09609f6b3c8cb09dbc47359e112d2bf15
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0140)
+[agent] ✅ Purchased seq=9422 | tx=0xbb924c9d46… | total=$0.0150
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbb924c9d469d2339fc1b8f4df94fbb4c1de62c4ab989f8d4e902dba1a9e69cab
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0150)
+[agent] ✅ Purchased seq=9422 | tx=0xc4535ab7de… | total=$0.0160
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc4535ab7de6a46b4cc7bfc58abe020faeae35828e4e189dfdfcd5fede930d003
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0160)
+[agent] ✅ Purchased seq=9423 | tx=0xb8dab7fcb2… | total=$0.0170
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb8dab7fcb2c0376fc5f546b336beaffccc72337e11769640b9c2786356da49cf
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0170)
+[agent] ✅ Purchased seq=9423 | tx=0xf736f0cbb8… | total=$0.0180
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf736f0cbb84ed803929f5741af3cb0a6bffacabc8fe00b13d63502af6b79af6a
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0180)
+[agent] ✅ Purchased seq=9424 | tx=0xb347edaba4… | total=$0.0190
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb347edaba47ab26d81b17315fc10a73e1c8a7590f5af33ae53763d89e1ebbc8e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0190)
+[agent] ✅ Purchased seq=9424 | tx=0xba7b8d4ba2… | total=$0.0200
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xba7b8d4ba23ca5f48ec859b856c6de2b0ef6ca1ee1d1ab7e0d58c24a1bc152a0
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0200)
+[agent] ✅ Purchased seq=9425 | tx=0xb53aaa2d01… | total=$0.0210
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb53aaa2d016ec11ec35bd0fe85e3ff9562d40ba9b08ed4df3d79bd75b0535829
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0210)
+[agent] ✅ Purchased seq=9426 | tx=0x4b8305ca01… | total=$0.0220
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4b8305ca01abb02feba701e103dccaf6254b558f3aff19944b4552cd9ca9a783
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0220)
+[agent] ✅ Purchased seq=9426 | tx=0x176d9576e6… | total=$0.0230
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x176d9576e6c0a7d6ba5121929d19c406c46afe50c47f4884f0a1bd1e821f800f
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0230)
+[agent] ✅ Purchased seq=9427 | tx=0x193b6ca8ef… | total=$0.0240
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x193b6ca8efd96ce592017ee8f7ee5093f66374a09d7a9fa10f4ad53ab583b84c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0240)
+[agent] ✅ Purchased seq=9427 | tx=0x6272a3d0b9… | total=$0.0250
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6272a3d0b932d40d6237a6729236761b5aa5edd5fda93b10cb972cceaa7b2a2f
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0250)
+[agent] ✅ Purchased seq=9428 | tx=0xb72e361eed… | total=$0.0260
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb72e361eed69a0c4024168fb3c6aad6c58d9ccad867de1008a3feeb3e19efa3c
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0260)
+[agent] ✅ Purchased seq=9428 | tx=0x63a2e4e85a… | total=$0.0270
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x63a2e4e85a31d71a0f4af6c2bf42989950deed8bb2b8aed54a387434d4d6cc29
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0270)
+[agent] ✅ Purchased seq=9429 | tx=0x37597f0f37… | total=$0.0280
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x37597f0f370f7d8edbb32fdc4ad022aef66304f16580001cfed05680307b1f3b
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0280)
+[agent] ✅ Purchased seq=9429 | tx=0xe5df932a36… | total=$0.0290
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe5df932a36182967c111f573d31b5f29e543ed89b8ffc11c83b3198f9fae47ae
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0290)
+[agent] ✅ Purchased seq=9430 | tx=0x605852904b… | total=$0.0300
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x605852904bb0928dcba54158e10211e9c34e4a9617338b426879cee931941dc0
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0300)
+[agent] ✅ Purchased seq=9430 | tx=0xecdb1aa9fd… | total=$0.0310
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xecdb1aa9fdb48cac489d7941e3eba92ec9dbe41231b27e8e893934d4816d673e
+[agent] Paying $0.001 for https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings (running total: $0.0310)
+
+[soak] 60 min elapsed — stopping the agent.
+
+=== SOAK RUN END 2026-08-15T00:17:03.068Z ===
+actual elapsed : 1h 0m 0s (3600 s)
+purchases      : 111
+volume         : $0.111 USDC (at $0.001/call)
+ended by       : soak timer
+child exit     : code=null signal=SIGTERM
+log written to : C:\Users\akifk\x402-iot-poc\docs\week3\soak-run.log
