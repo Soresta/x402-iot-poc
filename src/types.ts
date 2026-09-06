@@ -56,6 +56,11 @@ export interface Env {
 
   // Expected settlement asset (Base Sepolia USDC contract address)
   USDC_ASSET: string;
+
+  // "true" to reject requests that present no mandate at all (403).
+  // Default false: a mandate is verified when presented, but not demanded,
+  // so the Week 2 single-purchase script keeps working.
+  REQUIRE_MANDATE: string;
 }
 
 // ---------------------------------------------------------------------------

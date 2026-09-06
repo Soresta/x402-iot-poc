@@ -110,6 +110,10 @@ const mandateBody = {
 const mandate = await createMandate(account, mandateBody);
 console.log(`[agent] Mandate created. Expiry: ${mandateExpiry}`);
 
+// The seller verifies this too (identity 401 / authorization 403). Week 3
+// checked the mandate on the buyer only, which is an honour system.
+const mandateHeader = Buffer.from(JSON.stringify(mandate), "utf8").toString("base64");
+
 // ---------------------------------------------------------------------------
 // Backoff state
 // ---------------------------------------------------------------------------
@@ -197,7 +201,10 @@ async function onePurchase() {
 
   let res;
   try {
-    res = await paidFetch(resource, { method: "GET" });
+    res = await paidFetch(resource, {
+      method: "GET",
+      headers: { "X-Agent-Mandate": mandateHeader },
+    });
   } catch (err) {
     console.error(`[agent] Network error: ${err.message}`);
     return "network_error";
@@ -207,6 +214,13 @@ async function onePurchase() {
     const body = await res.text();
     console.error(`[agent] Seller 503: ${body}`);
     return "seller_503";
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    const body = await res.text();
+    console.error(`[agent] Seller refused our mandate (${res.status}): ${body}`);
+    appendLedger({ ts: new Date().toISOString(), result: "mandate_refused", status: res.status, body });
+    return "mandate_refused";
   }
 
   if (res.status === 429) {
@@ -275,7 +289,13 @@ console.log(`[agent] Starting autonomous loop. Press Ctrl+C to stop.`);
 while (running) {
   const result = await onePurchase();
 
-  if (result === "killed" || result === "cap_reached" || result === "mandate_invalid" || result === "scope_rejected") {
+  if (
+    result === "killed" ||
+    result === "cap_reached" ||
+    result === "mandate_invalid" ||
+    result === "scope_rejected" ||
+    result === "mandate_refused"
+  ) {
     console.log(`[agent] Stopping loop: ${result}`);
     break;
   }

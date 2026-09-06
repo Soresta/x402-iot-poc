@@ -93,6 +93,11 @@ export function dummyPaymentHeader(payer) {
   return Buffer.from(JSON.stringify(payload), "utf8").toString("base64");
 }
 
+/** Base64-encode a signed mandate for the `X-Agent-Mandate` header. */
+export function encodeMandate(mandate) {
+  return Buffer.from(JSON.stringify(mandate), "utf8").toString("base64");
+}
+
 /** Send a raw payment proof with plain fetch — used to replay a captured header. */
 export function sendWithPaymentHeader(url, header) {
   return fetch(url, { method: "GET", headers: { [PAYMENT_HEADER]: header } });

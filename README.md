@@ -51,7 +51,8 @@ sequenceDiagram
     B->>B: verifyMandate() + daily cap check
 
     Note over B: 3. Pay and consume
-    B->>W: GET /api/readings (no payment)
+    B->>W: GET /api/readings + X-Agent-Mandate
+    W->>W: verify mandate: identity 401 / scope 403
     W-->>B: 402 + PAYMENT-REQUIRED header
     B->>W: GET /api/readings + payment-signature header
     W->>KV: check idempotency key
@@ -74,8 +75,10 @@ sequenceDiagram
 | Layer | Responsibility |
 |---|---|
 | **Identity** | Agent Card at `/.well-known/agent-card.json` — who the seller is, what it sells, at what price |
-| **Mandate** | Signed JSON document held by the buyer — authorized spending scope with cap and expiry |
+| **Mandate** | Signed JSON document presented by the buyer in `X-Agent-Mandate` — authorized spending scope with cap and expiry. Verified by the seller on every request: bad signature or wrong holder is `401`, expired or out-of-scope is `403` |
 | **Settlement** | x402 + EIP-3009 — actual on-chain payment; facilitator verifies and submits |
+
+The buyer checks its own mandate before spending; the seller checks it again before serving. Buyer-side checking alone is an honour system, so both sides do it.
 
 `DeviceTwin` knows **nothing** about money — it only produces and stores telemetry. The Worker layer owns pricing, payment verification, idempotency, receipts, and rate limiting.
 
@@ -171,6 +174,8 @@ Update `SELLER_URL` in `.env` to point at your deployed Worker URL.
 | `PRICE_PER_READING` | `$0.001` | Price per `/api/readings` call |
 | `RATE_LIMIT_QUOTA` | `10` | Max requests per buyer per window |
 | `RATE_LIMIT_WINDOW_S` | `60` | Rate-limit window (seconds) |
+| `USDC_ASSET` | Base Sepolia USDC | Asset the seller will accept |
+| `REQUIRE_MANDATE` | `false` | `true` rejects requests carrying no mandate with `403` |
 
 ### Buyer (`.env`)
 
@@ -229,6 +234,7 @@ node buyer/test_fresh_after_replay.mjs  # replay protection must not block hones
 node buyer/test_negative.mjs            # underpayment, wrong asset        → 402 + code
 node buyer/test_ratelimit.mjs --recover # quota breach → 429, then recovery
 node buyer/test_failclosed.mjs          # facilitator unreachable          → 503
+node buyer/test_mandate.mjs             # identity 401 / mandate 403, seven cases
 node buyer/soak.mjs                     # timed unattended run
 ```
 
@@ -245,6 +251,10 @@ against the deployed Worker.
 | Facilitator unreachable | PASS — `503` + `Retry-After: 5`, no telemetry served |
 | Forced `DeviceTwin` failure | PASS — structured `503`, no stack trace |
 | Budget cap, kill switch, price above mandate | PASS — refused before any payment |
+| Expired mandate | PASS — `403 mandate_expired`, seller-side |
+| Mandate scope exceeded | PASS — `403 mandate_scope_exceeded` |
+| Tampered or foreign mandate signature | PASS — `401 identity_unverified` |
+| Mandate presented by a different payer | PASS — `401 identity_mismatch` |
 | Unattended run | PARTIAL — 1 h, 111 settlements, 98.2 % success. 24 h not attempted |
 | Demo page comprehension by a stranger | NOT VERIFIED |
 | Graceful `Ctrl+C` exit | PARTIAL — ledger intact, handler unobserved on Windows |

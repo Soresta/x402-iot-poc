@@ -22,6 +22,7 @@ import type { Env } from "./types";
 import { DeviceTwin } from "./device-twin";
 import { agentCardHandler } from "./agent-card";
 import { demoPageHandler, sseHandler } from "./demo";
+import { verifyPresentedMandate } from "./mandate";
 
 export { DeviceTwin };
 
@@ -100,6 +101,17 @@ function priceToAtomic(price: string): number {
   return Math.round(parseFloat(price.replace(/[^0-9.]/g, "")) * 1_000_000);
 }
 
+/** "$0.001" → 0.001 as a number. */
+function priceToUsdc(price: string): number {
+  return parseFloat(price.replace(/[^0-9.]/g, ""));
+}
+
+/** The address funding a payment, or null if the proof cannot be read. */
+function payerFromPaymentHeader(header: string): string | null {
+  const decoded = decodePaymentHeader(header);
+  return decoded?.payload?.authorization?.from || decoded?.from || null;
+}
+
 /**
  * Pre-verification screen: reject proofs that are structurally wrong for this
  * resource with a distinct, machine-readable code (ERRORS.md).
@@ -152,13 +164,9 @@ app.use("/api/readings", async (c, next) => {
 
   // Rate Limiting Firewall (runs BEFORE payment verification / facilitator call)
   if (paymentHeader && c.env.IOT_KV) {
-    let payerAddress: string | null = null;
-    try {
-      const decoded = JSON.parse(atob(paymentHeader.replace(/-/g, "+").replace(/_/g, "/")));
-      payerAddress = decoded?.payload?.authorization?.from || decoded?.from || null;
-    } catch {}
+    const payerAddress = payerFromPaymentHeader(paymentHeader);
 
-    if (payerAddress && c.env.IOT_KV) {
+    if (payerAddress) {
       const windowMs = (Number(c.env.RATE_LIMIT_WINDOW_S) || 60) * 1000;
       const quota = Number(c.env.RATE_LIMIT_QUOTA) || 10;
       const rlKey = `rl:${payerAddress.toLowerCase()}`;
@@ -188,6 +196,25 @@ app.use("/api/readings", async (c, next) => {
         expirationTtl: Math.ceil(windowMs / 1000) + 60,
       });
     }
+  }
+
+  // Identity + authorization (401 / 403). Runs before payment (402), because
+  // an agent that is not who it claims to be, or is not authorized to buy this,
+  // should be turned away before any money moves.
+  const mandateHeader = c.req.header("X-Agent-Mandate") || c.req.header("x-agent-mandate");
+  const mandateRequired = String(c.env.REQUIRE_MANDATE) === "true";
+
+  if (mandateHeader) {
+    const result = await verifyPresentedMandate(
+      mandateHeader,
+      priceToUsdc(c.env.PRICE_PER_READING),
+      paymentHeader ? payerFromPaymentHeader(paymentHeader) : null
+    );
+    if (!result.ok) {
+      return c.json({ error: result.error, docs_url: DOCS_URL }, result.status);
+    }
+  } else if (mandateRequired) {
+    return c.json({ error: "mandate_required", docs_url: DOCS_URL }, 403);
   }
 
   // Structured-error screen (C5). Runs after rate limiting, before settlement.

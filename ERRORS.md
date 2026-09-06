@@ -15,6 +15,13 @@ All error responses follow the structured format:
 
 | Code | HTTP Status | Meaning | Remedy |
 |------|------------|---------|--------|
+| `identity_unverified` | 401 | Mandate signature does not recover to the address it names | Sign the mandate with the key that owns `body.buyer` |
+| `identity_mismatch` | 401 | The mandate holder is not the account funding the payment | Present your own mandate, not someone else's |
+| `mandate_required` | 403 | No mandate presented and `REQUIRE_MANDATE` is on | Send `X-Agent-Mandate` with a signed mandate |
+| `mandate_malformed` | 403 | Mandate could not be decoded, or is missing required fields | Base64-encode `{ body, signature }` with all fields present |
+| `mandate_expired` | 403 | The mandate's `expiry` has passed | Issue a fresh mandate |
+| `mandate_invalid_caps` | 403 | `max_per_call` or `daily_cap` is zero or negative | Use positive caps |
+| `mandate_scope_exceeded` | 403 | The resource costs more than the mandate's `max_per_call` | Raise the cap or buy something cheaper |
 | `payment_required` | 402 | No payment proof provided | Include a valid `payment-signature` header as per the x402 protocol |
 | `payment_amount_invalid` | 402 | Authorized amount below the required price | Use the price specified in the `402` requirements payload |
 | `payment_network_invalid` | 402 | Payment on the wrong network or wrong asset | Use Base Sepolia (`eip155:84532`) with USDC |
@@ -29,6 +36,29 @@ All error responses follow the structured format:
 ---
 
 ## Notes
+
+### Three layers, three status codes
+
+Requests are judged in a fixed order, and each layer has its own code:
+
+```
+429  rate limit      — too many requests from this payer
+401  identity        — we cannot establish who this agent is
+403  mandate         — identity is fine, but this purchase is not authorized
+402  payment         — identity and authorization are fine; now show the money
+503  upstream        — we could not verify a payment, so we serve nothing
+```
+
+Identity and authorization are checked **before** payment, so an agent that is
+not who it claims to be, or is not allowed to buy this, is turned away before
+any money moves.
+
+The mandate travels in the `X-Agent-Mandate` request header as base64 of
+`{ body, signature }`, where `signature` is an EIP-191 signature over
+`JSON.stringify(body)`. It is verified statelessly on every request — the seller
+stores no buyer policy. `REQUIRE_MANDATE` (default `false`) controls whether a
+request with no mandate at all is rejected; when off, a mandate is still fully
+verified whenever one is presented.
 
 ### Which layer emits what
 
