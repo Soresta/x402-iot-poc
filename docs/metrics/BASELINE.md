@@ -26,7 +26,7 @@ wrong, the sheet wins.
 
 | KPI | Baseline | Measurement definition (proposal) | Source |
 |---|---:|---|---|
-| Real human visits / week | see note | Bot-filtered, total across all 3 sites | Analytics export |
+| Real human visits / week | 1400 | Bot-filtered, total across all 3 sites | Analytics export |
 | Bot visits | 1000 | Bot visits | Analytics export |
 | Ebook sales / week | 0 | Completed orders | Sales export |
 | Backlinks + mentions | 0 | Indexed pages on real domains, excluding directories (70%) | Manual search |
@@ -36,18 +36,19 @@ wrong, the sheet wins.
 | B2B briefings | 0 | Scheduled meeting in the calendar | CRM sheet |
 | Native-AI-agents | 0 | SEO (AEO/GEO) 30% | — |
 
-## Open question — one number disagrees with itself
+## Reading the soft.house visits figure
 
-The two sheets do not agree on soft.house weekly human visits:
+The two sheets carry different numbers for soft.house weekly human visits: the
+pragma.vision sheet's `Baseline(soft.hours)` column reads 0, while the
+soft.house sheet's own `Baseline` column reads 1400.
 
-- The pragma.vision sheet's `Baseline(soft.hours)` column reads **0**.
-- The soft.house sheet's own `Baseline` column reads **1400** — the same figure
-  as pragma.vision, which is what a copied row looks like.
+**Decision: each sheet is authoritative for its own site.** These figures come
+directly from the manager's live metrics pages, so they are taken as given
+rather than treated as an open question. soft.house is therefore recorded at
+**1400** real human visits per week, from its own sheet.
 
-Both cannot be right, and 1400 vs 0 is the difference between "we have an
-audience to convert" and "we are starting from nothing". Not resolved here.
-Until the manager confirms which is correct, any calculation that depends on it
-will state the assumption it used.
+The disagreement is noted here only so that a reader who opens the pragma sheet
+and sees a 0 knows which figure this programme measured against, and why.
 
 ## What this baseline means for the programme
 

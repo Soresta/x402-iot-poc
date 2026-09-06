@@ -48,6 +48,10 @@ export interface Env {
   // Price per reading, e.g. "$0.001"
   PRICE_PER_READING: string;
 
+  // Price per inference run, e.g. "$0.002" — higher than a reading, because
+  // compute costs more to produce than a stored measurement
+  PRICE_PER_INFERENCE: string;
+
   // Rate-limit quota per window, e.g. "10"
   RATE_LIMIT_QUOTA: string;
 
@@ -61,6 +65,14 @@ export interface Env {
   // Default false: a mandate is verified when presented, but not demanded,
   // so the Week 2 single-purchase script keeps working.
   REQUIRE_MANDATE: string;
+
+  // Secret guarding the subscriber CSV export. Set with:
+  //   npx wrangler secret put EXPORT_TOKEN
+  // If unset, the export endpoint returns 503 and exports nothing.
+  EXPORT_TOKEN?: string;
+
+  // Workers AI binding, used by the pay-per-inference resource
+  AI: { run: (model: string, input: Record<string, unknown>) => Promise<any> };
 }
 
 // ---------------------------------------------------------------------------

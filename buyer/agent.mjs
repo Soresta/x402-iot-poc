@@ -136,13 +136,28 @@ async function discoverSeller() {
   const res = await fetch(`${SELLER_URL}/.well-known/agent-card.json`);
   if (!res.ok) throw new Error(`agent-card fetch failed: ${res.status}`);
   const card = await res.json();
-  const skill = card.skills?.[0];
-  if (!skill) throw new Error("agent-card has no skills");
-  const priceStr = skill.payment?.price || "$0.001";
-  const price = parseFloat(priceStr.replace(/[^0-9.]/g, ""));
-  const resource = skill.payment?.resource || `${SELLER_URL}/api/readings`;
-  return { price, resource, priceStr };
+  const skills = card.skills ?? [];
+  if (skills.length === 0) throw new Error("agent-card has no skills");
+
+  // The seller may advertise several priced resources. Take them all; the loop
+  // rotates through whichever ones this mandate can afford.
+  return skills.map((skill) => {
+    const priceStr = skill.payment?.price || "$0.001";
+    return {
+      id: skill.id,
+      priceStr,
+      price: parseFloat(priceStr.replace(/[^0-9.]/g, "")),
+      resource: skill.payment?.resource || `${SELLER_URL}/api/readings`,
+      // Inference needs an input; a reading does not.
+      query: skill.inputModes?.includes("text/plain")
+        ? `?text=${encodeURIComponent("machine payments, observed from the inside")}`
+        : "",
+    };
+  });
 }
+
+// Rotates across resources so a long run exercises every one of them.
+let resourceCursor = 0;
 
 // ---------------------------------------------------------------------------
 // Single purchase iteration
@@ -163,22 +178,30 @@ async function onePurchase() {
     return "mandate_invalid";
   }
 
-  // 2. Discover seller (agent card)
-  let price, resource, priceStr;
+  // 2. Discover seller (agent card) — may advertise several resources
+  let offers;
   try {
-    ({ price, resource, priceStr } = await discoverSeller());
+    offers = await discoverSeller();
   } catch (err) {
     console.error(`[agent] Discovery failed: ${err.message}`);
     return "discovery_error";
   }
 
-  // 3. Check price against mandate scope
-  const { allowed, reason: scopeReason } = checkPriceInScope(mandateBody, price);
-  if (!allowed) {
-    console.error(`[agent] Price out of mandate scope: ${scopeReason}. No payment attempted.`);
+  // 3. Pick the next resource this mandate can afford. Rotating means a long
+  // run buys every advertised product, not just the cheapest one.
+  const affordable = offers.filter((o) => checkPriceInScope(mandateBody, o.price).allowed);
+  if (affordable.length === 0) {
+    const cheapest = offers.reduce((a, b) => (a.price <= b.price ? a : b));
+    const { reason: scopeReason } = checkPriceInScope(mandateBody, cheapest.price);
+    console.error(`[agent] Nothing on offer fits the mandate: ${scopeReason}. No payment attempted.`);
     appendLedger({ ts: new Date().toISOString(), result: "scope_rejected", reason: scopeReason });
     return "scope_rejected";
   }
+
+  const offer = affordable[resourceCursor % affordable.length];
+  resourceCursor++;
+  const { price, priceStr, resource: resourceUrl, id: skillId, query } = offer;
+  const resource = `${resourceUrl}${query}`;
 
   // 4. Check daily budget cap BEFORE payment attempt
   const runningTotal = readRunningTotal();
@@ -197,7 +220,9 @@ async function onePurchase() {
   }
 
   // 5. Pay and consume
-  console.log(`[agent] Paying ${priceStr} for ${resource} (running total: $${runningTotal.toFixed(4)})`);
+  console.log(
+    `[agent] Paying ${priceStr} for ${skillId} (running total: $${runningTotal.toFixed(4)})`
+  );
 
   let res;
   try {
@@ -249,7 +274,8 @@ async function onePurchase() {
   const newTotal = runningTotal + price;
   const ledgerEntry = {
     ts: new Date().toISOString(),
-    seq: data.seq,
+    skill: skillId,
+    seq: data.seq ?? null,
     price,
     txHash,
     runningTotal: parseFloat(newTotal.toFixed(6)),
@@ -258,7 +284,7 @@ async function onePurchase() {
   appendLedger(ledgerEntry);
 
   console.log(
-    `[agent] ✅ Purchased seq=${data.seq} | tx=${txHash ? txHash.slice(0, 12) + "…" : "null"} | total=$${newTotal.toFixed(4)}`
+    `[agent] ✅ Purchased ${skillId}${data.seq !== undefined ? ` seq=${data.seq}` : ` (${data.label ?? "ok"})`} | tx=${txHash ? txHash.slice(0, 12) + "…" : "null"} | total=$${newTotal.toFixed(4)}`
   );
   if (txHash) {
     console.log(`[agent]    Explorer: https://sepolia.basescan.org/tx/${txHash}`);

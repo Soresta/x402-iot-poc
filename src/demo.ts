@@ -255,6 +255,64 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       letter-spacing: 0.05em;
     }
 
+    /* Email capture */
+    .signup { margin-top: 24px; }
+    .signup-body { padding: 20px 24px 24px; }
+    .signup-pitch {
+      color: var(--text-muted);
+      max-width: 60ch;
+      margin: 0 0 18px;
+      line-height: 1.6;
+    }
+    .signup-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .signup-row input[type="email"] {
+      flex: 1 1 260px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+    }
+    .signup-row input[type="email"]:focus-visible,
+    #signup-btn:focus-visible,
+    .signup-consent input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    #signup-btn {
+      padding: 11px 20px;
+      border-radius: 8px;
+      border: 0;
+      background: var(--accent);
+      color: #04140f;
+      font-weight: 650;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    #signup-btn:disabled { opacity: 0.55; cursor: default; }
+    .signup-consent {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 14px;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.55;
+      max-width: 66ch;
+    }
+    .signup-consent input { margin-top: 3px; flex: 0 0 auto; }
+    .signup-status { margin: 12px 0 0; font-size: 14px; min-height: 20px; }
+    .signup-status.ok { color: var(--accent); }
+    .signup-status.err { color: #ff9b8f; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
     /* Layout: events left, receipts right */
     .content-grid {
       display: grid;
@@ -544,6 +602,7 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
           <thead>
             <tr>
               <th scope="col">Time</th>
+              <th scope="col">Resource</th>
               <th scope="col">Amount</th>
               <th scope="col">Tx Hash</th>
             </tr>
@@ -559,6 +618,35 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       </div>
     </section>
   </div>
+
+  <section class="panel signup" aria-labelledby="signup-heading">
+    <div class="panel-head">
+      <span class="panel-title" id="signup-heading">Machine-payments readiness notes</span>
+    </div>
+    <div class="signup-body">
+      <p class="signup-pitch">
+        What actually works when software pays software: what we shipped, what broke,
+        and the numbers behind it. Written from building this, not from press releases.
+        Roughly one note a week while the project runs.
+      </p>
+      <form id="signup-form" novalidate>
+        <label class="sr-only" for="signup-email">Email address</label>
+        <div class="signup-row">
+          <input id="signup-email" name="email" type="email" inputmode="email"
+                 autocomplete="email" placeholder="you@example.com" required />
+          <button type="submit" id="signup-btn">Send me the notes</button>
+        </div>
+        <label class="signup-consent">
+          <input type="checkbox" id="signup-consent" name="consent" required />
+          <span>
+            Yes, email me the readiness notes. I can unsubscribe at any time by replying
+            to any note. We store your address and nothing else — no tracking, no sharing.
+          </span>
+        </label>
+        <p id="signup-status" class="signup-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -598,6 +686,19 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
     return hash.slice(0, 10) + "…" + hash.slice(-6);
   }
 
+  // A settlement names the product it paid for. Two resources are on sale at
+  // different prices, so neither the label nor the volume can be assumed.
+  function labelFor(resource) {
+    if (resource === "inference") return "Inference";
+    if (resource === "readings") return "Sensor reading";
+    return "Resource";
+  }
+
+  function amountToNumber(amount) {
+    const n = parseFloat(String(amount ?? "").replace(/[^0-9.]/g, ""));
+    return Number.isFinite(n) ? n : 0;
+  }
+
   // ---- Render a settlement event ----
   function addEvent(data) {
     if (emptyEl) emptyEl.style.display = "none";
@@ -611,7 +712,7 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       </div>
       <div class="event-detail">
         Amount: <strong style="color:var(--accent)">\${data.amount || "$0.001"} USDC</strong>
-        · Seq: \${data.seq ?? "?"}
+        · \${labelFor(data.resource)}
         \${data.txHash
           ? \`<br/><a class="tx-link" href="\${EXPLORER}\${data.txHash}" target="_blank" rel="noopener" aria-label="View transaction on Base Sepolia explorer">
               🔗 \${fmtHash(data.txHash)}
@@ -629,7 +730,7 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
 
     // Update stats
     settlementCount++;
-    volumeTotal += 0.001;
+    volumeTotal += amountToNumber(data.amount);
     if (data.payer) payers.add(data.payer.toLowerCase());
     statTotal.textContent = settlementCount;
     statVolume.textContent = "$" + volumeTotal.toFixed(3);
@@ -639,12 +740,13 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
   // ---- Render receipts table ----
   function renderReceipts(receipts) {
     if (!receipts || receipts.length === 0) {
-      receiptsTbody.innerHTML = \`<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:40px">No settlements yet</td></tr>\`;
+      receiptsTbody.innerHTML = \`<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:40px">No settlements yet</td></tr>\`;
       return;
     }
     receiptsTbody.innerHTML = receipts.slice(0, 20).map(r => \`
       <tr>
         <td class="receipt-time">\${fmtTime(r.timestamp)}</td>
+        <td>\${labelFor(r.resource)}</td>
         <td><span class="amount-badge">\${r.amount || "$0.001"}</span></td>
         <td>
           \${r.txHash
@@ -667,7 +769,7 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
 
       // Update totals from receipts
       statTotal.textContent = data.length;
-      const vol = data.length * 0.001;
+      const vol = data.reduce((sum, r) => sum + amountToNumber(r.amount), 0);
       statVolume.textContent = "$" + vol.toFixed(3);
       const uniquePayers = new Set(data.map(r => r.payer).filter(Boolean));
       statPayers.textContent = uniquePayers.size;
@@ -710,6 +812,61 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       sseRetries++;
       setTimeout(connectSSE, delay);
     };
+  }
+
+  // ---- Email capture ----
+  const signupForm = document.getElementById("signup-form");
+  const signupStatus = document.getElementById("signup-status");
+  const signupBtn = document.getElementById("signup-btn");
+
+  if (signupForm) {
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value.trim();
+      const consent = document.getElementById("signup-consent").checked;
+
+      signupStatus.className = "signup-status";
+
+      if (!consent) {
+        signupStatus.className = "signup-status err";
+        signupStatus.textContent = "Please tick the box so we know it is a yes.";
+        return;
+      }
+
+      signupBtn.disabled = true;
+      signupStatus.textContent = "Sending…";
+
+      try {
+        const res = await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, consent, source: "demo-page" }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok) {
+          signupStatus.className = "signup-status ok";
+          signupStatus.textContent = data.already_subscribed
+            ? "You are already on the list — nothing to do."
+            : "You are on the list. First note arrives with the next update.";
+          signupForm.reset();
+        } else if (data.error === "subscribe_invalid_email") {
+          signupStatus.className = "signup-status err";
+          signupStatus.textContent = "That address does not look right — check it and try again.";
+        } else if (data.error === "rate_limit_exceeded") {
+          signupStatus.className = "signup-status err";
+          signupStatus.textContent = "Too many attempts from here. Try again in an hour.";
+        } else {
+          signupStatus.className = "signup-status err";
+          signupStatus.textContent = "Could not sign you up just now. Please try again shortly.";
+        }
+      } catch {
+        signupStatus.className = "signup-status err";
+        signupStatus.textContent = "Network error — please try again.";
+      } finally {
+        signupBtn.disabled = false;
+      }
+    });
   }
 
   connectSSE();

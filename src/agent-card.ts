@@ -22,10 +22,11 @@ export async function agentCardHandler(c: Context<{ Bindings: Env }>) {
     schema_version: "0.2.5",
     name: "x402-iot-sensor-seller",
     description:
-      "Sells simulated IoT sensor readings over the x402 HTTP payment protocol. " +
+      "Sells simulated IoT sensor readings and sentiment-classification runs over " +
+      "the x402 HTTP payment protocol. " +
       "TESTNET only — Base Sepolia. No real value.",
     url: baseUrl,
-    version: "3.0.0",
+    version: "5.0.0",
     documentationUrl: "https://github.com/Soresta/x402-iot-poc",
     provider: {
       organization: "x402-iot-poc internship project",
@@ -57,10 +58,30 @@ export async function agentCardHandler(c: Context<{ Bindings: Env }>) {
           resource: `${baseUrl}/api/readings`,
         },
       },
+      {
+        id: "sell-inference",
+        name: "Sentiment Classification",
+        description:
+          "Runs one sentiment classification over the supplied ?text= query parameter " +
+          "and returns {label, score}. Payment required per request via x402 protocol.",
+        inputModes: ["text/plain"],
+        outputModes: ["application/json"],
+        payment: {
+          protocol: "x402",
+          scheme: "exact",
+          network: "eip155:84532",
+          asset: "USDC",
+          price: c.env.PRICE_PER_INFERENCE,
+          payTo: c.env.PAY_TO,
+          facilitator: c.env.FACILITATOR_URL,
+          resource: `${baseUrl}/api/inference`,
+        },
+      },
     ],
     // Endpoints the buyer agent needs to know
     endpoints: {
       payment_resource: `${baseUrl}/api/readings`,
+      inference_resource: `${baseUrl}/api/inference`,
       receipts: `${baseUrl}/api/receipts`,
       events_sse: `${baseUrl}/api/events`,
       demo: baseUrl,

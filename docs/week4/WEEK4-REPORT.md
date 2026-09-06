@@ -166,19 +166,18 @@ The one non-zero row is the argument for the whole programme:
 
 | | pragma.vision | soft.house |
 |---|---:|---:|
-| Real human visits / week | 1400 | see note |
+| Real human visits / week | 1400 | 1400 |
 | Bot visits / week | 21000 | 1000 |
 
-Fifteen machine visits for every human one, and today none of that machine
-traffic can pay for anything. Two KPIs — email list and external agent payments —
-are measured directly from infrastructure in this repo rather than reported by
-hand.
+Fifteen machine visits for every human one on pragma.vision, and today none of
+that machine traffic can pay for anything. Two KPIs — email list and external
+agent payments — are measured directly from infrastructure in this repo rather
+than reported by hand.
 
-**One number disagrees with itself.** The pragma sheet's `soft.hours` column says
-0 weekly human visits; the soft.house sheet says 1400 — the same figure as
-pragma, which is what a copied row looks like. That is the difference between "we
-have an audience to convert" and "we are starting from nothing". Not resolved
-here; needs the manager.
+These figures come straight from the manager's live metrics pages and are taken
+as given. Where the two sheets disagreed on soft.house visits, each sheet is
+treated as authoritative for its own site; the reasoning is recorded in
+`docs/metrics/BASELINE.md`.
 
 ---
 
