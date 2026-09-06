@@ -657,6 +657,10 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
     ·
     <a href="/api/receipts" target="_blank">Receipts API</a>
     ·
+    <a href="https://github.com/Soresta/x402-iot-poc/blob/main/docs/content/tutorial-machine-customers.md" target="_blank" rel="noopener">Tutorial</a>
+    ·
+    <a href="https://github.com/Soresta/x402-iot-poc/blob/main/docs/research-board/AGENTIC-PAYMENTS-BOARD.md" target="_blank" rel="noopener">Readiness board</a>
+    ·
     Base Sepolia testnet · MIT license
   </p>
 </footer>
@@ -813,6 +817,25 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       setTimeout(connectSSE, delay);
     };
   }
+
+  // ---- Funnel beacon ----
+  // One aggregate counter per (day, source, campaign). No identifiers, no
+  // cookie, no session. Fire and forget: if it fails, the page does not care.
+  (function reportVisit() {
+    try {
+      const params = new URLSearchParams(location.search);
+      navigator.sendBeacon?.(
+        "/api/visit",
+        new Blob(
+          [JSON.stringify({
+            source: params.get("utm_source") || "direct",
+            campaign: params.get("utm_campaign") || "none",
+          })],
+          { type: "application/json" }
+        )
+      );
+    } catch {}
+  })();
 
   // ---- Email capture ----
   const signupForm = document.getElementById("signup-form");

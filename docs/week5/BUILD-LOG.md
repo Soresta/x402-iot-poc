@@ -262,13 +262,38 @@ GET /api/subscribers.csv        503   (no secret set on the deployed Worker)
 GET /api/subscribers/count      {"subscribers":0}
 ```
 
-**PASS** — remote deliberately has no `EXPORT_TOKEN` yet. Until it is set the
-weekly CSV handover cannot happen. One command, not run here because a secret
-should be created by the person who will hold it:
+**PASS** — at the time of that check the remote Worker deliberately had no
+`EXPORT_TOKEN`, so the endpoint refused to export anything.
+
+### Follow-up, same day: the secret was set
+
+`npx wrangler secret put EXPORT_TOKEN` was run by the token holder. Verified
+without reading the value:
 
 ```powershell
-npx wrangler secret put EXPORT_TOKEN
+npx wrangler secret list
+[
+  {
+    "name": "EXPORT_TOKEN",
+    "type": "secret_text"
+  }
+]
+
+curl.exe -sS -i https://x402-iot-poc.akifk-x402-26.workers.dev/api/subscribers.csv
+HTTP/1.1 401 Unauthorized
+{"error":"export_unauthorized","docs_url":"https://github.com/Soresta/x402-iot-poc#errors"}
+
+curl.exe -sS -o /dev/null -w "%{http_code}" ".../api/subscribers.csv?token=definitely-not-it"
+401
 ```
+
+The transition from `503 export_not_configured` to `401 export_unauthorized` is
+the evidence: the endpoint has stopped reporting a missing configuration and
+started rejecting a wrong credential.
+
+**A `200` with the correct token was NOT observed here and is not claimed.** The
+token is held by one person and was not shared with this session, which is the
+arrangement that makes it a secret.
 
 ---
 

@@ -25,6 +25,7 @@ import { agentCardHandler } from "./agent-card";
 import { demoPageHandler, sseHandler } from "./demo";
 import { createPaidRoute, rejectReplay, DOCS_URL } from "./paid-route";
 import { inferenceHandler } from "./inference";
+import { visitHandler, dailyMetricsHandler } from "./metrics";
 import {
   subscribeHandler,
   exportSubscribersHandler,
@@ -184,6 +185,9 @@ app.get("/.well-known/agent-card.json", agentCardHandler);
 // ---------------------------------------------------------------------------
 // Email capture (consent-first). The list lives in our KV; export fails closed.
 // ---------------------------------------------------------------------------
+
+app.post("/api/visit", visitHandler);
+app.get("/api/metrics/daily", dailyMetricsHandler);
 
 app.post("/api/subscribe", subscribeHandler);
 app.get("/api/subscribers/count", subscriberCountHandler);
