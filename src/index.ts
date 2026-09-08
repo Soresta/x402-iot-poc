@@ -26,6 +26,7 @@ import { demoPageHandler, sseHandler } from "./demo";
 import { createPaidRoute, rejectReplay, DOCS_URL } from "./paid-route";
 import { inferenceHandler } from "./inference";
 import { visitHandler, dailyMetricsHandler } from "./metrics";
+import { payersHandler } from "./payers";
 import {
   subscribeHandler,
   exportSubscribersHandler,
@@ -188,6 +189,7 @@ app.get("/.well-known/agent-card.json", agentCardHandler);
 
 app.post("/api/visit", visitHandler);
 app.get("/api/metrics/daily", dailyMetricsHandler);
+app.get("/api/payers", payersHandler);
 
 app.post("/api/subscribe", subscribeHandler);
 app.get("/api/subscribers/count", subscriberCountHandler);

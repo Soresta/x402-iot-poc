@@ -17,6 +17,8 @@
  * a precise total, and the daily log says so.
  */
 
+import { ownWallets } from "./payers";
+
 const DOCS_URL = "https://github.com/Soresta/x402-iot-poc#errors";
 
 /** Only values from the UTM naming sheet are recorded. Anything else becomes
@@ -116,11 +118,18 @@ export async function dailyMetricsHandler(c: any) {
   const byResource: Record<string, number> = {};
   let volume = 0;
   const payers = new Set<string>();
+  const externalPayers = new Set<string>();
+  const own = ownWallets(c.env);
   for (const r of dayReceipts) {
     const resource = r.resource ?? "unlabelled";
     byResource[resource] = (byResource[resource] ?? 0) + 1;
     volume += parseFloat(String(r.amount ?? "").replace(/[^0-9.]/g, "")) || 0;
-    if (r.payer) payers.add(String(r.payer).toLowerCase());
+    if (r.payer) {
+      const address = String(r.payer).toLowerCase();
+      payers.add(address);
+      // The KPI that matters is settlements from wallets we do NOT own.
+      if (!own.has(address)) externalPayers.add(address);
+    }
   }
 
   // --- subscribers (cumulative, not per-day) ---
@@ -140,12 +149,14 @@ export async function dailyMetricsHandler(c: any) {
       by_resource: byResource,
       volume_usdc: Number(volume.toFixed(6)),
       distinct_payers: payers.size,
+      distinct_external_payers: externalPayers.size,
     },
     subscribers_cumulative: subscribers,
     caveats: [
       "Visit counts are a floor: KV has no atomic increment, so concurrent visits can be undercounted.",
       "Settlement figures cover the last 100 receipts only; older days will read low.",
       "Nothing here identifies a visitor. No IP, user agent, cookie or session is stored.",
+      "distinct_external_payers excludes every address listed in OWN_WALLETS.",
     ],
   });
 }

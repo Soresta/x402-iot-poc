@@ -7,6 +7,7 @@ An HTTP endpoint that sells simulated IoT sensor readings to software agents —
 - **Live endpoint:** `https://x402-iot-poc.akifk-x402-26.workers.dev`
 - **Stack:** Cloudflare Workers · Hono · Durable Objects · Workers KV · x402 (`exact` scheme, EIP-3009) · Base Sepolia
 - **License:** MIT
+- **Want to pay it yourself?** [QUICKSTART.md](./QUICKSTART.md) — five minutes, testnet, no signup
 
 ---
 

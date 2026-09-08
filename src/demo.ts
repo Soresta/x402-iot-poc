@@ -255,6 +255,44 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       letter-spacing: 0.05em;
     }
 
+    /* Recent payers */
+    .payers { margin-top: 24px; }
+    .payers-body { padding: 18px 24px 20px; }
+    .payers-pitch {
+      color: var(--text-muted);
+      max-width: 66ch;
+      margin: 0 0 16px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .payers-body table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .payers-body th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 12px 8px 0;
+      white-space: nowrap;
+    }
+    .payers-body td {
+      padding: 9px 12px 9px 0;
+      border-top: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+    }
+    .payers-body td.addr { font-family: ui-monospace, monospace; }
+    .whose {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .whose.ours { background: rgba(255,255,255,0.07); color: var(--text-muted); }
+    .whose.external { background: rgba(46, 204, 141, 0.14); color: var(--accent); }
+    .panel-note { font-size: 12px; color: var(--text-muted); }
+
     /* Email capture */
     .signup { margin-top: 24px; }
     .signup-body { padding: 20px 24px 24px; }
@@ -619,6 +657,35 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
     </section>
   </div>
 
+  <section class="panel payers" aria-labelledby="payers-heading">
+    <div class="panel-head">
+      <span class="panel-title" id="payers-heading">Who is paying</span>
+      <span class="panel-note" id="payers-summary">—</span>
+    </div>
+    <div class="payers-body">
+      <p class="payers-pitch">
+        Every wallet that has settled here recently. Wallets marked
+        <strong>ours</strong> belong to this project — they are the demo buying from
+        itself. Anything marked <strong>external</strong> is someone else's agent.
+      </p>
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Wallet</th>
+              <th scope="col">Whose</th>
+              <th scope="col">Settlements</th>
+              <th scope="col">Volume</th>
+            </tr>
+          </thead>
+          <tbody id="payers-body">
+            <tr><td colspan="4" style="color:var(--text-muted);padding:20px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <section class="panel signup" aria-labelledby="signup-heading">
     <div class="panel-head">
       <span class="panel-title" id="signup-heading">Machine-payments readiness notes</span>
@@ -817,6 +884,43 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       setTimeout(connectSSE, delay);
     };
   }
+
+  // ---- Recent payers ----
+  const payersTbody = document.getElementById("payers-body");
+  const payersSummary = document.getElementById("payers-summary");
+
+  async function loadPayers() {
+    try {
+      const res = await fetch("/api/payers");
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+
+      payersSummary.textContent =
+        data.external_payers === 0
+          ? "no external payers yet"
+          : data.external_payers + (data.external_payers === 1 ? " external payer" : " external payers");
+
+      if (!data.payers || data.payers.length === 0) {
+        payersTbody.innerHTML =
+          '<tr><td colspan="4" style="color:var(--text-muted);padding:20px">No settlements yet</td></tr>';
+        return;
+      }
+
+      payersTbody.innerHTML = data.payers.slice(0, 10).map(p => \`
+        <tr>
+          <td class="addr">\${p.address}</td>
+          <td><span class="whose \${p.external ? "external" : "ours"}">\${p.external ? "external" : "ours"}</span></td>
+          <td>\${p.settlements}</td>
+          <td>$\${p.volume_usdc.toFixed(3)}</td>
+        </tr>
+      \`).join("");
+    } catch {
+      payersSummary.textContent = "unavailable";
+    }
+  }
+
+  loadPayers();
+  setInterval(loadPayers, 30000);
 
   // ---- Funnel beacon ----
   // One aggregate counter per (day, source, campaign). No identifiers, no

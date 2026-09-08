@@ -66,6 +66,11 @@ export interface Env {
   // so the Week 2 single-purchase script keeps working.
   REQUIRE_MANDATE: string;
 
+  // Comma-separated addresses we control. Any payer NOT on this list counts as
+  // external adoption. Keeping it in config rather than in a report is what
+  // stops a wallet we funded ourselves being counted as a stranger.
+  OWN_WALLETS: string;
+
   // Secret guarding the subscriber CSV export. Set with:
   //   npx wrangler secret put EXPORT_TOKEN
   // If unset, the export endpoint returns 503 and exports nothing.
