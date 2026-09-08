@@ -7,7 +7,7 @@ pass has one list to work from instead of eight weekly reports.
 "done" looks like. Items are ordered by what would embarrass us most if a
 reviewer found it first.
 
-Last updated: 2026-09-08 (Week 8)
+Last updated: 2026-09-08 (Week 9 — final)
 
 ---
 
@@ -32,6 +32,8 @@ Last updated: 2026-09-08 (Week 8)
 | B4 | **Explorer link followed by a human** | Open since W3 | A screenshot of the transaction on `sepolia.basescan.org` |
 | B5 | **Tutorial run on a clean machine** | Open since W5 | Every block executed from an empty directory, timed |
 | B6 | **24-hour unattended run** | PARTIAL — longest is 1 h | Either run it, or the DoD stays PARTIAL with the real number |
+| B7 | **Demo Day deck rehearsed twice** | Not rehearsed | Two run-throughs, timed |
+| B8 | **Fallback demo video recorded** | Not recorded | Follow `docs/content/demo-video-script.md`; needed so a failed live demo does not end the talk |
 
 ## C · Test suite gaps
 
@@ -51,7 +53,8 @@ Last updated: 2026-09-08 (Week 8)
 | D3 | Receipts written before W5 show `Resource` as unlabelled on the demo page. Correct — but a first-time viewer reads it as a bug. One line of explanation on the page would fix it. |
 | D4 | `AGENTS.md` is a Cloudflare template file, not ours. Either adopt it deliberately or remove it. |
 | D5 | The research board flags four signals as secondary coverage needing primary confirmation before it is loaded. Not yet confirmed. |
-| D6 | `ERRORS.md` does not document `mandate_wrong_seller`, `inference_unavailable`, `inference_failed`, `subscribe_*`, `export_*`, `offer_invalid` or `unknown_resource`. The catalogue is behind the code again — the exact drift that produced a W4 defect. |
+| D6 | `CHANGELOG.md` and `docs/week9/HANDOFF.md` both list the deployed version. They will drift on the next deploy unless one references the other. |
+| D7 | `ERRORS.md` does not document `mandate_wrong_seller`, `inference_unavailable`, `inference_failed`, `subscribe_*`, `export_*`, `offer_invalid` or `unknown_resource`. The catalogue is behind the code again — the exact drift that produced a W4 defect. |
 
 ## E · Blocked on someone else
 
@@ -72,11 +75,11 @@ Not ours to fix, listed so the final report can say what was blocked and for how
 
 1. **A1–A6** are code. They are the v1.0 bar, and A1/A2 are named in the
    real-value memo's Phase 1.
-2. **B1–B6** need a person for about an hour in total. `PENDING-HUMAN-TESTS.md`
-   has the exact steps; the plan is to run them as one batch before the final
-   report.
+2. **B1–B8** need a person: about an hour for B1–B4, plus an afternoon for the
+   tutorial run and two rehearsals. `PENDING-HUMAN-TESTS.md` has the exact steps
+   for B1–B5; the plan is to run them as one batch.
 3. **C1–C4** are test debt created this week while paying off older test debt.
-4. **D1–D6** are an afternoon.
+4. **D1–D7** are an afternoon.
 5. **E1–E6** are decisions, not work.
 
 **Rule for the final pass:** an item does not move to done because it was

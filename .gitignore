@@ -181,3 +181,6 @@ machine-payments-revenue-sprint-INTERN.html
 
 # Local agent/editor tooling
 .claude/
+
+# KV backups — contain subscriber email addresses
+backups/
