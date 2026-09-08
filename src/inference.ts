@@ -32,6 +32,29 @@ export interface InferenceResult {
 }
 
 /**
+ * Pick the most confident class from a classifier response.
+ *
+ * The model returns one entry per class, e.g.
+ *   [{label:"NEGATIVE",score:0.0002},{label:"POSITIVE",score:0.9998}]
+ * in a FIXED order, not sorted by confidence. Reading `output[0]` therefore
+ * reports the LEAST likely class — which is exactly the bug this function was
+ * extracted to prevent, and it looked plausible because the shape was right.
+ *
+ * Exported so a test can assert on it directly, without paying for an inference.
+ */
+export function pickTopClass(output: unknown): { label: string; score: number } {
+  const classes: any[] = Array.isArray(output) ? output : output ? [output as any] : [];
+  const top = classes.reduce(
+    (best: any, cur: any) => ((cur?.score ?? -1) > (best?.score ?? -1) ? cur : best),
+    null
+  );
+  return {
+    label: top?.label ?? "UNKNOWN",
+    score: typeof top?.score === "number" ? Number(top.score.toFixed(4)) : 0,
+  };
+}
+
+/**
  * GET /api/inference?text=...
  *
  * Runs only after the payment gate has already settled, so by the time this
@@ -55,18 +78,7 @@ export async function inferenceHandler(c: any) {
   try {
     const output = await c.env.AI.run(INFERENCE_MODEL, { text: input });
 
-    // The classifier returns one entry per class, e.g.
-    //   [{label:"NEGATIVE",score:0.0002},{label:"POSITIVE",score:0.9998}]
-    // in a FIXED order, not sorted by confidence. Taking [0] therefore reports
-    // the least likely class — which is exactly the bug this line used to have,
-    // and it looked plausible because the shape was right.
-    const classes = Array.isArray(output) ? output : output ? [output] : [];
-    const top = classes.reduce(
-      (best: any, cur: any) => (cur?.score > (best?.score ?? -1) ? cur : best),
-      null
-    );
-    const label = top?.label ?? "UNKNOWN";
-    const score = typeof top?.score === "number" ? Number(top.score.toFixed(4)) : 0;
+    const { label, score } = pickTopClass(output);
 
     const result: InferenceResult = {
       model: INFERENCE_MODEL,

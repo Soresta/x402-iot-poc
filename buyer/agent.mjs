@@ -189,7 +189,33 @@ async function onePurchase() {
 
   // 3. Pick the next resource this mandate can afford. Rotating means a long
   // run buys every advertised product, not just the cheapest one.
-  const affordable = offers.filter((o) => checkPriceInScope(mandateBody, o.price).allowed);
+  let affordable = offers.filter((o) => checkPriceInScope(mandateBody, o.price).allowed);
+
+  // A2A price negotiation: for anything we cannot afford at list price, counter
+  // at our per-call limit and let the seller decide. A decline is a normal
+  // answer, not an error — we simply do not buy that resource this round.
+  const tooExpensive = offers.filter((o) => !checkPriceInScope(mandateBody, o.price).allowed);
+  for (const offer of tooExpensive) {
+    const counter = mandateBody.max_per_call;
+    try {
+      const res = await fetch(
+        `${SELLER_URL}/api/negotiate?resource=${encodeURIComponent(offer.id.replace(/^sell-/, "").replace("iot-reading", "readings"))}&offer=${counter}`
+      );
+      if (!res.ok) continue;
+      const quote = await res.json();
+      if (quote.accepted) {
+        console.log(`[agent] Counter-offer accepted for ${offer.id} at $${counter}`);
+        affordable.push({ ...offer, price: counter, priceStr: `$${counter}` });
+      } else {
+        console.log(
+          `[agent] Counter-offer declined for ${offer.id}: offered $${counter}, they want $${quote.counter_usdc}`
+        );
+      }
+    } catch {
+      // Negotiation is optional. A seller without it is not a broken seller.
+    }
+  }
+
   if (affordable.length === 0) {
     const cheapest = offers.reduce((a, b) => (a.price <= b.price ? a : b));
     const { reason: scopeReason } = checkPriceInScope(mandateBody, cheapest.price);

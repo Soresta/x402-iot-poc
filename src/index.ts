@@ -27,6 +27,7 @@ import { createPaidRoute, rejectReplay, DOCS_URL } from "./paid-route";
 import { inferenceHandler } from "./inference";
 import { visitHandler, dailyMetricsHandler } from "./metrics";
 import { payersHandler } from "./payers";
+import { negotiateHandler } from "./negotiate";
 import {
   subscribeHandler,
   exportSubscribersHandler,
@@ -190,6 +191,7 @@ app.get("/.well-known/agent-card.json", agentCardHandler);
 app.post("/api/visit", visitHandler);
 app.get("/api/metrics/daily", dailyMetricsHandler);
 app.get("/api/payers", payersHandler);
+app.get("/api/negotiate", negotiateHandler);
 
 app.post("/api/subscribe", subscribeHandler);
 app.get("/api/subscribers/count", subscriberCountHandler);

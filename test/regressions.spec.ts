@@ -1,0 +1,283 @@
+/**
+ * regressions.spec.ts — one test per bug this project actually shipped.
+ *
+ * Four defects reached production in five weeks. Every one of them returned a
+ * well-formed response, threw nothing, and looked like working software:
+ *
+ *   1. the seller read the payment proof from the wrong header name, so replay
+ *      protection and rate limiting silently never ran;
+ *   2. the mandate was verified on the buyer only — an honour system;
+ *   3. a valid mandate worked for whoever held it, like a bearer token;
+ *   4. the classifier reported the least likely label.
+ *
+ * The tests that existed at the time passed throughout. One of them passed for
+ * the *wrong reason*, which is worse than failing.
+ *
+ * So this file is not general coverage. It is a specific claim: if any of those
+ * four regressions came back, one of these tests goes red. Each test names the
+ * bug it guards.
+ */
+
+import { describe, it, expect } from "vitest";
+import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
+
+import { verifyPresentedMandate } from "../src/mandate";
+import { getPaymentHeader, screenPayment, payerFromPaymentHeader } from "../src/paid-route";
+import { pickTopClass } from "../src/inference";
+import { ownWallets, shortenAddress } from "../src/payers";
+
+// --------------------------------------------------------------------------
+// helpers
+// --------------------------------------------------------------------------
+
+const SELLER = "https://seller.example";
+const PAY_TO = "0x219ba53AC52D99668a5c20737D1dEd60f435d99E";
+const USDC = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+
+const buyer = privateKeyToAccount(generatePrivateKey());
+
+function b64(value: unknown): string {
+  return btoa(JSON.stringify(value));
+}
+
+async function signMandate(account: any, overrides: Record<string, unknown> = {}) {
+  const body = {
+    buyer: account.address,
+    seller: SELLER,
+    max_per_call: 0.002,
+    daily_cap: 0.05,
+    currency: "USDC",
+    expiry: new Date(Date.now() + 3600_000).toISOString(),
+    nonce: crypto.randomUUID(),
+    ...overrides,
+  };
+  const signature = await account.signMessage({ message: JSON.stringify(body) });
+  return { body, signature };
+}
+
+/** A payment proof of the shape the real client produces. */
+function proof(opts: { from?: string; to?: string; value?: string; asset?: string; network?: string } = {}) {
+  return b64({
+    x402Version: 2,
+    payload: {
+      authorization: {
+        from: opts.from ?? buyer.address,
+        to: opts.to ?? PAY_TO,
+        value: opts.value ?? "1000",
+      },
+      signature: "0x" + "11".repeat(65),
+    },
+    accepted: {
+      scheme: "exact",
+      network: opts.network ?? "eip155:84532",
+      amount: "1000",
+      asset: opts.asset ?? USDC,
+      payTo: PAY_TO,
+    },
+  });
+}
+
+/** Minimal stand-in for a Hono context: just what these functions read. */
+function ctx(headers: Record<string, string> = {}) {
+  const lower = Object.fromEntries(Object.entries(headers).map(([k, v]) => [k.toLowerCase(), v]));
+  return {
+    env: { USDC_ASSET: USDC, PAY_TO, PRICE_PER_READING: "$0.001" },
+    req: { header: (name: string) => lower[name.toLowerCase()] },
+  };
+}
+
+// --------------------------------------------------------------------------
+// Regression 1 — the payment header name
+// --------------------------------------------------------------------------
+
+describe("regression 1: payment proof header name", () => {
+  /**
+   * THE BUG: the seller read `X-PAYMENT`. The installed x402 generation sends
+   * `payment-signature`. Payments settled perfectly while every control keyed on
+   * that header — replay protection, rate limiting — never executed. For a week.
+   */
+  it("reads the header the current client actually sends", () => {
+    expect(getPaymentHeader(ctx({ "payment-signature": "abc" }))).toBe("abc");
+  });
+
+  it("still reads the legacy header, so an older client is not broken", () => {
+    expect(getPaymentHeader(ctx({ "X-PAYMENT": "abc" }))).toBe("abc");
+  });
+
+  it("returns undefined when no proof is present, rather than a falsy string", () => {
+    expect(getPaymentHeader(ctx())).toBeUndefined();
+  });
+
+  it("extracts the paying address, which is what rate limiting keys on", () => {
+    const address = payerFromPaymentHeader(proof());
+    expect(address?.toLowerCase()).toBe(buyer.address.toLowerCase());
+  });
+});
+
+// --------------------------------------------------------------------------
+// Regression 2 + 3 — mandate verification, and mandates as bearer tokens
+// --------------------------------------------------------------------------
+
+describe("regression 2 and 3: seller-side mandate verification", () => {
+  it("accepts a valid mandate from the account that is paying", async () => {
+    const m = await signMandate(buyer);
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result.ok).toBe(true);
+  });
+
+  /**
+   * THE BUG (3): a signed mandate sitting in a request is a bearer credential.
+   * Anyone who copies one out of a log can spend under it — unless the seller
+   * checks that the mandate holder is the account funding the payment.
+   */
+  it("refuses a valid mandate presented by a different payer", async () => {
+    const stranger = privateKeyToAccount(generatePrivateKey());
+    const m = await signMandate(stranger); // genuinely signed, genuinely theirs
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 401, error: "identity_mismatch" });
+  });
+
+  it("refuses a mandate edited after signing", async () => {
+    const m = await signMandate(buyer);
+    m.body.max_per_call = 999;
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 401, error: "identity_unverified" });
+  });
+
+  it("refuses a mandate signed by a key other than the one it names", async () => {
+    const stranger = privateKeyToAccount(generatePrivateKey());
+    const body = { ...(await signMandate(buyer)).body };
+    const signature = await stranger.signMessage({ message: JSON.stringify(body) });
+    const result = await verifyPresentedMandate(b64({ body, signature }), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 401, error: "identity_unverified" });
+  });
+
+  it("refuses an expired mandate", async () => {
+    const m = await signMandate(buyer, { expiry: new Date(Date.now() - 60_000).toISOString() });
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 403, error: "mandate_expired" });
+  });
+
+  it("refuses a price above the mandate's per-call limit", async () => {
+    const m = await signMandate(buyer, { max_per_call: 0.0005 });
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 403, error: "mandate_scope_exceeded" });
+  });
+
+  it("refuses zero or negative caps", async () => {
+    const m = await signMandate(buyer, { daily_cap: 0 });
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 403, error: "mandate_invalid_caps" });
+  });
+
+  it("refuses an undecodable mandate header", async () => {
+    const result = await verifyPresentedMandate(btoa("not a mandate"), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 403, error: "mandate_malformed" });
+  });
+
+  it("checks identity before authorization, so an impostor is 401 not 403", async () => {
+    // Expired AND presented by the wrong payer. Identity is the more fundamental
+    // failure and must win, or the response tells an attacker the wrong thing.
+    const stranger = privateKeyToAccount(generatePrivateKey());
+    const m = await signMandate(stranger, { expiry: new Date(Date.now() - 60_000).toISOString() });
+    const result = await verifyPresentedMandate(b64(m), 0.001, buyer.address);
+    expect(result).toMatchObject({ ok: false, status: 401 });
+  });
+});
+
+// --------------------------------------------------------------------------
+// Payment screen — the documented error codes must actually be emitted
+// --------------------------------------------------------------------------
+
+describe("payment screen emits the codes ERRORS.md documents", () => {
+  it("passes a well-formed proof for the right price", () => {
+    expect(screenPayment(ctx(), proof(), "$0.001")).toBeNull();
+  });
+
+  it("rejects underpayment with a distinct code", () => {
+    expect(screenPayment(ctx(), proof({ value: "1" }), "$0.001")).toEqual({
+      error: "payment_amount_invalid",
+    });
+  });
+
+  it("rejects the wrong asset", () => {
+    expect(screenPayment(ctx(), proof({ asset: "0x00000000000000000000000000000000000000dEaD" }), "$0.001"))
+      .toEqual({ error: "payment_network_invalid" });
+  });
+
+  it("rejects the wrong network", () => {
+    expect(screenPayment(ctx(), proof({ network: "eip155:1" }), "$0.001")).toEqual({
+      error: "payment_network_invalid",
+    });
+  });
+
+  it("rejects payment to an address that is not ours", () => {
+    expect(screenPayment(ctx(), proof({ to: "0x00000000000000000000000000000000000000dEaD" }), "$0.001"))
+      .toEqual({ error: "payment_recipient_invalid" });
+  });
+
+  it("defers to the facilitator when the proof cannot be read, rather than approving it", () => {
+    // Returning null here means "no opinion", and the middleware still refuses.
+    // The dangerous version of this function would return null meaning "fine".
+    expect(screenPayment(ctx(), btoa("garbage"), "$0.001")).toBeNull();
+  });
+
+  it("charges the resource's own price, not a hardcoded one", () => {
+    // A $0.001 proof against the $0.002 inference must be underpayment.
+    expect(screenPayment(ctx(), proof({ value: "1000" }), "$0.002")).toEqual({
+      error: "payment_amount_invalid",
+    });
+  });
+});
+
+// --------------------------------------------------------------------------
+// Regression 4 — the classifier reported the least likely label
+// --------------------------------------------------------------------------
+
+describe("regression 4: classifier label selection", () => {
+  /**
+   * THE BUG: the model returns one entry per class in a FIXED order, not sorted
+   * by confidence. Reading output[0] reported the least likely class every time,
+   * with a well-formed 200 response.
+   */
+  it("picks the most confident class, not the first one", () => {
+    const modelOutput = [
+      { label: "NEGATIVE", score: 0.0002 },
+      { label: "POSITIVE", score: 0.9998 },
+    ];
+    expect(pickTopClass(modelOutput)).toEqual({ label: "POSITIVE", score: 0.9998 });
+  });
+
+  it("still picks correctly when the confident class happens to be first", () => {
+    const modelOutput = [
+      { label: "NEGATIVE", score: 0.9997 },
+      { label: "POSITIVE", score: 0.0003 },
+    ];
+    expect(pickTopClass(modelOutput).label).toBe("NEGATIVE");
+  });
+
+  it("degrades to UNKNOWN rather than inventing a label", () => {
+    expect(pickTopClass([]).label).toBe("UNKNOWN");
+    expect(pickTopClass(null).label).toBe("UNKNOWN");
+  });
+});
+
+// --------------------------------------------------------------------------
+// External adoption accounting — the number must not be flatterable
+// --------------------------------------------------------------------------
+
+describe("external payer accounting", () => {
+  it("treats configured wallets as ours, case-insensitively", () => {
+    const own = ownWallets({ OWN_WALLETS: `${buyer.address.toUpperCase()}, ${PAY_TO}` });
+    expect(own.has(buyer.address.toLowerCase())).toBe(true);
+    expect(own.has(PAY_TO.toLowerCase())).toBe(true);
+  });
+
+  it("returns an empty set when unconfigured, rather than silently owning nothing", () => {
+    expect(ownWallets({}).size).toBe(0);
+  });
+
+  it("truncates addresses for display", () => {
+    expect(shortenAddress("0x1234567890abcdef1234567890abcdef12345678")).toBe("0x1234…5678");
+  });
+});

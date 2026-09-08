@@ -92,7 +92,7 @@ function priceToUsdc(price: string): number {
  * facilitator for real verification, so the fail-closed path is unchanged. Its
  * only job is to turn the middleware's opaque `{}` 402 into a usable code.
  */
-function screenPayment(c: any, header: string, price: string): { error: string } | null {
+export function screenPayment(c: any, header: string, price: string): { error: string } | null {
   const decoded = decodeB64Json(header);
   const auth = decoded?.payload?.authorization;
   const accepted = decoded?.accepted;
@@ -203,7 +203,8 @@ export function createPaidRoute(config: PaidRouteConfig): MiddlewareHandler {
       const result = await verifyPresentedMandate(
         mandateHeader,
         priceToUsdc(price),
-        paymentHeader ? payerFromPaymentHeader(paymentHeader) : null
+        paymentHeader ? payerFromPaymentHeader(paymentHeader) : null,
+        new URL(c.req.url).origin
       );
       if (!result.ok) {
         return c.json({ error: result.error, docs_url: DOCS_URL }, result.status);

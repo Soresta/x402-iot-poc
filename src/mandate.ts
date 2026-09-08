@@ -53,6 +53,15 @@ export interface MandateAcceptance {
 
 export type MandateResult = MandateAcceptance | MandateRejection;
 
+/** Compare sellers by origin, so a trailing slash or a path does not matter. */
+function normaliseOrigin(value: string): string | null {
+  try {
+    return new URL(value).origin.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
 const reject = (status: 401 | 403, error: string): MandateRejection => ({
   ok: false,
   status,
@@ -79,11 +88,16 @@ export function decodeMandateHeader(header: string): SignedMandate | null {
  * @param payerAddress the address funding the payment, when one is present.
  *        If given, the mandate holder must match it — otherwise anyone could
  *        wave someone else's valid mandate around.
+ * @param expectedSeller this seller's own origin, when known. A mandate names
+ *        the seller it authorizes spending with; without checking it, a mandate
+ *        written for one seller is spendable at any other seller that accepts
+ *        the same format.
  */
 export async function verifyPresentedMandate(
   header: string,
   priceUsdc: number,
-  payerAddress?: string | null
+  payerAddress?: string | null,
+  expectedSeller?: string | null
 ): Promise<MandateResult> {
   const mandate = decodeMandateHeader(header);
   if (!mandate) return reject(403, "mandate_malformed");
@@ -133,6 +147,17 @@ export async function verifyPresentedMandate(
 
   if (priceUsdc > body.max_per_call) {
     return reject(403, "mandate_scope_exceeded");
+  }
+
+  // A mandate authorizes spending with a named seller. Accepting one addressed
+  // to somebody else means a mandate issued for a cheap API is spendable at an
+  // expensive one, which is not what its issuer agreed to.
+  if (expectedSeller && typeof body.seller === "string" && body.seller) {
+    const named = normaliseOrigin(body.seller);
+    const mine = normaliseOrigin(expectedSeller);
+    if (named && mine && named !== mine) {
+      return reject(403, "mandate_wrong_seller");
+    }
   }
 
   return { ok: true, mandate };

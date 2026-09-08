@@ -156,13 +156,28 @@ let spentProof = null;
 {
   const stranger = privateKeyToAccount(generatePrivateKey());
   const m = await createMandate(stranger, baseBody({ buyer: stranger.address }));
-  const res = await fetch(READINGS_URL, {
-    method: "GET",
-    headers: {
-      "X-Agent-Mandate": encodeMandate(m),
-      "payment-signature": spentProof,
-    },
-  });
+
+  // This case sends a payment proof, so it passes through the rate limiter on
+  // the way in. Running the suite twice inside one window trips our own quota
+  // and the identity check is never reached — a 429 here is the limiter working,
+  // not this check failing. Wait it out once rather than reporting a red.
+  async function attempt() {
+    return fetch(READINGS_URL, {
+      method: "GET",
+      headers: {
+        "X-Agent-Mandate": encodeMandate(m),
+        "payment-signature": spentProof,
+      },
+    });
+  }
+
+  let res = await attempt();
+  if (res.status === 429) {
+    const waitS = Math.min(Number(res.headers.get("retry-after")) || 60, 70);
+    console.log(`[rate limited by our own quota — waiting ${waitS}s, then retrying once]`);
+    await new Promise((r) => setTimeout(r, (waitS + 2) * 1000));
+    res = await attempt();
+  }
   const body = await res.text();
   console.log("--- Stranger's mandate + our payment proof ---");
   console.log(`status: ${res.status}`);
