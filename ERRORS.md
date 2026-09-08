@@ -32,6 +32,16 @@ All error responses follow the structured format:
 | `rate_limit_exceeded` | 429 | Too many requests from this buyer within the time window | Wait for the `Retry-After` interval |
 | `device_twin_error` | 503 | Durable Object failed to return a reading | Retry; the DO self-heals on the next tick |
 | `kv_unavailable` | 503 | KV namespace not reachable | Infrastructure issue; retry later |
+| `mandate_wrong_seller` | 403 | The mandate authorizes spending with a different seller | Present a mandate whose `seller` is this origin |
+| `inference_unavailable` | 503 | The Workers AI binding is not configured | Infrastructure issue; retry after `Retry-After` |
+| `inference_failed` | 503 | The model run failed after payment settled | Retry. Note this is a **paid-but-undelivered** case — see the limitation below |
+| `unknown_resource` | 404 | `/api/negotiate` was asked about a resource that is not for sale | Use a resource id from the Agent Card |
+| `offer_invalid` | 400 | `?offer=` was not a non-negative number | Send a numeric offer |
+| `subscribe_malformed` | 400 | The subscribe body could not be parsed | Send JSON or form-encoded `{ email, consent }` |
+| `subscribe_invalid_email` | 400 | The address failed a basic shape check | Check the address |
+| `subscribe_consent_required` | 400 | The consent box was not ticked | Consent is required; there is no silent opt-in |
+| `export_not_configured` | 503 | `EXPORT_TOKEN` is not set on the Worker | Set it with `npx wrangler secret put EXPORT_TOKEN`. **Failing closed is deliberate** — an unguarded export is an email list published to the internet |
+| `export_unauthorized` | 401 | Wrong or missing export token | Supply the correct `?token=` |
 
 ---
 
@@ -80,6 +90,14 @@ The installed x402 generation (`@x402/core` v2) sends the signed proof in the
 `payment-signature` request header. An older generation used `X-PAYMENT`. The
 seller accepts both; keying on `X-PAYMENT` alone silently disables idempotency
 and rate limiting against current clients.
+
+### One case where a 503 arrives after you have already paid
+
+`inference_failed` is returned when settlement succeeded and the model run then
+failed. The buyer has paid and receives no data, and **there is no refund path**.
+On testnet this is a rounding error; it is recorded here rather than omitted
+because with real value it would be a customer who paid for nothing. Tracked as
+`A2` in `docs/OPEN-ITEMS.md`.
 
 ### General
 

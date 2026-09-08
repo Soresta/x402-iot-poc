@@ -6,7 +6,9 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "backup": "node scripts/backup-kv.mjs",
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {

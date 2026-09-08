@@ -1,13 +1,25 @@
 # x402-iot-poc
 
-An HTTP endpoint that sells simulated IoT sensor readings to software agents — no account, no API key, no prior relationship. A request without payment returns `402 Payment Required` with machine-readable terms. The buyer signs an authorization, retries, and the payment settles on-chain before the data is served.
+An HTTP API whose customers are software. It sells two things — simulated IoT sensor readings and model inferences — to autonomous agents with no account, no API key and no prior relationship. A request without payment returns `402 Payment Required` with machine-readable terms; the buyer signs an authorization, retries, and the payment settles on-chain before anything is served.
 
 **Testnet only.** Everything runs on Base Sepolia with faucet USDC. These tokens have no real value, and no real-value settlement is wired anywhere in this repo.
 
 - **Live endpoint:** `https://x402-iot-poc.akifk-x402-26.workers.dev`
-- **Stack:** Cloudflare Workers · Hono · Durable Objects · Workers KV · x402 (`exact` scheme, EIP-3009) · Base Sepolia
+- **Stack:** Cloudflare Workers · Hono · Durable Objects · Workers KV · Workers AI · x402 (`exact` scheme, EIP-3009) · Base Sepolia
+- **Version:** `v1.0.0` — see [CHANGELOG.md](./CHANGELOG.md)
 - **License:** MIT
 - **Want to pay it yourself?** [QUICKSTART.md](./QUICKSTART.md) — five minutes, testnet, no signup
+
+### What is honest about this repo
+
+Four defects reached production during the build. Each is documented with the
+output that exposed it, in the version where it was fixed, and each now has a
+regression test. The one metric that would flatter this project — payments from
+wallets we do not own — is computed in code that excludes our own addresses, and
+it reads **0**.
+
+Everything still wrong, missing or unverified is in one list:
+[`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).
 
 ---
 
@@ -33,7 +45,7 @@ On the explorer, the `To` field shows the USDC contract rather than the seller a
 
 ---
 
-## Architecture (Week 3)
+## Architecture
 
 ```mermaid
 sequenceDiagram
@@ -85,7 +97,50 @@ The buyer checks its own mandate before spending; the seller checks it again bef
 
 ---
 
-## Quickstart
+## API
+
+Two priced resources, and everything else is free and public.
+
+### Paid — payment required, verified before anything is served
+
+| Route | Price | Returns |
+|---|---|---|
+| `GET /api/readings` | `$0.001` | one sensor reading from the `DeviceTwin` Durable Object |
+| `GET /api/inference?text=…` | `$0.002` | one sentiment classification on Workers AI |
+| `GET /reading` | `$0.001` | Week 2 legacy route, preserved unchanged as an evidence artefact |
+
+Both paid routes run the same gate — rate limit, identity, mandate, payment
+screen, settlement, replay protection, receipt, fail-closed — because they share
+one middleware rather than a copy of it.
+
+### Free — discovery, negotiation and observability
+
+| Route | Returns |
+|---|---|
+| `GET /.well-known/agent-card.json` | A2A Agent Card: both skills, prices, payment terms |
+| `GET /api/negotiate?resource=&offer=` | accept or decline a counter-offer, with the list price attached |
+| `GET /api/receipts?limit=n` | settlement log — payer, amount, resource, tx hash |
+| `GET /api/payers` | settlements per wallet, split into ours and external |
+| `GET /api/metrics/daily?date=` | visits by source, settlements, volume, subscribers |
+| `GET /api/events` | SSE feed of settlements as they happen |
+| `GET /api/device/status` · `GET /api/device/history?limit=n` | device twin health and ring buffer |
+| `GET /` | live demo page |
+
+### Write endpoints
+
+| Route | Notes |
+|---|---|
+| `POST /api/subscribe` | consent-first email capture. An unticked consent box is a `400`, not a silent opt-in |
+| `POST /api/visit` | aggregate visit counter. No IP, user agent, cookie or session is stored |
+| `GET /api/subscribers.csv?token=` | subscriber export. **Fails closed** — without `EXPORT_TOKEN` it returns `503` and exports nothing |
+
+---
+
+## Run your own seller
+
+> **Just want to pay the live one?** That is a different, shorter path:
+> [QUICKSTART.md](./QUICKSTART.md) — five minutes, no Cloudflare account needed.
+> This section is for running the whole thing yourself.
 
 Requires Node 20+, a Cloudflare account (free tier), and two throwaway wallets.
 
@@ -173,10 +228,18 @@ Update `SELLER_URL` in `.env` to point at your deployed Worker URL.
 | `DEVICE_ID` | `sim-sensor-01` | Human-readable device name; DO instance key |
 | `TICK_INTERVAL_MS` | `60000` | How often the DeviceTwin generates a new reading (ms); minimum 1000 |
 | `PRICE_PER_READING` | `$0.001` | Price per `/api/readings` call |
+| `PRICE_PER_INFERENCE` | `$0.002` | Price per `/api/inference` call — higher on purpose, so `max_per_call` has a real decision to make |
 | `RATE_LIMIT_QUOTA` | `10` | Max requests per buyer per window |
 | `RATE_LIMIT_WINDOW_S` | `60` | Rate-limit window (seconds) |
 | `USDC_ASSET` | Base Sepolia USDC | Asset the seller will accept |
 | `REQUIRE_MANDATE` | `false` | `true` rejects requests carrying no mandate with `403` |
+| `OWN_WALLETS` | our two addresses | Comma-separated addresses we control. A payer **not** on this list counts as external adoption — keeping it in config is what stops a wallet we funded ourselves being counted as a stranger |
+
+### Seller secret
+
+| Secret | Purpose |
+| --- | --- |
+| `EXPORT_TOKEN` | Guards `GET /api/subscribers.csv`. Set with `npx wrangler secret put EXPORT_TOKEN`. **Unset means the export returns `503` and exports nothing** — an unprotected export endpoint on a public Worker is an email list published to the internet |
 
 ### Buyer (`.env`)
 
@@ -225,47 +288,89 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 
 ## Verification
 
-Every check below was executed against `wrangler dev` and, where noted, against
-the deployed Worker. Exact commands, statuses, headers and bodies are pasted in
-[`docs/week3/BUILD-LOG.md`](./docs/week3/BUILD-LOG.md) (Block 7).
+### Automated
 
 ```bash
-node buyer/test_replay.mjs              # pay, then replay the same proof  → 402
-node buyer/test_fresh_after_replay.mjs  # replay protection must not block honest buyers
-node buyer/test_negative.mjs            # underpayment, wrong asset        → 402 + code
-node buyer/test_ratelimit.mjs --recover # quota breach → 429, then recovery
-node buyer/test_failclosed.mjs          # facilitator unreachable          → 503
-node buyer/test_mandate.mjs             # identity 401 / mandate 403, seven cases
-node buyer/soak.mjs                     # timed unattended run
+npm test          # vitest — 26 regression tests
+npx tsc --noEmit  # typecheck
 ```
 
-The replay and fresh-after-replay scripts each spend real Base Sepolia testnet
-USDC. The others move no funds. Add
-`SELLER_URL=https://x402-iot-poc.akifk-x402-26.workers.dev` to run any of them
-against the deployed Worker.
+The suite is not general coverage. It is **one test per defect that actually
+reached production**, plus the controls those defects switched off. Each of the
+four was deliberately reintroduced to confirm the suite goes red; all four were
+caught.
+
+One of them proved itself by accident. A mutation script crashed after writing a
+mutation and before restoring the file, leaving the payment-header bug back in
+the working tree — the one that left replay protection and rate limiting inert
+for a week in Week 3. The suite failed immediately, unprompted:
+
+```text
+FAIL  regression 1: payment proof header name
+      > reads the header the current client actually sends
+AssertionError: expected undefined to be 'abc'
+```
+
+That defect survived a week of manual testing the first time. It survived about
+ninety seconds the second time.
+
+### Manual — these spend or move real testnet USDC where noted
+
+```bash
+node buyer/test_replay.mjs              # pay, then replay the same proof   → 402   (spends)
+node buyer/test_fresh_after_replay.mjs  # replay protection must not block honest buyers (spends)
+node buyer/test_inference.mjs           # both resources, one card, scope enforced (spends)
+node buyer/test_mandate.mjs             # identity 401 / mandate 403, seven cases (spends 1)
+node buyer/test_negative.mjs            # underpayment, wrong asset         → 402 + code
+node buyer/test_ratelimit.mjs --recover # quota breach → 429, then recovery
+node buyer/test_failclosed.mjs          # facilitator unreachable           → 503
+node buyer/soak.mjs                     # timed unattended run
+node scripts/backup-kv.mjs              # dump KV to backups/ (contains subscriber emails)
+```
+
+Add `SELLER_URL=https://x402-iot-poc.akifk-x402-26.workers.dev` to run any of
+them against the deployed Worker. **Wait 60 s between runs of
+`test_mandate.mjs`** — it otherwise trips our own rate limiter.
+
+### Results
 
 | Check | Result |
 |---|---|
 | Paid request returns data; replayed proof rejected | PASS — local and deployed |
-| Underpayment / wrong asset | PASS — `402` with a distinct code |
+| Underpayment / wrong asset / wrong recipient | PASS — `402` with a distinct code each |
 | Rate-limit breach and recovery | PASS — `429` + `Retry-After`, releases after the window |
 | Facilitator unreachable | PASS — `503` + `Retry-After: 5`, no telemetry served |
 | Forced `DeviceTwin` failure | PASS — structured `503`, no stack trace |
 | Budget cap, kill switch, price above mandate | PASS — refused before any payment |
-| Expired mandate | PASS — `403 mandate_expired`, seller-side |
-| Mandate scope exceeded | PASS — `403 mandate_scope_exceeded` |
+| Expired mandate · scope exceeded · malformed · bad caps | PASS — `403`, seller-side |
 | Tampered or foreign mandate signature | PASS — `401 identity_unverified` |
 | Mandate presented by a different payer | PASS — `401 identity_mismatch` |
+| Mandate addressed to a different seller | PASS — `403 mandate_wrong_seller` |
+| Both resources sold; cheap mandate cannot buy compute | PASS — local and deployed |
+| Price negotiation: counter-offer accepted / declined | PASS — local and deployed |
+| Consent required · export fails closed | PASS — `400` without consent, `503` without a token |
 | Unattended run | PARTIAL — 1 h, 111 settlements, 98.2 % success. 24 h not attempted |
 | Demo page comprehension by a stranger | NOT VERIFIED |
+| README reproduced by a stranger in ≤15 min | NOT VERIFIED |
 | Graceful `Ctrl+C` exit | PARTIAL — ledger intact, handler unobserved on Windows |
 
-Two defects were found during this pass in code that had previously been marked
-as passing: the seller read the payment proof from `X-PAYMENT` while the
-installed x402 generation sends `payment-signature` (which left idempotency and
-rate limiting inert), and two documented error codes were never actually
-emitted. Both are fixed and re-verified. See gotcha 5 below and
-[`docs/week3/WEEK3-REPORT.md`](./docs/week3/WEEK3-REPORT.md) §4.
+The `NOT VERIFIED` and `PARTIAL` rows need a person rather than a script, and the
+exact steps are in [`docs/PENDING-HUMAN-TESTS.md`](./docs/PENDING-HUMAN-TESTS.md).
+
+### The four defects
+
+All four returned well-formed responses and threw nothing:
+
+| # | Defect | Why it was invisible |
+|---|---|---|
+| 1 | Seller read `X-PAYMENT`; the client sends `payment-signature` | Payments settled perfectly while replay protection and rate limiting never ran. The replay test passed — the rejection came from the chain, not from us |
+| 2 | Mandate verified on the buyer only | Every test passed. A compromised agent simply skips its own check |
+| 3 | A valid mandate worked for whoever held it | Signature and expiry both check out; nothing bound the holder to the payer |
+| 4 | Classifier reported the least likely label | The model returns classes in fixed order, not sorted by confidence |
+
+Full write-ups with the failing output: [`docs/week3/BUILD-LOG.md`](./docs/week3/BUILD-LOG.md)
+Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
+[`docs/week8/BUILD-LOG.md`](./docs/week8/BUILD-LOG.md).
 
 ---
 
@@ -273,33 +378,48 @@ emitted. Both are fixed and re-verified. See gotcha 5 below and
 
 ```
 ├── src/
-│   ├── index.ts         seller — Hono router; all routes and payment logic
+│   ├── index.ts         Hono router — every route lives here
 │   ├── types.ts         shared interfaces (SensorReading, Env)
+│   ├── paid-route.ts    THE payment gate, shared by every priced resource
+│   ├── mandate.ts       seller-side mandate verification (401 / 403)
 │   ├── device-twin.ts   DeviceTwin Durable Object; alarm-driven telemetry
+│   ├── inference.ts     pay-per-inference on Workers AI
+│   ├── negotiate.ts     A2A price negotiation
+│   ├── payers.ts        who paid, split into ours and external
+│   ├── metrics.ts       aggregate funnel counters (no identifiers stored)
+│   ├── subscribe.ts     consent-first email capture + fail-closed CSV export
 │   ├── agent-card.ts    A2A Agent Card handler
 │   └── demo.ts          live demo page + SSE endpoint
 ├── buyer/
 │   ├── pay.mjs          single-purchase buyer (Week 2, preserved)
+│   ├── agent.mjs        autonomous loop: mandate, cap, kill switch, negotiation
 │   ├── mandate.mjs      createMandate(), verifyMandate()
-│   ├── agent.mjs        autonomous loop with cap + kill switch
 │   ├── soak.mjs         timed unattended run; reports real elapsed time
 │   ├── x402-harness.mjs shared test helper (captures the payment header)
 │   └── test_*.mjs       replay, fresh-after-replay, negative, rate limit,
-│                        fail-closed — see "Verification" below
+│                        fail-closed, mandate, inference
+├── test/
+│   └── regressions.spec.ts   26 tests, one per defect that shipped
+├── scripts/
+│   └── backup-kv.mjs    dump KV to backups/ — the only backup that exists
 ├── docs/
-│   ├── 402-transcript.txt  Week 2 payment proof
-│   └── week3/
-│       ├── BUILD-LOG.md    build log; Block 7 is the latest verification pass
-│       ├── WEEK3-REPORT.md week 3 supervisor report
-│       └── soak-run.log    raw log of the 1 h unattended run
-├── wrangler.jsonc          Worker config, DO binding, KV namespace
-├── ERRORS.md               error code catalogue
-└── .env.example            template for buyer secrets
+│   ├── OPEN-ITEMS.md          every known gap, in one list
+│   ├── PENDING-HUMAN-TESTS.md checks a script cannot run
+│   ├── week3…week9/           build log + report per week
+│   ├── memos/                 real-value readiness · revenue impact · funnel fixes
+│   ├── research-board/        agentic-payments readiness board
+│   ├── content/               every unpublished asset
+│   └── metrics/BASELINE.md    KPI baseline the programme is measured against
+├── wrangler.jsonc       Worker config: DO, KV, AI, vars
+├── QUICKSTART.md        pay the live API in five minutes
+├── CHANGELOG.md         what changed, and which defects were fixed where
+├── ERRORS.md            error code catalogue
+└── .env.example         template for buyer secrets
 ```
 
 ---
 
-## Known gotchas (collected across Week 2 and Week 3)
+## Known gotchas — things that cost real time here
 
 **1. The middleware must be built lazily on Workers.** Constructing the payment middleware at module scope fails, because Workers restricts cryptographic operations in the global scope. Build it inside the request handler instead:
 
@@ -331,6 +451,20 @@ c.req.header("X-PAYMENT")         || c.req.header("x-payment")
 ```
 ---
 
+**6. `DAILY_CAP` is compared against today's total in `buyer/ledger.jsonl`, not against zero.** A cap below the day's existing spend stops the agent before it buys anything. That is the cap working, not a bug — and the cap counts per **UTC calendar day**, so an agent running across midnight can spend up to twice it inside 24 hours.
+
+**7. Only run one `wrangler dev` at a time.** Two instances against the same local Durable Object database produce `NOSENTRY database is locked: SQLITE_BUSY`, an error that does not mention the real problem.
+
+**8. `sepolia.basescan.org` serves a bot challenge to automated browsers.** To verify a settlement from a script, read it off the chain instead:
+
+```bash
+curl -sS -X POST https://sepolia.base.org -H "Content-Type: application/json"   -d '{"jsonrpc":"2.0","id":1,"method":"eth_getTransactionReceipt","params":["0xTXHASH"]}'
+```
+
+The ERC-20 `Transfer` event is the **second** log in the receipt. The first is `AuthorizationUsed`, whose second topic is the EIP-3009 nonce, not an address — decoding log 0 as a transfer gives a wrong recipient.
+
+---
+
 ## Roadmap
 
 - [x] x402-gated endpoint returning `402` with machine-readable terms
@@ -343,8 +477,18 @@ c.req.header("X-PAYMENT")         || c.req.header("x-payment")
 - [x] Live demo page with an event feed and running totals
 - [x] Receipt log (`GET /api/receipts`) — verifiable on Base Sepolia
 - [x] Per-buyer rate limiting
-- [ ] Second resource type — pay-per-inference
+- [x] Seller-side mandate verification — identity `401`, authorization `403`
+- [x] Second resource type — pay-per-inference on Workers AI
+- [x] A2A price negotiation — buyer counter-offers, seller may decline
+- [x] Regression suite, mutation-verified against every defect that shipped
+- [x] External-payer accounting that excludes our own wallets
+- [ ] Signed Agent Cards (A2A v1.0, JWS) — discovery currently trusts TLS alone
+- [ ] Close the write-after-settle window on the replay key
+- [ ] A refund path for paid-but-undelivered
+- [ ] Rolling 24 h spending cap instead of a UTC calendar day
 - [ ] Dispute handling
+
+The open ones, with what "done" looks like for each: [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).
 
 ---
 
@@ -356,7 +500,13 @@ c.req.header("X-PAYMENT")         || c.req.header("x-payment")
 
 **Why not just use an API key?** Because a key implies a prior relationship — an account, a contract, a billing setup. For a transaction worth a tenth of a cent, that overhead is larger than the transaction itself.
 
-**Is this production-ready?** No. The sensor is simulated, the money has no value, and the limitations are listed explicitly above.
+**Is this production-ready?** No. The sensor is simulated, the money has no value, and the limitations are listed explicitly above and in [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).
+
+**Has anyone outside the project actually paid it?** No. `GET /api/payers` reports `external_payers: 0`, and it computes that by excluding the wallets listed in `OWN_WALLETS` rather than by anyone's judgement. Every settlement so far is this project buying from itself.
+
+**Why is the inference more expensive than the reading?** Because compute costs more to produce than a stored measurement — and because the gap gives the buyer's `max_per_call` limit a real decision to make. A mandate authorized for `$0.001` readings gets `403 mandate_scope_exceeded` when it reaches for the `$0.002` inference.
+
+**Is this safe to build on?** Read the limitations first. Three 2026 papers document real attacks on x402 implementations, and an independent assessment found security violations in every facilitator it evaluated. The scores and sources are in [`docs/research-board/AGENTIC-PAYMENTS-BOARD.md`](./docs/research-board/AGENTIC-PAYMENTS-BOARD.md).
 
 ---
 
