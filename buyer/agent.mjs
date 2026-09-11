@@ -49,6 +49,15 @@ if (process.env.SELLER_CARD_PUBLIC_JWK) {
     console.error("[agent] FATAL: SELLER_CARD_PUBLIC_JWK is set but is not valid JSON. Exiting.");
     process.exit(1);
   }
+  // Valid JSON is not a valid key. A mistyped coordinate would otherwise throw on
+  // every discovery and be retried as a network blip forever; it is a config error.
+  const { kty, crv, x, y } = SELLER_CARD_PUBLIC_JWK;
+  try {
+    await crypto.subtle.importKey("jwk", { kty, crv, x, y }, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
+  } catch {
+    console.error("[agent] FATAL: SELLER_CARD_PUBLIC_JWK is not a valid P-256 public key. Exiting.");
+    process.exit(1);
+  }
 }
 
 if (!BUYER_PRIVATE_KEY) {

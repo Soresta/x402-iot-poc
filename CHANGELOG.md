@@ -36,9 +36,10 @@ USDC. No release has ever been wired for real value.
   JCS-canonicalized card minus `signatures`, ES256, `kid` as the RFC 7638
   thumbprint, `jku` pointing at the new `/.well-known/jwks.json`. The buyer
   verifies against a **pinned** public key and refuses to buy on an unsigned or
-  invalid card. **Inactive until the key is generated** with
+  invalid card. **Activated the same day** by the key holder with
   `node scripts/generate-card-key.mjs --yes`, which stores the private key via
-  stdin and never prints it. Not a claim of A2A v1.0 schema compliance for the
+  stdin and never prints it. The buyer exits at startup if the pinned key is not a
+  valid P-256 public key. Not a claim of A2A v1.0 schema compliance for the
   card body.
 
 ### Changed

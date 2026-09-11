@@ -116,8 +116,8 @@ for five weeks I was only ever checking the second.
 ### What I still have not solved
 
 - The Agent Card can now be signed (A2A v1.0's JWS format) and the buyer verifies
-  it against a pinned key — but the key has not been generated yet, so today the
-  live card is still unsigned.
+  it against a pinned key. That closes a forged price list; it does nothing for a
+  seller that signs a dishonest one.
 - **My rate limiter didn't work, and every test said it did.** It passed the
   sequential test — request 11 got a 429 — from week 3 onward. I finally fired 30
   requests at once: all 30 got through a quota of 10. KV reads and writes aren't
