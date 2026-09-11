@@ -21,10 +21,11 @@ import { ExactEvmScheme } from "@x402/evm/exact/server";
 import { HTTPFacilitatorClient } from "@x402/core/server";
 import type { Env } from "./types";
 import { DeviceTwin } from "./device-twin";
+import { RateLimiter } from "./rate-limiter";
 import { agentCardHandler } from "./agent-card";
 import { demoPageHandler, sseHandler } from "./demo";
 import { createPaidRoute, rejectReplay, DOCS_URL } from "./paid-route";
-import { inferenceHandler } from "./inference";
+import { inferenceHandler, validateInferenceInput } from "./inference";
 import { visitHandler, dailyMetricsHandler } from "./metrics";
 import { payersHandler } from "./payers";
 import { negotiateHandler } from "./negotiate";
@@ -34,7 +35,7 @@ import {
   subscriberCountHandler,
 } from "./subscribe";
 
-export { DeviceTwin };
+export { DeviceTwin, RateLimiter };
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -108,6 +109,7 @@ app.use(
     priceVar: "PRICE_PER_INFERENCE",
     description: "One sentiment classification run on Workers AI",
     resource: "inference",
+    validate: validateInferenceInput,
   })
 );
 

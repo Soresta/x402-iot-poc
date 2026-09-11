@@ -79,13 +79,16 @@ question mark. HN punishes all three.
 >
 > - The Agent Card is unsigned. Discovery trusts TLS and nothing else. A2A v1.0
 >   specifies signed cards; I have not implemented them.
-> - The replay key is written after settlement confirms, so there is a small
->   window where a crash could allow reuse. The on-chain nonce is a second
->   barrier, but my layer alone does not close it.
-> - The "daily" cap counts per UTC calendar day, so an agent running across
->   midnight can spend up to twice it in 24 hours. I found that by running it for
->   an hour across midnight and reading the ledger.
-> - No automated test suite yet. Every check is a script run by hand.
+> - My first rate limiter passed every sequential test and let 30 of 30
+>   simultaneous requests through a quota of 10 — KV read-modify-write isn't
+>   atomic. It now counts in a Durable Object, and the same burst lets exactly 10
+>   through. I'd like to know what else only fails under concurrency.
+> - I got the timing of settlement backwards for six weeks: I believed a failed
+>   request could still charge the buyer. It can't — the middleware only settles
+>   a successful response. Checked against the chain: two paid requests to a
+>   deliberately broken device, buyer balance unchanged.
+> - The test suite covers the defects that shipped, not the whole surface.
+>   Route behaviour over HTTP is still verified by scripts run by hand.
 >
 > Three bugs I hit are written up in the build log, and they share a shape worth
 > naming: in this stack, wrong looks like working. The seller read the payment
@@ -239,8 +242,8 @@ happening; these are different markets.
 
 **What stops someone replaying a payment?**
 A SHA-256 of the payment proof is stored as an idempotency key for 24 hours, and
-a repeat gets `402 payment_already_used`. There is a window between settlement
-and that write; the on-chain nonce is an independent second barrier.
+a repeat gets `402 payment_already_used`. The key is written before settlement,
+and the on-chain EIP-3009 nonce is an independent second barrier.
 
 **What if the facilitator goes down?**
 `503` with `Retry-After`, and nothing is served. Tested by pointing it at a dead

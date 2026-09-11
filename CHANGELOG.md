@@ -11,6 +11,41 @@ USDC. No release has ever been wired for real value.
 
 ---
 
+## [Unreleased] — 2026-09-11
+
+### Fixed
+
+- **The spending cap reset at UTC midnight.** The buyer summed ledger entries
+  dated "today" in UTC, so an agent running across midnight could spend up to
+  twice its cap inside 24 hours. It is now a rolling 24-hour window
+  (`buyer/budget.mjs`), pinned by regression test 5.
+
+### Corrected — two limitations this project stated were wrong
+
+Both were published in this changelog, the README, `ERRORS.md`, the real-value
+memo, the tutorial and three post drafts. Both have been corrected everywhere they
+appeared, and are recorded here rather than silently removed.
+
+- **"Paid but undelivered" does not happen.** The claim was that a device failure
+  after settlement left the buyer charged with no data. The x402 middleware in
+  fact settles only when the handler returns a status below 400, and cancels
+  otherwise. Verified on-chain: two paid requests against a deliberately broken
+  device returned `503`, and the buyer's USDC balance was `40757000` before and
+  after. The Week 3 evidence had shown no `payment-response` header on the failed
+  request all along; it was misread.
+- **There is no "write-after-settle window."** The claim — inherited from the
+  original project brief — was that the replay key is written after settlement,
+  leaving a crash window. The key is written inside the handler, which runs
+  before settlement. Proven by resending a proof whose request had failed: it
+  returned `payment_already_used` although nothing had settled.
+
+The real side effect runs the other way and is small: a proof whose request fails
+is already recorded, so resending that exact proof returns
+`payment_already_used` although nothing was charged. Documented in `ERRORS.md`
+and tracked as open item A7.
+
+---
+
 ## [1.0.0] — 2026-09-08
 
 First tagged release. The payment path is complete, the controls that protect it
@@ -49,11 +84,9 @@ discovered.
 
 ### Known limitations
 
-Listed in full in [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md). The six that
-gate real value: the write-after-settle window, no refund path for
-paid-but-undelivered, the UTC-calendar-day spending cap, the unsigned Agent
-Card, inference input validated after payment rather than before, and
-non-atomic rate limiting.
+Listed in full in [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md). At the time of
+tagging, this entry also listed a "write-after-settle window" and a
+"paid-but-undelivered" case. **Both were wrong** — see the Unreleased section.
 
 ---
 

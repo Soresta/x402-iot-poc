@@ -17,7 +17,7 @@ the exit does not depend on which one it is.
 | 2 | Research board | drafted, not loaded | manager loads it |
 | 3 | Real-value memo | delivered | counsel review |
 | 4 | Six human-dependent tests | not run | one hour of a person |
-| 5 | Six correctness items (A1–A6) | open | engineering time |
+| 5 | Signed Agent Card (A4) — the one correctness item left | open | engineering time |
 | 6 | Channel #1 | never went live | five book posts, requested W2 |
 | 7 | B2B outreach | 0 sent | target list + sign-off |
 | 8 | Demo Day deck | written, not rehearsed; no fallback video | an hour |
@@ -38,7 +38,7 @@ are in `docs/OPEN-ITEMS.md` with what "done" looks like.
 - [ ] Weekly KV backup added to somebody's calendar —
       `node scripts/backup-kv.mjs`
 - [ ] Buyer wallet kept funded from the faucet, or the demo goes quiet
-- [ ] A1–A6 scheduled before any real-value conversation
+- [ ] A4 (signed Agent Card) done before any real-value conversation
 - [ ] The six human tests run as one batch —
       `docs/PENDING-HUMAN-TESTS.md`
 - [ ] Counsel review commissioned from `REAL-VALUE-READINESS.md` §5

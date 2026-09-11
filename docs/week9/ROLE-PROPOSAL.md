@@ -36,6 +36,10 @@ findings from this repo:
 - a "daily" cap counting calendar days lets an agent spend twice its limit across
   midnight.
 
+All three are fixed in the build. They stay on the board because each one looked
+correct until it was tested, and the version that got them wrong is the version
+most people will write first.
+
 Nobody writing that board from press releases can produce those. They are the
 difference between a readiness assessment and a link roundup, and they only exist
 because someone built the thing and then tried to break it.
@@ -112,7 +116,7 @@ number to explain away rather than hit.
 ## The first thirty days
 
 1. **Publish.** Everything is written. Days, not weeks.
-2. **Close A1–A6 in `docs/OPEN-ITEMS.md`** — the correctness items that gate real
+2. **Sign the Agent Card** — the last correctness item open in `docs/OPEN-ITEMS.md`, and the one that gates real
    value and that the briefings will be asked about.
 3. **Sign the Agent Card.** The clearest gap between what we built and what open
    discovery needs, and the most credible single upgrade to show a briefing

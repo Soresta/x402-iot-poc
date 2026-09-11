@@ -141,7 +141,7 @@ Zero revenue. Six reusable assets:
 | Asset | State |
 |---|---|
 | Working PoC, deployed, tagged v1.0.0 | live |
-| 26-test regression suite, mutation-verified | live |
+| 38-test regression suite, mutation-verified | live |
 | Real-value readiness memo, 12 counsel questions | delivered |
 | Agentic-payments research board — 11 technologies, 21 dated signals | drafted |
 | Ten publishable assets — tutorial, 3 posts, threads, Show HN, deck | written |
@@ -213,7 +213,7 @@ reachable and I will not sign up for numbers I cannot influence.
 | B2B briefings held | 6 |
 | Real-value pilot | **counsel opinion obtained, no value moved** |
 
-Plan: publish → close the six items that gate v1.0 → run the human tests →
+Plan: publish → sign the Agent Card → run the human tests →
 counsel review → *then* consider paid acquisition.
 
 ---

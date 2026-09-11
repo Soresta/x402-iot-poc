@@ -74,7 +74,7 @@ meant the second product inherited every security control for free. The Week 4
 mandate layer made the Week 8 negotiation feature a small addition rather than a
 redesign. By Week 8 the seller does identity, authorization, payment, replay
 protection, rate limiting, receipts, live streaming, two products, negotiation,
-metrics and email capture — on a free tier, with 26 regression tests behind it.
+metrics and email capture — on a free tier, with 38 regression tests behind it.
 
 **What worked: the verification discipline paid for itself.**
 
@@ -114,7 +114,7 @@ rather than escalating it once, hard, in Week 3.
 | Asset | Status | Attributable revenue |
 |---|---|---|
 | Working PoC, deployed, MIT, v1.0.0 tagged | live | **none** |
-| 26-test regression suite, mutation-verified | live | **none** |
+| 38-test regression suite, mutation-verified | live | **none** |
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
 | Agentic-payments research board — 11 technologies, 21 dated signals | drafted | **none yet.** This is the Watch subscription's content |
 | Flagship tutorial, 3 posts, 2 X threads, Show HN, 2 subreddit posts, outreach template, 10-slide deck, 90-second video script | written, unpublished | **none** |
@@ -144,7 +144,7 @@ unreachable and I will not sign up for a number I cannot influence.
 
 1. **Publish, then fix what the first fifty readers break.** Everything is
    written. This is days, not weeks.
-2. **Close A1–A6 in `docs/OPEN-ITEMS.md`** — the six items that gate real value.
+2. **Sign the Agent Card** — the one correctness item still open in `docs/OPEN-ITEMS.md`.
 3. **Run the human tests** — stranger test, comprehension test, clean-machine
    tutorial run. About an hour in total, open since Week 3.
 4. **Counsel review** of the readiness memo. Cheap now, and the answer expires

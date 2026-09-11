@@ -241,10 +241,12 @@ per-call limit, and then tested them properly. Three findings:
    seller checks that the mandate holder is the account paying. That check is
    four lines of code and nobody's specification mandates it.
 
-3. **A "daily cap" is not a rolling limit.** Ours counts spending per UTC
-   calendar day. An agent running across midnight can spend up to twice its cap
-   within 24 hours. We found this by running the agent for an hour across
-   midnight and reading the ledger, not by reasoning about the code.
+3. **A "daily cap" is not a rolling limit.** Ours counted spending per UTC
+   calendar day, so an agent running across midnight could spend up to twice its
+   cap within 24 hours. We found this by running the agent for an hour across
+   midnight and reading the ledger, not by reasoning about the code. Fixed since
+   with a rolling window; the finding stands, because the calendar-day version
+   is the one most implementations will write first.
 
 None of these are exotic. All three sat inside a system whose author believed
 the controls worked. That is why this row scores 2 across the board.

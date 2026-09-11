@@ -81,18 +81,29 @@ they are written here rather than assumed.
 This is the section I would put in front of counsel first, because it is where
 our own testing produced findings rather than opinions.
 
-**There is no refund path, and we found a case that needs one.** If the device
-fails *after* settlement, the buyer has paid and receives `503` with no data. On
-testnet that is a rounding error. With real value it is a customer who paid and
-got nothing, and we have no mechanism to make them whole. Observed directly under
-a forced fault.
+> **Correction, 2026-09-11.** The first draft of this memo stated two findings
+> here that turned out to be wrong: that a device failure after settlement left a
+> buyer paid and unserved, and that the replay key was written after settlement.
+> Reading the payment middleware's source, then testing it on-chain, showed both
+> are the reverse of what this memo said. They are corrected below rather than
+> quietly removed, because a counsel review built on the first version would have
+> spent time on problems that do not exist.
+
+**A failed response is never charged.** The payment middleware verifies the
+proof, runs our handler, and settles only if the handler succeeded. We verified
+this against the chain: two paid requests against a deliberately broken device
+returned `503`, and the buyer's USDC balance was identical before and after.
+So there is no "paid but undelivered" case in this system. There is still **no
+refund mechanism** — a request that settles and is later disputed has no path
+back — but that is a policy gap, not an observed failure.
 
 **A signed payment proof is a bearer credential.** The protocol has no
-application-layer nonce. We supply one — the proof's hash is stored as an
-idempotency key for 24 hours — but there is a window between settlement
-confirming and that key being written. The on-chain nonce is an independent
-second barrier, so the practical risk is low; the window is real and is not
-closed by our layer alone.
+application-layer nonce, so we supply one: the proof's hash is stored as an
+idempotency key for 24 hours, written *before* settlement. Two requests carrying
+the same proof at the same instant can both pass that check, because KV reads
+and writes are not atomic; by the middleware's design only one can settle, since
+the on-chain EIP-3009 nonce rejects the second, and an unsettled response is
+never delivered. **That concurrent case is reasoned from source, not tested.**
 
 **Three 2026 papers document attacks on x402 implementations:** payment replay,
 wallet drain via overpayment, prompt injection leading to fraudulent payments,
@@ -106,8 +117,8 @@ own build produced three findings that generalise:
   the seller in Week 4; nothing required us to.
 - A mandate without an identity binding is a bearer token. Four lines fix it. No
   specification asks for them.
-- Our "daily" cap counts per UTC calendar day, so an agent crossing midnight can
-  spend up to twice it in 24 hours.
+- Our "daily" cap counted per UTC calendar day, so an agent crossing midnight
+  could spend up to twice it in 24 hours. Fixed 2026-09-11 with a rolling window.
 
 All three sat inside a system whose author believed the controls worked. With
 real money, "the agent overspent" has no settled liability answer.
@@ -192,13 +203,16 @@ in. **Without this, nothing proceeds.**
 Independent of counsel, and required before any real value regardless of what
 they say:
 
-- [ ] Close the write-after-settle window, or accept it in writing with the
-      exposure quantified.
-- [ ] Build a refund path for paid-but-undelivered, or make delivery failure
-      impossible after settlement.
+- [ ] Test the concurrent-replay case that section 2.3 reasons about from
+      source: two simultaneous requests with one proof must produce exactly one
+      settlement and one delivery.
+- [ ] Decide a refund/dispute policy. Not because a failure mode needs it — none
+      was found — but because real value will eventually produce a dispute.
 - [ ] Sign the Agent Card (A2A v1.0, JWS). Discovery currently trusts TLS alone.
-- [ ] Make the spending cap a rolling window rather than a UTC calendar day.
-- [ ] Automated test suite. Every check today is a script run by hand.
+- [x] Make the spending cap a rolling window rather than a UTC calendar day.
+      *Done 2026-09-11.*
+- [x] Automated test suite. *38 regression tests, one per defect that shipped,
+      mutation-checked. Route behaviour over HTTP is still verified by hand.*
 - [ ] Facilitator diligence: named counterparty, written terms, security
       attestation.
 
@@ -215,7 +229,7 @@ sign-off naming who accepted it.
 - daily reconciliation of the on-chain record against our receipt log.
 
 **Go/no-go to proceed past pilot:** thirty consecutive days with zero
-reconciliation discrepancies, zero paid-but-undelivered incidents, and no
+reconciliation discrepancies, zero undelivered-but-charged incidents, and no
 security finding above low severity.
 
 ### Phase 3 — Open

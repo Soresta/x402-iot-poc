@@ -29,12 +29,14 @@ All error responses follow the structured format:
 | `payment_already_used` | 402 | Replay detected — this payment proof was already used | Obtain a fresh payment authorization |
 | `facilitator_timeout` | 503 | Facilitator did not respond within 8 seconds | Retry after the indicated `Retry-After` interval |
 | `facilitator_error` | 503 | Unexpected error communicating with the facilitator | Retry; if persistent, check facilitator URL |
-| `rate_limit_exceeded` | 429 | Too many requests from this buyer within the time window | Wait for the `Retry-After` interval |
+| `rate_limit_exceeded` | 429 | Too many requests from this payer, or from this IP, within the window | Wait for the `Retry-After` interval. Two buckets: per payer (`RATE_LIMIT_QUOTA`) and per IP (`IP_RATE_LIMIT_QUOTA`) |
 | `device_twin_error` | 503 | Durable Object failed to return a reading | Retry; the DO self-heals on the next tick |
 | `kv_unavailable` | 503 | KV namespace not reachable | Infrastructure issue; retry later |
 | `mandate_wrong_seller` | 403 | The mandate authorizes spending with a different seller | Present a mandate whose `seller` is this origin |
 | `inference_unavailable` | 503 | The Workers AI binding is not configured | Infrastructure issue; retry after `Retry-After` |
-| `inference_failed` | 503 | The model run failed after payment settled | Retry. Note this is a **paid-but-undelivered** case — see the limitation below |
+| `inference_failed` | 503 | The model run failed | Retry. **You were not charged** — the middleware does not settle a failed response |
+| `inference_input_required` | 400 | `?text=` missing or blank on `/api/inference` | Send text to classify. Refused **before** the `402`, so you are never asked to sign for it |
+| `inference_input_too_long` | 400 | `?text=` longer than 512 characters | Shorten it. Refused before the `402`; the text is not silently truncated |
 | `unknown_resource` | 404 | `/api/negotiate` was asked about a resource that is not for sale | Use a resource id from the Agent Card |
 | `offer_invalid` | 400 | `?offer=` was not a non-negative number | Send a numeric offer |
 | `subscribe_malformed` | 400 | The subscribe body could not be parsed | Send JSON or form-encoded `{ email, consent }` |
@@ -91,13 +93,23 @@ The installed x402 generation (`@x402/core` v2) sends the signed proof in the
 seller accepts both; keying on `X-PAYMENT` alone silently disables idempotency
 and rate limiting against current clients.
 
-### One case where a 503 arrives after you have already paid
+### A failed response is never charged
 
-`inference_failed` is returned when settlement succeeded and the model run then
-failed. The buyer has paid and receives no data, and **there is no refund path**.
-On testnet this is a rounding error; it is recorded here rather than omitted
-because with real value it would be a customer who paid for nothing. Tracked as
-`A2` in `docs/OPEN-ITEMS.md`.
+The x402 middleware verifies the payment, runs the handler, and settles **only if
+the handler returned a status below 400**. So `device_twin_error`,
+`inference_failed` and every other `4xx`/`5xx` from a paid route arrive without a
+charge. Verified on-chain on 2026-09-11: two paid requests against a deliberately
+broken device returned `503`, and the buyer's balance was unchanged.
+
+An earlier version of this file said the opposite. It was wrong.
+
+### `payment_already_used` without a charge
+
+The replay key is written inside the handler, which runs before settlement. If
+the handler or settlement then fails, the key exists but nothing was charged, and
+resending that same proof returns `payment_already_used`. Nothing was spent; sign
+a fresh authorization. The x402 client does this automatically on the next
+`402`.
 
 ### General
 

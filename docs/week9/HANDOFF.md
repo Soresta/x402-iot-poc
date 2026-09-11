@@ -31,18 +31,15 @@ output is what it actually printed. Where something was not run, it says so.
 cd x402-iot-poc
 npm install
 npx tsc --noEmit          # must exit 0
-npx vitest run            # must be 26 passed
+npx vitest run            # must report 0 failed — the count grows, the zero does not
 npx wrangler deploy
 ```
 
-Last run 2026-09-08:
-
-```text
-Uploaded x402-iot-poc (15.1 sec)
-Deployed x402-iot-poc triggers (4.6 sec)
-  https://x402-iot-poc.akifk-x402-26.workers.dev
-Current Version ID: a39edbbc-e0ae-4c77-9dd2-bc62bf5fd3ef
-```
+Wrangler prints a `Current Version ID` on every deploy. **This document does not
+record one** — a version number written here is wrong after the next deploy, and
+two documents disagreeing about it is how a handover goes stale. The deployed
+version history lives in the Cloudflare dashboard, and what changed between
+versions lives in `CHANGELOG.md`.
 
 **Never deploy on a red suite.** The suite exists because four defects reached
 production while every check was green; a red one is the only warning this
@@ -52,7 +49,8 @@ project has ever had in advance.
 
 ```powershell
 curl.exe -sS -o /dev/null -w "%{http_code}`n" https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings    # expect 402
-curl.exe -sS -o /dev/null -w "%{http_code}`n" https://x402-iot-poc.akifk-x402-26.workers.dev/api/inference   # expect 402
+curl.exe -sS -o /dev/null -w "%{http_code}`n" "https://x402-iot-poc.akifk-x402-26.workers.dev/api/inference?text=hi"  # expect 402
+curl.exe -sS https://x402-iot-poc.akifk-x402-26.workers.dev/api/inference     # expect 400 inference_input_required — refused before the 402, by design
 curl.exe -sS -o /dev/null -w "%{http_code}`n" https://x402-iot-poc.akifk-x402-26.workers.dev/reading         # expect 402
 curl.exe -sS https://x402-iot-poc.akifk-x402-26.workers.dev/.well-known/agent-card.json                      # expect 2 skills
 curl.exe -sS https://x402-iot-poc.akifk-x402-26.workers.dev/api/payers                                       # expect milestone_w7_met
@@ -67,6 +65,7 @@ For a full end-to-end check that actually spends testnet USDC:
 $env:SELLER_URL="https://x402-iot-poc.akifk-x402-26.workers.dev"
 node buyer/test_replay.mjs      # 200 then 402 payment_already_used
 node buyer/test_mandate.mjs     # 7/7 — wait 60s between runs, see §6
+node buyer/test_ratelimit_burst.mjs   # 30 concurrent → exactly 10 pass (no funds move)
 ```
 
 ### 2.3 Back up KV
@@ -267,7 +266,7 @@ Written down because each one cost time here.
 `docs/OPEN-ITEMS.md` is the full list — 27 items. The ones that matter most for
 whoever continues:
 
-- **A1–A6**: the six correctness items that gate real value.
+- **A4**: the unsigned Agent Card — the one correctness item still open. The rest of section A was fixed, measured or withdrawn on 2026-09-11.
 - **B1–B6**: six checks needing a person, about an hour total, listed step by
   step in `docs/PENDING-HUMAN-TESTS.md`.
 - **E1–E6**: decisions, not work.

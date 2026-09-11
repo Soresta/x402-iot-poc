@@ -55,19 +55,39 @@ export function pickTopClass(output: unknown): { label: string; score: number } 
 }
 
 /**
+ * Refuse input that could never produce a useful inference — before the buyer
+ * is asked to pay.
+ *
+ * Wired into the payment gate as its `validate` hook, so it runs ahead of the
+ * 402. A buyer with bad input gets a 400 and never signs an authorization.
+ *
+ * This used to silently substitute a sample sentence for empty input and
+ * truncate long input, on the belief that the handler ran after settlement and
+ * a 400 would charge for nothing. That belief was wrong — the middleware only
+ * settles a successful response — and silently answering a different question
+ * than the one asked is worse than refusing.
+ */
+export function validateInferenceInput(c: any): { status: 400; error: string } | null {
+  const raw = (c.req.query("text") ?? "").toString().trim();
+  if (!raw) return { status: 400, error: "inference_input_required" };
+  if (raw.length > MAX_INPUT_CHARS) return { status: 400, error: "inference_input_too_long" };
+  return null;
+}
+
+/**
  * GET /api/inference?text=...
  *
- * Runs only after the payment gate has already settled, so by the time this
- * executes the buyer has paid. Input validation therefore has to happen before
- * the gate would be better — but a 400 here after payment would mean charging
- * for nothing, so the text is defaulted rather than rejected.
+ * Reached only after the gate has verified payment. The middleware settles only
+ * if this returns a status below 400, so any failure here costs the buyer
+ * nothing.
  */
 export async function inferenceHandler(c: any) {
-  const raw = (c.req.query("text") ?? "").toString().trim();
+  // Defensive repeat of the gate's check, in case this handler is ever mounted
+  // without it.
+  const invalid = validateInferenceInput(c);
+  if (invalid) return c.json({ error: invalid.error, docs_url: DOCS_URL }, invalid.status);
 
-  // No text is not an error the buyer should pay for and receive nothing from.
-  // Fall back to a sample so the response is always worth the price.
-  const input = (raw || "This machine paid for its own compute.").slice(0, MAX_INPUT_CHARS);
+  const input = (c.req.query("text") ?? "").toString().trim();
 
   if (!c.env.AI) {
     return c.json({ error: "inference_unavailable", docs_url: DOCS_URL }, 503, {

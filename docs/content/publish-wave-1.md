@@ -141,9 +141,11 @@ Eight posts.
 > Still unsolved, and in the repo's limitations list:
 >
 > · my Agent Card isn't signed
-> · a gap between settling and recording the replay key
-> · the "daily" cap resets at UTC midnight, so an agent crossing midnight can
->   spend 2× its cap
+> · (fixed, but instructive) my rate limiter passed every sequential test and
+>   let 30 of 30 concurrent requests through a quota of 10
+> · I believed for six weeks that a failed request could still charge the buyer.
+>   It can't — the middleware only settles successful responses. I had the
+>   evidence the whole time and read it backwards
 
 > **8/**
 > Code + live demo: github.com/Soresta/x402-iot-poc

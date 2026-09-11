@@ -58,6 +58,14 @@ export interface Env {
   // Rate-limit window in seconds, e.g. "60"
   RATE_LIMIT_WINDOW_S: string;
 
+  // Per-IP flood backstop per window, e.g. "60". Higher than the per-payer
+  // quota so buyers behind one NAT are not throttled as a single buyer.
+  IP_RATE_LIMIT_QUOTA: string;
+
+  // One RateLimiter Durable Object per bucket ("ip:…" or "payer:…"). Exact
+  // counting under concurrency, which KV could not provide.
+  RATE_LIMITER: DurableObjectNamespace<import("./rate-limiter").RateLimiter>;
+
   // Expected settlement asset (Base Sepolia USDC contract address)
   USDC_ASSET: string;
 

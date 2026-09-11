@@ -334,10 +334,12 @@ app.get("/api/readings", async (c) => {
 
 Now replay the same proof and you get `402 payment_already_used` with no data.
 
-> **Be honest about the residual risk.** The key is written *after* settlement
-> confirms. If the Worker dies in between, the same proof could be reused. The
-> on-chain nonce is an independent second barrier, so the practical risk is
-> small — but do not tell people this window does not exist.
+> **Know when settlement happens.** The x402 middleware verifies the payment,
+> runs your handler, and settles **only if the handler returned a status below
+> 400**. So this replay check runs *before* any money moves, and if your handler
+> fails, the buyer is not charged. The one side effect: a proof whose request then
+> fails is already recorded, so resending it gets `payment_already_used` even
+> though nothing was spent. A real client signs a fresh authorization anyway.
 
 ### Step 9. Fail closed
 
@@ -432,10 +434,12 @@ if (spentToday + price > DAILY_CAP) {
 if (process.env.BUYER_ENABLED === "false") return "killed";
 ```
 
-Check the cap **before** paying, not after. And note what this cap actually is:
-it counts per UTC calendar day, so an agent running across midnight can spend up
-to twice it in 24 hours. That was found by running an agent for an hour across
-midnight and reading the ledger — not by reasoning about the code.
+Check the cap **before** paying, not after. And make it a **rolling 24 hours**,
+not "today". The reference project first summed entries dated today in UTC, which
+resets at midnight — so an agent running across midnight could spend twice its
+cap in a single day. It was found by running an agent for an hour across midnight
+and reading the ledger, not by reasoning about the code. `readLedgerTotalForToday`
+above is the naive version; sum everything since `now - 24h` instead.
 
 ---
 

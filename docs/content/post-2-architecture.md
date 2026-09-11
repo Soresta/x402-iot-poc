@@ -143,14 +143,18 @@ believes the price in it. TLS says the document came from that domain. It doesn'
 say the domain is who the buyer thinks. A2A v1.0 specifies signed cards; I
 haven't implemented them.
 
-**There's a gap between settling and recording.** I write the replay key after
-the facilitator confirms. If the Worker dies in between, the same proof could be
-used again. The on-chain nonce is a second barrier, so the practical risk is
-small — but my layer alone doesn't close it.
+**When does settlement actually happen?** I got this backwards for weeks. The
+x402 middleware verifies the payment, runs my handler, and settles only if the
+handler succeeded. So a broken device never charges anyone — I checked against
+the chain — and my replay key is written *before* money moves, not after. The
+real side effect is smaller and the other way round: a proof whose request fails
+is already recorded, so resending it gets "already used" although nothing was
+spent.
 
-**The daily cap resets at UTC midnight.** It counts per calendar day, so an agent
-running across midnight can spend twice its cap in 24 hours. I found this by
-running the agent for an hour across midnight and reading the ledger.
+**The daily cap used to reset at UTC midnight.** It counted per calendar day, so
+an agent running across midnight could spend twice its cap in 24 hours. I found
+it by running the agent for an hour across midnight and reading the ledger, and
+it is now a rolling window with a regression test pinning the exact case.
 
 All three are in the repo's known-limitations list, because a limitations
 section that only contains things you've already fixed isn't a limitations

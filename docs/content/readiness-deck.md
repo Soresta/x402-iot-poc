@@ -83,8 +83,9 @@ evaluated.
 
 **What that means for you:** a signed payment proof behaves as a bearer
 credential. If you build on this, the replay protection is yours to write. Ours
-is a SHA-256 of the proof held for 24 hours, and it still has a window between
-settlement and the write.
+is a SHA-256 of the proof held for 24 hours, written before any money moves.
+Two simultaneous requests with one proof can both pass that check — only one can
+settle, but test that yourself rather than taking our word for it.
 
 ---
 
@@ -144,9 +145,11 @@ Said plainly, because you will find these anyway:
 - **Agent spending controls are the least mature layer in the stack.** Our own
   build produced three findings: buyer-side enforcement is an honour system, a
   mandate without identity binding is a bearer token, and a "daily" cap that
-  counts calendar days lets an agent spend twice it across midnight.
-- **There is no refund path** when a resource fails after settlement. On-chain
-  settlement is irreversible.
+  counts calendar days lets an agent spend twice it across midnight. All three
+  are fixed in our build — the point is that each looked correct until tested.
+- **There is no refund or dispute path.** A failed request is never charged —
+  we checked on-chain — but a successful one that is later disputed has no way
+  back, and on-chain settlement is irreversible.
 
 **Speaker note:** this slide is the product. Everything else is available from a
 press release.

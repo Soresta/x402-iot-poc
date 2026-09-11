@@ -15,12 +15,13 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 
 | # | Item | Why it matters | Done when |
 |---|---|---|---|
-| A1 | **Write-after-settle window.** The replay key is written *after* the facilitator confirms. A crash in between allows the same proof to be reused. | It is the one gap in replay protection, and the memo names it as a real-value blocker. On-chain nonce is a second barrier, so exposure is bounded — but our layer does not close it. | Key reserved before settlement with rollback on failure, **or** a written accepted-risk note naming who accepted it |
-| A2 | **Paid-but-undelivered.** If the DeviceTwin fails after settlement the buyer pays and receives `503` with no data and no refund. | Observed directly under a forced fault. Rounding error on testnet; a customer who paid for nothing with real value. | Delivery cannot fail after settlement, **or** a refund/credit path exists |
-| A3 | **Daily cap is a UTC calendar-day counter, not a rolling window.** An agent running across midnight can spend up to 2× its cap in 24 h. | Found by running the agent for an hour across midnight and reading the ledger. C4 asks for a *hard* cap; this one is softer than it looks. | Cap evaluated over a rolling 24 h |
+| ~~A1~~ | ~~Write-after-settle window.~~ **WITHDRAWN 2026-09-11 — the claim was wrong.** The replay key is written in the handler, and the middleware settles only after the handler succeeds, so the key is written *before* settlement. Proven: a paid request against a broken handler returned `503`, and resending that proof returned `payment_already_used` — the key existed although nothing settled. The real, smaller effect is tracked as A7. | | |
+| ~~A2~~ | ~~Paid-but-undelivered.~~ **WITHDRAWN 2026-09-11 — the claim was wrong.** The middleware does not settle a response with status ≥ 400. Proven on-chain: two paid requests against a forced DeviceTwin failure, buyer USDC balance `40757000` before and after. The W3 evidence already showed no `payment-response` header on the failed request; it was misread. | | |
+| ~~A3~~ | ~~Daily cap is a UTC calendar-day counter.~~ **CLOSED 2026-09-11** — `buyer/budget.mjs` sums spend over a rolling 24 h. Regression 5 in the test suite pins the exact failure: 0.01 at 23:50 plus 0.01 at 00:10, read at 00:30, must be 0.02 (the old logic said 0.01). | | |
 | A4 | **Agent Card is unsigned.** Discovery trusts TLS alone. | A2A v1.0 specifies signed cards (JWS + JCS). This is the clearest gap between what we built and what open discovery needs. | Card signed, and the buyer verifies the signature |
-| A5 | **Inference input is not validated before payment.** Empty `?text=` falls back to a sample rather than refusing. | Refusing after settlement would charge for nothing (see A2); validating before the gate is the correct fix, and it is not done. | Input validated *before* the payment gate runs |
-| A6 | **Rate limiting is not atomic.** KV read-modify-write under concurrency can let the quota be exceeded. | Verified sequentially only. Low impact at our volume, real at launch volume. | Atomic counter (Durable Object), or documented as best-effort with a measured bound |
+| ~~A5~~ | ~~Inference input is not validated before payment.~~ **CLOSED 2026-09-11** — a `validate` hook on the payment gate runs before rate limiting, the mandate and the `402`. Empty or over-length text gets `400 inference_input_required` / `inference_input_too_long` and the buyer is never asked to sign. The old silent sample substitution and truncation are gone. Verified on the deployed Worker. | | |
+| ~~A7~~ | ~~A proof can be used up without a charge.~~ **ACCEPTED AND DOCUMENTED 2026-09-11.** Resending a proof whose request failed returns `payment_already_used` although nothing was spent; observed live today when a settlement failed at the facilitator. **Deliberately not "fixed" by deleting the key on failure:** two concurrent requests with one proof would share that key, and the failing one would delete the key the succeeding one wrote, weakening replay protection to save a round trip. The x402 client re-signs automatically. Documented in `ERRORS.md`. | | |
+| ~~A6~~ | ~~Rate limiting is not atomic.~~ **CLOSED 2026-09-11 — and it was worse than this row said.** The row predicted the quota "can be exceeded" under load. Measured against the deployed Worker: **30 simultaneous requests, 30 passed a quota of 10, three runs out of three.** The limiter now counts in a `RateLimiter` Durable Object; the same burst lets **exactly 10** through, three runs out of three. It also gained a per-IP bucket, because the payer address it keyed on is unverified at that point and could be rotated. `buyer/test_ratelimit_burst.mjs` reproduces it. | | |
 
 ## B · Verification gaps — things claimed but not proven
 
@@ -53,7 +54,7 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 | D3 | Receipts written before W5 show `Resource` as unlabelled on the demo page. Correct — but a first-time viewer reads it as a bug. One line of explanation on the page would fix it. |
 | D4 | `AGENTS.md` is a Cloudflare template file, not ours. Either adopt it deliberately or remove it. |
 | D5 | The research board flags four signals as secondary coverage needing primary confirmation before it is loaded. Not yet confirmed. |
-| D6 | `CHANGELOG.md` and `docs/week9/HANDOFF.md` both list the deployed version. They will drift on the next deploy unless one references the other. |
+| ~~D6~~ | ~~`CHANGELOG.md` and `HANDOFF.md` both list the deployed version.~~ **CLOSED 2026-09-11** — and the drift had already happened: the handoff runbook said "must be 26 passed" and named a version two deploys old, and its smoke test expected `402` from `/api/inference`, which now correctly returns `400` without input. The runbook no longer records a version or a test count. |
 | ~~D7~~ | ~~`ERRORS.md` is behind the code by ten codes.~~ **CLOSED 2026-09-08** — all ten added and verified by a script that greps every code emitted from `src/` and checks it appears in the catalogue: 25 emitted, 0 undocumented. Worth re-running before any release. |
 
 ## E · Blocked on someone else
@@ -73,8 +74,9 @@ Not ours to fix, listed so the final report can say what was blocked and for how
 
 ## How this list gets closed
 
-1. **A1–A6** are code. They are the v1.0 bar, and A1/A2 are named in the
-   real-value memo's Phase 1.
+1. **A** is down to one item. A1 and A2 were wrong and are withdrawn; A3, A5
+   and A6 are fixed and measured; A7 is accepted with its reasoning. **A4 —
+   the unsigned Agent Card — is the only correctness item left open.**
 2. **B1–B8** need a person: about an hour for B1–B4, plus an afternoon for the
    tutorial run and two rehearsals. `PENDING-HUMAN-TESTS.md` has the exact steps
    for B1–B5; the plan is to run them as one batch.

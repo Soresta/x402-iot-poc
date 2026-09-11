@@ -36,7 +36,7 @@ Disclosure: I work with the team at Pragma.Vision. The code is MIT.
 | Distinct paying wallets | **1** |
 | **External paying wallets** | **0** |
 | Infrastructure cost | **$0** |
-| Automated tests | **0** |
+| Automated tests | **38** — written after the bugs below, one per bug |
 
 The number that decides whether any of this is interesting is the sixth one.
 Every payment this API has ever taken came from a wallet I own. I built a thing
@@ -116,16 +116,21 @@ for five weeks I was only ever checking the second.
 ### What I still have not solved
 
 - The Agent Card is unsigned. Discovery trusts TLS and nothing else.
-- The replay key is written after settlement confirms. A crash in between leaves
-  a window. The on-chain nonce is a second barrier; my layer alone does not close
-  it.
-- The "daily" spending cap counts per UTC calendar day, so an agent running
-  across midnight can spend twice it in 24 hours. I found that by running one for
-  an hour across midnight and reading the ledger.
-- If the device fails after payment, the buyer has paid and gets nothing. There
-  is no refund path.
-- **Zero automated tests.** Every check is a script I run by hand. Four bugs in
-  five weeks, all of them invisible to the tests I had.
+- **My rate limiter didn't work, and every test said it did.** It passed the
+  sequential test — request 11 got a 429 — from week 3 onward. I finally fired 30
+  requests at once: all 30 got through a quota of 10. KV reads and writes aren't
+  atomic. It counts in a Durable Object now, and the same burst lets exactly 10
+  through.
+- **A mistake in my own limitations list.** For six weeks this list said a failed
+  request could still charge the buyer, and that the replay key was written after
+  settlement. Both were backwards: the payment middleware only settles a
+  successful response, and our replay check runs before it. I had the evidence in
+  week 3 — no settlement header on the failed response — and read it the wrong
+  way. Checked against the chain this time: two paid requests to a broken device,
+  buyer balance unchanged.
+- **The tests came last.** For five weeks every check was a script I ran by hand,
+  and four bugs got through all of them. The suite that exists now is one test per
+  bug that shipped — which is the right suite, built in the wrong week.
 
 ### What it costs
 

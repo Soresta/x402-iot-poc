@@ -23,8 +23,9 @@ import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 
 import { verifyPresentedMandate } from "../src/mandate";
 import { getPaymentHeader, screenPayment, payerFromPaymentHeader } from "../src/paid-route";
-import { pickTopClass } from "../src/inference";
+import { pickTopClass, validateInferenceInput, MAX_INPUT_CHARS } from "../src/inference";
 import { ownWallets, shortenAddress } from "../src/payers";
+import { evaluateWindow } from "../src/rate-limiter";
 // @ts-expect-error — plain ESM module from the buyer side, no type declarations
 import { spentInWindow, DAY_MS } from "../buyer/budget.mjs";
 
@@ -318,5 +319,84 @@ describe("regression 5: spending cap is a rolling 24 h window", () => {
       { price: 1 },
     ];
     expect(spentInWindow(ledger, now)).toBe(0);
+  });
+});
+
+// --------------------------------------------------------------------------
+// Open item A5 — inference input is refused before the 402
+// --------------------------------------------------------------------------
+
+describe("A5: inference input is validated before payment is requested", () => {
+  const withText = (text?: string) => ({
+    req: { query: (k: string) => (k === "text" ? text : undefined) },
+  });
+
+  it("refuses a missing text parameter", () => {
+    expect(validateInferenceInput(withText(undefined))).toEqual({
+      status: 400,
+      error: "inference_input_required",
+    });
+  });
+
+  it("refuses whitespace-only text instead of substituting a sample", () => {
+    // The old handler silently answered a different question than the one asked.
+    expect(validateInferenceInput(withText("   "))).toMatchObject({ error: "inference_input_required" });
+  });
+
+  it("refuses over-length text instead of silently truncating it", () => {
+    expect(validateInferenceInput(withText("x".repeat(MAX_INPUT_CHARS + 1)))).toMatchObject({
+      error: "inference_input_too_long",
+    });
+  });
+
+  it("accepts ordinary input", () => {
+    expect(validateInferenceInput(withText("this settlement rail is pleasant"))).toBeNull();
+  });
+});
+
+// --------------------------------------------------------------------------
+// Open item A6 — the rate limit did not hold under concurrency
+// --------------------------------------------------------------------------
+
+describe("A6: sliding-window arithmetic for the Durable Object limiter", () => {
+  /**
+   * THE BUG: the KV limiter read a timestamp list, counted, and wrote it back.
+   * 30 simultaneous requests against the deployed Worker all read the same
+   * empty list: 30 of 30 passed a quota of 10, in each of three runs.
+   *
+   * Concurrency itself is fixed by moving the count into a Durable Object; that
+   * part is verified against the deployed Worker, not here. These tests pin the
+   * window arithmetic the Durable Object relies on.
+   */
+  const now = 1_000_000;
+  const windowMs = 60_000;
+
+  it("allows up to the quota and records the hit", () => {
+    const d = evaluateWindow([now - 1000, now - 2000], now, windowMs, 3);
+    expect(d.allowed).toBe(true);
+    expect(d.kept).toHaveLength(3);
+  });
+
+  it("refuses at the quota without recording the refused hit", () => {
+    const hits = [now - 3000, now - 2000, now - 1000];
+    const d = evaluateWindow(hits, now, windowMs, 3);
+    expect(d.allowed).toBe(false);
+    expect(d.kept).toHaveLength(3); // a refused request must not eat a future slot
+  });
+
+  it("frees a slot once the oldest hit leaves the window", () => {
+    const hits = [now - windowMs - 1, now - 2000, now - 1000];
+    expect(evaluateWindow(hits, now, windowMs, 3).allowed).toBe(true);
+  });
+
+  it("reports Retry-After as the time until the oldest hit expires", () => {
+    const hits = [now - 50_000, now - 2000, now - 1000];
+    const d = evaluateWindow(hits, now, windowMs, 3);
+    expect(d.retryAfter).toBe(10);
+  });
+
+  it("never reports a Retry-After of zero while refusing", () => {
+    const hits = [now - windowMs + 1, now - 2000, now - 1000];
+    expect(evaluateWindow(hits, now, windowMs, 3).retryAfter).toBeGreaterThanOrEqual(1);
   });
 });

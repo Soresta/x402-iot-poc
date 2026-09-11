@@ -139,10 +139,9 @@ Two HTTP requests. The status code has been in the spec, unused, since 1997.
 
 ## Before you build on this
 
-Read the [limitations](./README.md#known-gotchas-collected-across-week-2-and-week-3)
-first. Short version: the Agent Card is unsigned, there is a small window between
-settlement and the replay key being written, and the "daily" spending cap counts
-per UTC calendar day rather than a rolling 24 hours.
+Read the [limitations](./README.md#known-gotchas--things-that-cost-real-time-here)
+first. Short version: the Agent Card is unsigned, and nobody outside this project
+has paid it yet — so if you do, you are the first.
 
 Three 2026 papers document real attacks on x402 implementations. They are worth
 reading before you put anything of value behind this.

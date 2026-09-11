@@ -32,6 +32,7 @@
     "PRICE_PER_INFERENCE": "$0.002",
     "RATE_LIMIT_QUOTA": "10",
     "RATE_LIMIT_WINDOW_S": "60",
+    "IP_RATE_LIMIT_QUOTA": "60",
     "USDC_ASSET": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
     "REQUIRE_MANDATE": "false",
     "OWN_WALLETS": "0x936F147d5489Fa2236827bd5bc98C6b104718945,0x219ba53AC52D99668a5c20737D1dEd60f435d99E"
@@ -46,6 +47,10 @@
       {
         "name": "DEVICE_TWIN",
         "class_name": "DeviceTwin"
+      },
+      {
+        "name": "RATE_LIMITER",
+        "class_name": "RateLimiter"
       }
     ]
   },
@@ -54,6 +59,10 @@
     {
       "tag": "v1",
       "new_sqlite_classes": ["DeviceTwin"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["RateLimiter"]
     }
   ],
 

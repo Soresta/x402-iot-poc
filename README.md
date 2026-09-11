@@ -231,6 +231,7 @@ Update `SELLER_URL` in `.env` to point at your deployed Worker URL.
 | `PRICE_PER_INFERENCE` | `$0.002` | Price per `/api/inference` call — higher on purpose, so `max_per_call` has a real decision to make |
 | `RATE_LIMIT_QUOTA` | `10` | Max requests per buyer per window |
 | `RATE_LIMIT_WINDOW_S` | `60` | Rate-limit window (seconds) |
+| `IP_RATE_LIMIT_QUOTA` | `60` | Per-IP backstop per window. The payer address in a proof is unverified when the limiter runs, so a per-payer quota alone can be walked past by rotating fake addresses |
 | `USDC_ASSET` | Base Sepolia USDC | Asset the seller will accept |
 | `REQUIRE_MANDATE` | `false` | `true` rejects requests carrying no mandate with `403` |
 | `OWN_WALLETS` | our two addresses | Comma-separated addresses we control. A payer **not** on this list counts as external adoption — keeping it in config is what stops a wallet we funded ourselves being counted as a stranger |
@@ -291,7 +292,7 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ### Automated
 
 ```bash
-npm test          # vitest — 26 regression tests
+npm test          # vitest — 38 regression tests
 npx tsc --noEmit  # typecheck
 ```
 
@@ -323,6 +324,7 @@ node buyer/test_inference.mjs           # both resources, one card, scope enforc
 node buyer/test_mandate.mjs             # identity 401 / mandate 403, seven cases (spends 1)
 node buyer/test_negative.mjs            # underpayment, wrong asset         → 402 + code
 node buyer/test_ratelimit.mjs --recover # quota breach → 429, then recovery
+node buyer/test_ratelimit_burst.mjs     # 30 concurrent → exactly 10 pass
 node buyer/test_failclosed.mjs          # facilitator unreachable           → 503
 node buyer/soak.mjs                     # timed unattended run
 node scripts/backup-kv.mjs              # dump KV to backups/ (contains subscriber emails)
@@ -339,6 +341,8 @@ them against the deployed Worker. **Wait 60 s between runs of
 | Paid request returns data; replayed proof rejected | PASS — local and deployed |
 | Underpayment / wrong asset / wrong recipient | PASS — `402` with a distinct code each |
 | Rate-limit breach and recovery | PASS — `429` + `Retry-After`, releases after the window |
+| Rate limit under a concurrent burst | PASS **since 2026-09-11** — 30 simultaneous requests, exactly 10 pass, on the deployed Worker. Before the fix: 30 of 30 passed |
+| Failed paid request is not charged | PASS — two paid requests against a broken device, buyer balance unchanged on-chain |
 | Facilitator unreachable | PASS — `503` + `Retry-After: 5`, no telemetry served |
 | Forced `DeviceTwin` failure | PASS — structured `503`, no stack trace |
 | Budget cap, kill switch, price above mandate | PASS — refused before any payment |
@@ -381,6 +385,7 @@ Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
 │   ├── index.ts         Hono router — every route lives here
 │   ├── types.ts         shared interfaces (SensorReading, Env)
 │   ├── paid-route.ts    THE payment gate, shared by every priced resource
+│   ├── rate-limiter.ts  Durable Object limiter — exact under concurrency
 │   ├── mandate.ts       seller-side mandate verification (401 / 403)
 │   ├── device-twin.ts   DeviceTwin Durable Object; alarm-driven telemetry
 │   ├── inference.ts     pay-per-inference on Workers AI
@@ -399,7 +404,7 @@ Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
 │   └── test_*.mjs       replay, fresh-after-replay, negative, rate limit,
 │                        fail-closed, mandate, inference
 ├── test/
-│   └── regressions.spec.ts   26 tests, one per defect that shipped
+│   └── regressions.spec.ts   38 tests, one group per defect that shipped
 ├── scripts/
 │   └── backup-kv.mjs    dump KV to backups/ — the only backup that exists
 ├── docs/
@@ -435,7 +440,10 @@ app.use(async (c, next) => {
 
 **3. Use `new_sqlite_classes`, not `new_classes`, for Durable Objects on the free plan.** `new_classes` causes a deploy-time error (`D1 database not found or permission denied`) on accounts without the paid Workers plan. `new_sqlite_classes` is the correct key for SQLite-backed DOs on all plan tiers.
 
-**4. Idempotency write-after-settle risk.** The idempotency key is written to KV **after** the facilitator confirms settlement (not before). Residual risk: if the Worker crashes between settle and write, the same payment proof could be accepted again. The financial exposure is bounded (one free reading per crash scenario) and is accepted for this testnet PoC. A two-phase commit pattern would eliminate it but is out of scope here.
+**4. The x402 middleware settles *after* your handler, and only if it succeeds.** It verifies the payment, runs the route handler, and settles only if the handler returned a status below 400; otherwise it cancels and nothing is charged. Two consequences that are easy to get backwards — this repo did, for six weeks:
+
+- **A failing handler does not charge the buyer.** Verified on-chain: two paid requests against a deliberately broken device returned `503`, and the buyer's USDC balance was identical before and after.
+- **The replay key is written *before* settlement**, because it is written in the handler. There is no window in which a settled payment lacks its key. The genuine side effect is the reverse: a proof can be "used up" without a charge if the handler or settlement then fails, and a retry with that same proof gets `payment_already_used`. The x402 client signs a fresh authorization on the next `402`, so this costs a round trip, not money.
 
 
 **5. The payment proof arrives in `payment-signature`, not `X-PAYMENT`.** The
@@ -451,7 +459,9 @@ c.req.header("X-PAYMENT")         || c.req.header("x-payment")
 ```
 ---
 
-**6. `DAILY_CAP` is compared against today's total in `buyer/ledger.jsonl`, not against zero.** A cap below the day's existing spend stops the agent before it buys anything. That is the cap working, not a bug — and the cap counts per **UTC calendar day**, so an agent running across midnight can spend up to twice it inside 24 hours.
+**6. `DAILY_CAP` is compared against today's total in `buyer/ledger.jsonl`, not against zero.** A cap below the day's existing spend stops the agent before it buys anything. That is the cap working, not a bug. The window is a **rolling 24 hours**. It used to be the UTC calendar day, which let an agent running across midnight spend up to twice its cap inside 24 hours; that was fixed on 2026-09-11 and is pinned by regression test 5.
+
+**9. A KV-backed rate limiter does not hold under concurrency.** Read-count-write on KV is not atomic, and KV reads are eventually consistent. This repo's first limiter passed every sequential test and let **30 of 30** simultaneous requests through a quota of 10. It now counts in a Durable Object, which processes one event at a time: the same burst lets exactly 10 through. Test for bursts, not just for request 11.
 
 **7. Only run one `wrangler dev` at a time.** Two instances against the same local Durable Object database produce `NOSENTRY database is locked: SQLITE_BUSY`, an error that does not mention the real problem.
 
@@ -483,9 +493,7 @@ The ERC-20 `Transfer` event is the **second** log in the receipt. The first is `
 - [x] Regression suite, mutation-verified against every defect that shipped
 - [x] External-payer accounting that excludes our own wallets
 - [ ] Signed Agent Cards (A2A v1.0, JWS) — discovery currently trusts TLS alone
-- [ ] Close the write-after-settle window on the replay key
-- [ ] A refund path for paid-but-undelivered
-- [ ] Rolling 24 h spending cap instead of a UTC calendar day
+- [x] Rolling 24 h spending cap instead of a UTC calendar day
 - [ ] Dispute handling
 
 The open ones, with what "done" looks like for each: [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).

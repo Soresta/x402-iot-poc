@@ -42,6 +42,12 @@ export interface PaidRouteConfig {
   description: string;
   /** Short id recorded on receipts and SSE events, e.g. "readings" */
   resource: string;
+  /**
+   * Optional input check, run FIRST — before rate limiting, the mandate and the
+   * 402. A request that can never succeed should be refused before the buyer is
+   * asked to sign anything.
+   */
+  validate?: (c: any) => { status: 400; error: string } | null;
 }
 
 /** Read the signed payment proof off the request.
@@ -116,30 +122,41 @@ export function screenPayment(c: any, header: string, price: string): { error: s
   return null;
 }
 
-/** Per-payer sliding window in KV. Returns a 429 response, or null to continue. */
-async function enforceRateLimit(c: any, payerAddress: string): Promise<Response | null> {
-  const windowMs = (Number(c.env.RATE_LIMIT_WINDOW_S) || 60) * 1000;
-  const quota = Number(c.env.RATE_LIMIT_QUOTA) || 10;
-  const rlKey = `rl:${payerAddress.toLowerCase()}`;
-  const now = Date.now();
+/**
+ * Two sliding-window buckets, each held in its own RateLimiter Durable Object so
+ * the count is exact under concurrency. A request must fit in both.
+ *
+ * The KV limiter this replaces let 30 of 30 simultaneous requests through a
+ * quota of 10 — see src/rate-limiter.ts for the measurement.
+ *
+ * Returns a 429 response, or null to continue.
+ */
+async function enforceRateLimit(c: any, payerAddress: string | null): Promise<Response | null> {
+  const env = c.env;
+  const windowMs = (Number(env.RATE_LIMIT_WINDOW_S) || 60) * 1000;
+  const payerQuota = Number(env.RATE_LIMIT_QUOTA) || 10;
+  const ipQuota = Number(env.IP_RATE_LIMIT_QUOTA) || 60;
 
-  const rawWindow = await c.env.IOT_KV.get(rlKey);
-  const timestamps: number[] = rawWindow ? JSON.parse(rawWindow) : [];
-  const fresh = timestamps.filter((t) => t >= now - windowMs);
+  if (!env.RATE_LIMITER) return null; // binding absent: payment is still verified downstream
 
-  if (fresh.length >= quota) {
-    const retryAfter = Math.ceil((fresh[0] + windowMs - now) / 1000);
-    return c.json(
-      { error: "rate_limit_exceeded", docs_url: DOCS_URL, retry_after_seconds: retryAfter },
-      429,
-      { "Retry-After": String(retryAfter) }
-    );
+  // CF-Connecting-IP is set by Cloudflare and cannot be supplied by the client.
+  // The payer address is NOT verified at this point — it is whatever the client
+  // put in the proof — so it cannot be the only bucket.
+  const ip = c.req.header("cf-connecting-ip") || "unknown";
+  const buckets: Array<[string, number]> = [[`ip:${ip}`, ipQuota]];
+  if (payerAddress) buckets.push([`payer:${payerAddress.toLowerCase()}`, payerQuota]);
+
+  for (const [name, quota] of buckets) {
+    const stub = env.RATE_LIMITER.get(env.RATE_LIMITER.idFromName(name));
+    const { allowed, retryAfter } = await stub.hit(windowMs, quota);
+    if (!allowed) {
+      return c.json(
+        { error: "rate_limit_exceeded", docs_url: DOCS_URL, retry_after_seconds: retryAfter },
+        429,
+        { "Retry-After": String(retryAfter) }
+      );
+    }
   }
-
-  fresh.push(now);
-  await c.env.IOT_KV.put(rlKey, JSON.stringify(fresh), {
-    expirationTtl: Math.ceil(windowMs / 1000) + 60,
-  });
   return null;
 }
 
@@ -186,13 +203,20 @@ export function createPaidRoute(config: PaidRouteConfig): MiddlewareHandler {
     const price = env[config.priceVar] as string;
     const paymentHeader = getPaymentHeader(c);
 
-    // --- 429: rate limit, before any facilitator call ------------------------
-    if (paymentHeader && env.IOT_KV) {
-      const payer = payerFromPaymentHeader(paymentHeader);
-      if (payer) {
-        const limited = await enforceRateLimit(c, payer);
-        if (limited) return limited;
+    // --- 400: input that can never succeed, before anything else -------------
+    if (config.validate) {
+      const invalid = config.validate(c);
+      if (invalid) {
+        return c.json({ error: invalid.error, docs_url: DOCS_URL }, invalid.status);
       }
+    }
+
+    // --- 429: rate limit, before any facilitator call ------------------------
+    // Only requests carrying a proof can cost us a facilitator call, so only
+    // those are counted.
+    if (paymentHeader) {
+      const limited = await enforceRateLimit(c, payerFromPaymentHeader(paymentHeader));
+      if (limited) return limited;
     }
 
     // --- 401 / 403: identity and authorization, before any money moves -------
@@ -280,11 +304,17 @@ export async function idempotencyKeyFor(paymentHeader: string): Promise<string> 
  * Replay protection. Returns a 402 response if this exact proof was already
  * used, otherwise records it and returns null.
  *
- * KNOWN LIMITATION, stated rather than implied away: the key is written after
- * settlement has already completed. If the Worker dies in between, the same
- * proof could be accepted again. The on-chain EIP-3009 nonce is an independent
- * second barrier, so practical risk is low — but this layer alone does not
- * close the window.
+ * ORDER, verified rather than assumed (2026-09-11). This runs inside the route
+ * handler, and the x402 middleware settles only AFTER the handler returns a
+ * status below 400. So the key is written BEFORE settlement: there is no window
+ * in which a settled payment lacks its replay key. Earlier comments and docs in
+ * this repo claimed the opposite, and were wrong.
+ *
+ * The real consequence runs the other way, and it is small: if the handler
+ * then fails, or settlement fails, the key is already written but nothing was
+ * charged. That proof now answers `payment_already_used` although the buyer
+ * paid nothing. The x402 client signs a fresh authorization on the next 402, so
+ * a retry still works — the error code is simply misleading in that one case.
  */
 export async function rejectReplay(c: any): Promise<Response | null> {
   const paymentHeader = getPaymentHeader(c);

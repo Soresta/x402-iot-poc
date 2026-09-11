@@ -93,7 +93,7 @@ specific codebase, with the failing output published.
 > your payment verifier is slow, and why a "daily" spending cap that counts
 > calendar days lets an autonomous agent spend twice its limit by running across
 > midnight. I found that one by running an agent for an hour and reading the
-> ledger.
+> ledger, then fixed it with a rolling window.
 
 ---
 
