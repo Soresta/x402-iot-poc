@@ -57,9 +57,9 @@ thing to fix.
 Needed: a named counterparty, written terms, a stated position on what happens
 when a settlement is submitted but fails, and a security attestation.
 
-**The uncomfortable data point.** A 2026 assessment applied agent-economy
-security tests to fifteen facilitators including Coinbase's. Violations were
-found in **every one evaluated**. This is not one bad vendor; it is an immature
+**The uncomfortable data point.** A USENIX Security 2026 study tested fifteen
+major facilitators, Coinbase's included, and found that **every one violated at
+least one security rule** ([paper](https://www.usenix.org/system/files/usenixsecurity26-wang-qinying.pdf)). This is not one bad vendor; it is an immature
 layer. Any facilitator selection needs to be a diligence exercise, not a config
 change.
 

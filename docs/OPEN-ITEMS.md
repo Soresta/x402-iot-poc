@@ -54,7 +54,7 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 | ~~D2~~ | ~~`index.ts` header comment stale.~~ **CLOSED 2026-09-11** — header lists every route grouped paid / free / write with the gate order; the empty "Demo page + SSE" section header now sits above the routes it names. |
 | ~~D3~~ | ~~Pre-W5 receipts show an unlabelled resource.~~ **CLOSED 2026-09-11** — shown as "Sensor reading\*" with a tooltip saying it is inferred (readings were the only product then), not recorded. |
 | ~~D4~~ | ~~`AGENTS.md` is a template file.~~ **CLOSED 2026-09-11 — adopted deliberately.** Its instruction (don't trust remembered Workers APIs) is exactly the mistake behind several defects here; a header now says why it is kept and points at the gotchas and the mutation check. |
-| D5 | The research board flags four signals as secondary coverage needing primary confirmation before it is loaded. Not yet confirmed. |
+| ~~D5~~ | ~~Four research-board signals unconfirmed.~~ **CLOSED 2026-09-11 — and two were wrong.** Two cited an article that does not contain the claim (a facilitator count, and a Stellar release date); one pointed at the wrong press release and named a member the primary release does not list. One removed, two corrected, one upgraded to a USENIX Security 2026 paper, one kept and labelled as a reported figure. Details in the board's signal quality note. |
 | ~~D6~~ | ~~`CHANGELOG.md` and `HANDOFF.md` both list the deployed version.~~ **CLOSED 2026-09-11** — and the drift had already happened: the handoff runbook said "must be 26 passed" and named a version two deploys old, and its smoke test expected `402` from `/api/inference`, which now correctly returns `400` without input. The runbook no longer records a version or a test count. |
 | ~~D7~~ | ~~`ERRORS.md` is behind the code by ten codes.~~ **CLOSED 2026-09-08** — all ten added and verified by a script that greps every code emitted from `src/` and checks it appears in the catalogue: 25 emitted, 0 undocumented. Worth re-running before any release. |
 
@@ -82,7 +82,7 @@ Not ours to fix, listed so the final report can say what was blocked and for how
    tutorial run and two rehearsals. `PENDING-HUMAN-TESTS.md` has the exact steps
    for B1–B5; the plan is to run them as one batch.
 3. **C1–C4** are closed.
-4. **D** is down to D5 (confirming four research-board signals against primary sources).
+4. **D** is closed.
 5. **E1–E6** are decisions, not work.
 
 **Rule for the final pass:** an item does not move to done because it was

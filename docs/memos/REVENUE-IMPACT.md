@@ -116,7 +116,7 @@ rather than escalating it once, hard, in Week 3.
 | Working PoC, deployed, MIT, v1.0.0 tagged | live | **none** |
 | 61-test suite, 8 of 8 known defects caught when reintroduced | live | **none** |
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
-| Agentic-payments research board — 11 technologies, 21 dated signals | drafted | **none yet.** This is the Watch subscription's content |
+| Agentic-payments research board — 11 technologies, 20 dated signals | drafted | **none yet.** This is the Watch subscription's content |
 | Flagship tutorial, 3 posts, 2 X threads, Show HN, 2 subreddit posts, outreach template, 10-slide deck, 90-second video script | written, unpublished | **none** |
 | Four documented defect classes in a young ecosystem | published in-repo | **none.** Credible material for the briefings |
 
