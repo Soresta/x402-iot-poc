@@ -25,6 +25,8 @@ import { verifyPresentedMandate } from "../src/mandate";
 import { getPaymentHeader, screenPayment, payerFromPaymentHeader } from "../src/paid-route";
 import { pickTopClass } from "../src/inference";
 import { ownWallets, shortenAddress } from "../src/payers";
+// @ts-expect-error — plain ESM module from the buyer side, no type declarations
+import { spentInWindow, DAY_MS } from "../buyer/budget.mjs";
 
 // --------------------------------------------------------------------------
 // helpers
@@ -279,5 +281,42 @@ describe("external payer accounting", () => {
 
   it("truncates addresses for display", () => {
     expect(shortenAddress("0x1234567890abcdef1234567890abcdef12345678")).toBe("0x1234…5678");
+  });
+});
+
+// --------------------------------------------------------------------------
+// Regression 5 — the "daily" cap reset at UTC midnight
+// --------------------------------------------------------------------------
+
+describe("regression 5: spending cap is a rolling 24 h window", () => {
+  /**
+   * THE BUG: the buyer summed ledger entries whose timestamp started with
+   * today's UTC date. At 00:00 the counter reset to zero however recently the
+   * agent had spent, so an agent running across midnight could spend twice its
+   * cap inside 24 hours. Found by running the agent for an hour across midnight.
+   */
+  const now = Date.parse("2026-09-12T00:30:00Z");
+
+  it("counts spending from before midnight that is still inside 24 hours", () => {
+    const ledger = [
+      { ts: "2026-09-11T23:50:00Z", price: 0.01 }, // 40 min ago, previous UTC day
+      { ts: "2026-09-12T00:10:00Z", price: 0.01 }, // 20 min ago
+    ];
+    // The calendar-day version returned 0.01 here.
+    expect(spentInWindow(ledger, now)).toBe(0.02);
+  });
+
+  it("drops spending older than 24 hours", () => {
+    const ledger = [{ ts: new Date(now - DAY_MS - 1).toISOString(), price: 0.5 }];
+    expect(spentInWindow(ledger, now)).toBe(0);
+  });
+
+  it("ignores refusals and unparseable lines, which carry no price", () => {
+    const ledger = [
+      { ts: "2026-09-12T00:20:00Z", result: "cap_reached" },
+      { ts: "not a date", price: 1 },
+      { price: 1 },
+    ];
+    expect(spentInWindow(ledger, now)).toBe(0);
   });
 });

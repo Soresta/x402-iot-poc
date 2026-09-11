@@ -21,6 +21,7 @@ import { x402Client } from "@x402/core/client";
 import { registerExactEvmScheme } from "@x402/evm/exact/client";
 import { privateKeyToAccount } from "viem/accounts";
 import { createMandate, verifyMandate, checkPriceInScope } from "./mandate.mjs";
+import { spentInWindow } from "./budget.mjs";
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
@@ -32,7 +33,7 @@ import { join, dirname } from "node:path";
 const BUYER_PRIVATE_KEY = process.env.BUYER_PRIVATE_KEY;
 const SELLER_URL = process.env.SELLER_URL || "http://127.0.0.1:8787";
 const LOOP_INTERVAL_MS = Number(process.env.LOOP_INTERVAL_MS) || 30_000;
-const DAILY_CAP = parseFloat(process.env.DAILY_CAP || "0.05");    // USDC
+const DAILY_CAP = parseFloat(process.env.DAILY_CAP || "0.05");    // USDC, over any rolling 24 h
 const MAX_PER_CALL = parseFloat(process.env.MAX_PER_CALL || "0.002"); // USDC
 const MANDATE_EXPIRY_HOURS = Number(process.env.MANDATE_EXPIRY_HOURS) || 24;
 
@@ -75,22 +76,17 @@ function appendLedger(entry) {
   appendFileSync(LEDGER_PATH, line, "utf8");
 }
 
+/** Spend over the last 24 hours — a rolling window, not the UTC calendar day. */
 function readRunningTotal() {
   if (!existsSync(LEDGER_PATH)) return 0;
-  const lines = readFileSync(LEDGER_PATH, "utf8").trim().split("\n").filter(Boolean);
-  if (lines.length === 0) return 0;
-  // Today's total only (UTC date)
-  const today = new Date().toISOString().slice(0, 10);
-  let total = 0;
-  for (const line of lines) {
+  const entries = [];
+  for (const line of readFileSync(LEDGER_PATH, "utf8").split(/\r?\n/)) {
+    if (!line.trim()) continue;
     try {
-      const entry = JSON.parse(line);
-      if (entry.ts && entry.ts.startsWith(today) && typeof entry.price === "number") {
-        total += entry.price;
-      }
+      entries.push(JSON.parse(line));
     } catch {}
   }
-  return total;
+  return spentInWindow(entries, Date.now());
 }
 
 // ---------------------------------------------------------------------------
