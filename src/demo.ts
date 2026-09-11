@@ -762,7 +762,10 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
   function labelFor(resource) {
     if (resource === "inference") return "Inference";
     if (resource === "readings") return "Sensor reading";
-    return "Resource";
+    // Receipts written before week 5 do not name a resource. Sensor readings
+    // were the only thing on sale then, so this is an inference, not a record —
+    // and the page says so instead of showing a label that looks like a bug.
+    return '<span title="Recorded before receipts named their resource. Sensor readings were the only product on sale at the time." style="border-bottom:1px dotted currentColor;cursor:help">Sensor reading*</span>';
   }
 
   function amountToNumber(amount) {

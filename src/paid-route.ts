@@ -160,10 +160,27 @@ async function enforceRateLimit(c: any, payerAddress: string | null): Promise<Re
   return null;
 }
 
-/** Record a settlement: receipt log for the API, latest_event for the SSE feed. */
-async function recordSettlement(c: any, header: string, price: string, resource: string) {
+/**
+ * Record a settlement: receipt log for the API, latest_event for the SSE feed.
+ *
+ * ONLY if it actually settled. The middleware sets a `payment-response` header on
+ * failure too — `{"success":false,"errorReason":…}` — and this function used to
+ * record anything carrying that header. Every failed settlement since week 3
+ * became a receipt with no transaction hash, and was counted as a settlement by
+ * the demo page, /api/payers and /api/metrics/daily. Found 2026-09-11: 3 of the
+ * last 100 receipts on the deployed Worker, two of them the "transient failures"
+ * from the week 5 soak run that the demo page had quietly counted as sales.
+ *
+ * Returns whether a receipt was written, so a test can assert on it.
+ */
+export async function recordSettlement(
+  c: any,
+  header: string,
+  price: string,
+  resource: string
+): Promise<boolean> {
   const decoded = decodeB64Json(header);
-  if (!decoded) return;
+  if (!decoded || decoded.success !== true || !decoded.transaction) return false;
 
   const receipt = {
     payer: decoded.payer ?? null,
@@ -193,6 +210,18 @@ async function recordSettlement(c: any, header: string, price: string, resource:
     }),
     { expirationTtl: 3600 }
   );
+  return true;
+}
+
+/**
+ * Is this receipt a real settlement?
+ *
+ * Receipts written before the fix above can describe a settlement that failed.
+ * They are left in the log rather than deleted — the log is a record — and every
+ * reader filters them out through this one function.
+ */
+export function isSettledReceipt(receipt: any): boolean {
+  return typeof receipt?.txHash === "string" && receipt.txHash.length > 0;
 }
 
 export function createPaidRoute(config: PaidRouteConfig): MiddlewareHandler {

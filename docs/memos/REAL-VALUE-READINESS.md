@@ -211,8 +211,8 @@ they say:
 - [ ] Sign the Agent Card (A2A v1.0, JWS). Discovery currently trusts TLS alone.
 - [x] Make the spending cap a rolling window rather than a UTC calendar day.
       *Done 2026-09-11.*
-- [x] Automated test suite. *57 tests — 38 regression, 19 over HTTP — and every
-      known defect caught when reintroduced (7 of 7). Previously: one per defect that shipped,
+- [x] Automated test suite. *61 tests — 38 regression, 23 over HTTP — and every
+      known defect caught when reintroduced (8 of 8). Previously: one per defect that shipped,
       mutation-checked. Route behaviour over HTTP is still verified by hand.*
 - [ ] Facilitator diligence: named counterparty, written terms, security
       attestation.

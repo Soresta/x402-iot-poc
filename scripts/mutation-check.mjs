@@ -64,6 +64,12 @@ const MUTATIONS = [
     to: `  const raw = (c.req.query("text") ?? "").toString().trim() || "sample";\n  if (!raw) return { status: 400, error: "inference_input_required" };`,
   },
   {
+    name: "Receipts: failed settlements recorded as sales",
+    file: "src/paid-route.ts",
+    from: `  if (!decoded || decoded.success !== true || !decoded.transaction) return false;`,
+    to: `  if (!decoded) return false;`,
+  },
+  {
     name: "A6 rate limit: limiter switched off",
     file: "src/paid-route.ts",
     from: `  if (!env.RATE_LIMITER) return null; // binding absent: payment is still verified downstream`,

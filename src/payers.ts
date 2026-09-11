@@ -15,6 +15,8 @@
  * and adding it to `OWN_WALLETS` is what keeps the two apart.
  */
 
+import { isSettledReceipt } from "./paid-route";
+
 const DOCS_URL = "https://github.com/Soresta/x402-iot-poc#errors";
 
 export interface PayerSummary {
@@ -46,6 +48,8 @@ function summarise(receipts: any[], own: Set<string>): PayerSummary[] {
   const byPayer = new Map<string, PayerSummary>();
 
   for (const r of receipts) {
+    // A receipt without a transaction hash is a settlement that failed.
+    if (!isSettledReceipt(r)) continue;
     const address = String(r.payer ?? "").toLowerCase();
     if (!address) continue;
 

@@ -1,18 +1,33 @@
 /**
  * index.ts — Hono Worker entry point for x402-iot-poc
  *
- * Week 2 routes (preserved as evidence artifacts):
- *   GET /reading — x402-gated simulated reading (legacy, Week 2 proof)
+ * Routing only. Payment, identity and rate-limit logic live in paid-route.ts;
+ * this file decides which routes go through it.
  *
- * Week 3 routes:
- *   GET /api/readings        — x402-gated reading from DeviceTwin DO
- *   GET /api/inference       — x402-gated Workers AI classification (Week 5)
- *   GET /api/device/status   — DO health: seq, nextAlarmAt
- *   GET /api/device/history  — ring buffer, newest first, ?limit=n (1–50)
- *   GET /api/receipts        — public settlement log, ?limit=n
- *   GET /.well-known/agent-card.json — A2A Agent Card for discovery
- *   GET /api/events          — SSE settlement feed
- *   GET /                    — Live demo page
+ * Paid (x402 gate: 400 input → 429 rate → 401 identity → 403 mandate → 402 → 503)
+ *   GET  /api/readings              one DeviceTwin reading            $0.001
+ *   GET  /api/inference?text=       one Workers AI classification     $0.002
+ *   GET  /reading                   week 2 legacy route, kept as evidence
+ *
+ * Free
+ *   GET  /.well-known/agent-card.json   A2A discovery: skills, prices, terms
+ *   GET  /api/negotiate                 counter-offer, accept or decline
+ *   GET  /api/receipts                  settlement log
+ *   GET  /api/payers                    who paid, ours vs external
+ *   GET  /api/metrics/daily             aggregate funnel counters
+ *   GET  /api/device/status             DeviceTwin health
+ *   GET  /api/device/history            DeviceTwin ring buffer
+ *   GET  /api/events                    SSE settlement feed
+ *   GET  /                              live demo page
+ *
+ * Write
+ *   POST /api/visit                     aggregate visit counter, no identifiers
+ *   POST /api/subscribe                 consent-first email capture
+ *   GET  /api/subscribers/count         aggregate only
+ *   GET  /api/subscribers.csv           export — fails closed without EXPORT_TOKEN
+ *
+ * Durable Objects exported here: DeviceTwin (telemetry, knows nothing about
+ * money) and RateLimiter (one instance per bucket, exact under concurrency).
  */
 
 import { Hono, type MiddlewareHandler } from "hono";
@@ -24,7 +39,7 @@ import { DeviceTwin } from "./device-twin";
 import { RateLimiter } from "./rate-limiter";
 import { agentCardHandler } from "./agent-card";
 import { demoPageHandler, sseHandler } from "./demo";
-import { createPaidRoute, rejectReplay, DOCS_URL } from "./paid-route";
+import { createPaidRoute, rejectReplay, isSettledReceipt, DOCS_URL } from "./paid-route";
 import { inferenceHandler, validateInferenceInput } from "./inference";
 import { visitHandler, dailyMetricsHandler } from "./metrics";
 import { payersHandler } from "./payers";
@@ -173,7 +188,10 @@ app.get("/api/receipts", async (c) => {
 
   const rawLog = await c.env.IOT_KV.get("receipt_log");
   const log = rawLog ? JSON.parse(rawLog) : [];
-  return c.json(log.slice(0, limit));
+  // Entries without a transaction hash record settlements that failed; they were
+  // written before recordSettlement checked `success`. Kept in storage, never
+  // served as receipts.
+  return c.json(log.filter(isSettledReceipt).slice(0, limit));
 });
 
 // ---------------------------------------------------------------------------
@@ -183,11 +201,7 @@ app.get("/api/receipts", async (c) => {
 app.get("/.well-known/agent-card.json", agentCardHandler);
 
 // ---------------------------------------------------------------------------
-// Demo page + SSE
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Email capture (consent-first). The list lives in our KV; export fails closed.
+// Observability and negotiation — free, public, aggregate
 // ---------------------------------------------------------------------------
 
 app.post("/api/visit", visitHandler);
@@ -195,9 +209,17 @@ app.get("/api/metrics/daily", dailyMetricsHandler);
 app.get("/api/payers", payersHandler);
 app.get("/api/negotiate", negotiateHandler);
 
+// ---------------------------------------------------------------------------
+// Email capture (consent-first). The list lives in our KV; export fails closed.
+// ---------------------------------------------------------------------------
+
 app.post("/api/subscribe", subscribeHandler);
 app.get("/api/subscribers/count", subscriberCountHandler);
 app.get("/api/subscribers.csv", exportSubscribersHandler);
+
+// ---------------------------------------------------------------------------
+// Demo page + SSE feed
+// ---------------------------------------------------------------------------
 
 app.get("/api/events", sseHandler);
 app.get("/", demoPageHandler);

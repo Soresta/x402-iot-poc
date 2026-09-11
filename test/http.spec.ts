@@ -12,11 +12,11 @@
  * screen rejects locally. So these tests are deterministic and move no funds.
  */
 
-import { SELF } from "cloudflare:test";
+import { SELF, env } from "cloudflare:test";
 import { describe, it, expect } from "vitest";
 import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 
-import { rejectReplay } from "../src/paid-route";
+import { rejectReplay, recordSettlement } from "../src/paid-route";
 
 const BASE = "https://seller.test";
 const PAY_TO = "0x219ba53AC52D99668a5c20737D1dEd60f435d99E";
@@ -248,5 +248,88 @@ describe("C3: rejectReplay records a proof once and refuses it after", () => {
     const { ctx, store } = stubContext(undefined);
     expect(await rejectReplay(ctx)).toBeNull();
     expect(store.size).toBe(0);
+  });
+});
+
+// --------------------------------------------------------------------------
+// Failed settlements must not become receipts
+// --------------------------------------------------------------------------
+
+describe("a failed settlement is not a receipt", () => {
+  /**
+   * THE BUG (found 2026-09-11): the middleware sets a payment-response header on
+   * failure too, and recordSettlement recorded anything carrying one. Failed
+   * settlements became receipts with no transaction hash and were counted as
+   * sales by the demo page, /api/payers and /api/metrics/daily — including two
+   * failures from the week 5 soak run.
+   */
+  function kvStub() {
+    const store = new Map<string, string>();
+    return {
+      store,
+      ctx: {
+        env: {
+          IOT_KV: {
+            get: async (k: string) => store.get(k) ?? null,
+            put: async (k: string, v: string) => void store.set(k, v),
+          },
+        },
+      },
+    };
+  }
+  const header = (body: unknown) => btoa(JSON.stringify(body));
+
+  it("records nothing when settlement failed", async () => {
+    const { ctx, store } = kvStub();
+    const wrote = await recordSettlement(
+      ctx,
+      header({ success: false, errorReason: "invalid_exact_evm_transaction_failed", payer: "0xabc" }),
+      "$0.001",
+      "readings"
+    );
+    expect(wrote).toBe(false);
+    expect(store.has("receipt_log")).toBe(false);
+    expect(store.has("latest_event")).toBe(false);
+  });
+
+  it("records a receipt and a live event when it settled", async () => {
+    const { ctx, store } = kvStub();
+    const wrote = await recordSettlement(
+      ctx,
+      header({ success: true, transaction: "0x" + "ab".repeat(32), payer: "0xabc" }),
+      "$0.001",
+      "readings"
+    );
+    expect(wrote).toBe(true);
+    const [receipt] = JSON.parse(store.get("receipt_log")!);
+    expect(receipt).toMatchObject({ amount: "$0.001", resource: "readings" });
+    expect(store.has("latest_event")).toBe(true);
+  });
+
+  it("GET /api/receipts hides old entries that recorded a failure", async () => {
+    await env.IOT_KV.put(
+      "receipt_log",
+      JSON.stringify([
+        { payer: "0xabc", amount: "$0.001", resource: "readings", txHash: "0x" + "cd".repeat(32), timestamp: "2026-09-11T10:00:01Z" },
+        { payer: "0xabc", amount: "$0.001", resource: "readings", txHash: null, timestamp: "2026-09-11T10:00:00Z" },
+      ])
+    );
+    const res = await get("/api/receipts?limit=10");
+    const receipts: any[] = await res.json();
+    expect(receipts).toHaveLength(1);
+    expect(receipts[0].txHash).toBeTruthy();
+  });
+
+  it("/api/payers does not count them as settlements", async () => {
+    await env.IOT_KV.put(
+      "receipt_log",
+      JSON.stringify([
+        { payer: "0x1111111111111111111111111111111111111111", amount: "$0.001", txHash: "0x" + "ef".repeat(32), timestamp: "2026-09-11T10:00:01Z" },
+        { payer: "0x1111111111111111111111111111111111111111", amount: "$0.001", txHash: null, timestamp: "2026-09-11T10:00:00Z" },
+      ])
+    );
+    const body: any = await (await get("/api/payers")).json();
+    const row = body.payers.find((p: any) => p.address.startsWith("0x1111"));
+    expect(row.settlements).toBe(1);
   });
 });

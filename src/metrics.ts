@@ -18,6 +18,7 @@
  */
 
 import { ownWallets } from "./payers";
+import { isSettledReceipt } from "./paid-route";
 
 const DOCS_URL = "https://github.com/Soresta/x402-iot-poc#errors";
 
@@ -113,7 +114,9 @@ export async function dailyMetricsHandler(c: any) {
   // --- settlements for that day, from the receipt log ---
   const rawLog = await c.env.IOT_KV.get("receipt_log");
   const log: any[] = rawLog ? JSON.parse(rawLog) : [];
-  const dayReceipts = log.filter((r) => String(r.timestamp ?? "").startsWith(date));
+  const dayReceipts = log.filter(
+    (r) => isSettledReceipt(r) && String(r.timestamp ?? "").startsWith(date)
+  );
 
   const byResource: Record<string, number> = {};
   let volume = 0;

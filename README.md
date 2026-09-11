@@ -292,7 +292,7 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ### Automated
 
 ```bash
-npm test                        # vitest — 57 tests: 38 regression, 19 over HTTP
+npm test                        # vitest — 61 tests: 38 regression, 23 over HTTP
 node scripts/mutation-check.mjs # put each known defect back; the suite must go red
 npx tsc --noEmit  # typecheck
 ```
@@ -344,6 +344,7 @@ them against the deployed Worker. **Wait 60 s between runs of
 | Rate-limit breach and recovery | PASS — `429` + `Retry-After`, releases after the window |
 | Rate limit under a concurrent burst | PASS **since 2026-09-11** — 30 simultaneous requests, exactly 10 pass, on the deployed Worker. Before the fix: 30 of 30 passed |
 | Failed paid request is not charged | PASS — two paid requests against a broken device, buyer balance unchanged on-chain |
+| A failed settlement is not counted as a sale | PASS **since 2026-09-11** — deployed Worker went from 100 settlements / $0.101 to the true 97 / $0.098 |
 | Facilitator unreachable | PASS — `503` + `Retry-After: 5`, no telemetry served |
 | Forced `DeviceTwin` failure | PASS — structured `503`, no stack trace |
 | Budget cap, kill switch, price above mandate | PASS — refused before any payment |
@@ -406,7 +407,7 @@ Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
 │                        fail-closed, mandate, inference
 ├── test/
 │   ├── regressions.spec.ts   38 tests, one group per defect that shipped
-│   └── http.spec.ts          19 tests through SELF.fetch — real routing, real DOs
+│   └── http.spec.ts          23 tests through SELF.fetch — real routing, real DOs
 ├── scripts/
 │   ├── backup-kv.mjs    dump KV to backups/ — the only backup that exists
 │   └── mutation-check.mjs   reintroduce each known defect, expect a red suite

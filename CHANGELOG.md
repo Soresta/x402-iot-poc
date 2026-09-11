@@ -40,6 +40,20 @@ USDC. No release has ever been wired for real value.
   payment gate. Empty or over-length text is `400`; the old silent sample
   substitution and truncation are gone.
 
+### Fixed — failed settlements were counted as sales
+
+The middleware sets a `payment-response` header on failure as well as success,
+and `recordSettlement` recorded anything carrying one. Since week 3, every
+failed settlement became a receipt with no transaction hash, and the demo page,
+`/api/payers` and `/api/metrics/daily` counted it as a sale. On the deployed
+Worker: **100 settlements / $0.101 before the fix, 97 / $0.098 after.** Two of
+the three were the "transient failures" in the week 5 soak run.
+
+Only `success:true` with a transaction is recorded now. Old entries are kept and
+filtered on read, not deleted. The buyer-side figures quoted elsewhere (189
+purchases; 111 in the soak run) were never affected — the ledger only records
+`200` responses.
+
 ### Corrected — two limitations this project stated were wrong
 
 Both were published in this changelog, the README, `ERRORS.md`, the real-value
