@@ -26,6 +26,9 @@ import { getPaymentHeader, screenPayment, payerFromPaymentHeader } from "../src/
 import { pickTopClass, validateInferenceInput, MAX_INPUT_CHARS } from "../src/inference";
 import { ownWallets, shortenAddress } from "../src/payers";
 import { evaluateWindow } from "../src/rate-limiter";
+import { canonicalize, signCard, verifyCard } from "../src/card-signing";
+// @ts-expect-error — plain ESM module from the buyer side, no type declarations
+import { verifyCard as buyerVerifyCard } from "../buyer/card-verify.mjs";
 // @ts-expect-error — plain ESM module from the buyer side, no type declarations
 import { spentInWindow, DAY_MS } from "../buyer/budget.mjs";
 
@@ -398,5 +401,88 @@ describe("A6: sliding-window arithmetic for the Durable Object limiter", () => {
   it("never reports a Retry-After of zero while refusing", () => {
     const hits = [now - windowMs + 1, now - 2000, now - 1000];
     expect(evaluateWindow(hits, now, windowMs, 3).retryAfter).toBeGreaterThanOrEqual(1);
+  });
+});
+
+// --------------------------------------------------------------------------
+// Open item A4 — signed Agent Card (A2A v1.0 §8.4 signature format)
+// --------------------------------------------------------------------------
+
+describe("A4: the Agent Card is signed, and a buyer can tell", () => {
+  async function keyPair() {
+    const pair: any = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, [
+      "sign",
+      "verify",
+    ]);
+    return {
+      privateJwk: (await crypto.subtle.exportKey("jwk", pair.privateKey)) as JsonWebKey,
+      publicJwk: (await crypto.subtle.exportKey("jwk", pair.publicKey)) as JsonWebKey,
+    };
+  }
+
+  const card = {
+    name: "x402-iot-sensor-seller",
+    skills: [{ id: "sell-iot-reading", payment: { price: "$0.001", payTo: "0xSELLER" } }],
+    capabilities: { streaming: true, pushNotifications: false },
+  };
+
+  it("canonicalizes per RFC 8785: sorted keys, no whitespace", () => {
+    expect(canonicalize({ b: 1, a: { d: [true, null], c: "x" } })).toBe('{"a":{"c":"x","d":[true,null]},"b":1}');
+  });
+
+  it("a card signed by the seller verifies against the seller's key", async () => {
+    const { privateJwk, publicJwk } = await keyPair();
+    const signed = await signCard(card, privateJwk, "https://seller.test/.well-known/jwks.json");
+    expect(signed.signatures).toHaveLength(1);
+    expect(await verifyCard(signed, publicJwk)).toMatchObject({ ok: true });
+  });
+
+  it("the buyer's separate verifier agrees with the seller's signer", async () => {
+    // Two copies of a signature algorithm drift silently. This is the tripwire.
+    const { privateJwk, publicJwk } = await keyPair();
+    const signed = await signCard(card, privateJwk);
+    expect(await buyerVerifyCard(signed, publicJwk)).toMatchObject({ ok: true });
+  });
+
+  it("rejects a card whose price was changed after signing", async () => {
+    const { privateJwk, publicJwk } = await keyPair();
+    const signed: any = await signCard(card, privateJwk);
+    signed.skills[0].payment.price = "$0.0001";
+    expect(await verifyCard(signed, publicJwk)).toEqual({ ok: false, reason: "card_signature_invalid" });
+    expect(await buyerVerifyCard(signed, publicJwk)).toEqual({ ok: false, reason: "card_signature_invalid" });
+  });
+
+  it("rejects a card whose payTo was swapped — the attack signing exists to stop", async () => {
+    const { privateJwk, publicJwk } = await keyPair();
+    const signed: any = await signCard(card, privateJwk);
+    signed.skills[0].payment.payTo = "0xATTACKER";
+    expect(await buyerVerifyCard(signed, publicJwk)).toMatchObject({ ok: false });
+  });
+
+  it("rejects a validly signed card from a different key", async () => {
+    const seller = await keyPair();
+    const impostor = await keyPair();
+    const signed = await signCard(card, impostor.privateJwk);
+    expect(await verifyCard(signed, seller.publicJwk)).toMatchObject({ ok: false });
+  });
+
+  it("reports an unsigned card as unsigned, not as invalid", async () => {
+    const { publicJwk } = await keyPair();
+    expect(await verifyCard(card, publicJwk)).toEqual({ ok: false, reason: "card_unsigned" });
+  });
+
+  it("property order does not matter, because the payload is canonical", async () => {
+    const { privateJwk, publicJwk } = await keyPair();
+    const signed: any = await signCard(card, privateJwk);
+    const reordered = { signatures: signed.signatures, skills: signed.skills, capabilities: signed.capabilities, name: signed.name };
+    expect(await verifyCard(reordered, publicJwk)).toMatchObject({ ok: true });
+  });
+
+  it("puts ES256, JOSE, a kid and the jku in the protected header", async () => {
+    const { privateJwk } = await keyPair();
+    const signed = await signCard(card, privateJwk, "https://seller.test/.well-known/jwks.json");
+    const header = JSON.parse(atob(signed.signatures[0].protected.replace(/-/g, "+").replace(/_/g, "/")));
+    expect(header).toMatchObject({ alg: "ES256", typ: "JOSE", jku: "https://seller.test/.well-known/jwks.json" });
+    expect(typeof header.kid).toBe("string");
   });
 });

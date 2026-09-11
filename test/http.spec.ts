@@ -333,3 +333,22 @@ describe("a failed settlement is not a receipt", () => {
     expect(row.settlements).toBe(1);
   });
 });
+
+// --------------------------------------------------------------------------
+// A4 — card signing, when no key is configured
+// --------------------------------------------------------------------------
+
+describe("A4: without a signing key the card is served unsigned, and says so", () => {
+  it("the card carries no signatures field", async () => {
+    const card: any = await (await get("/.well-known/agent-card.json")).json();
+    expect(card.signatures).toBeUndefined();
+  });
+
+  it("/.well-known/jwks.json is a 404 with a code, not an empty key set", async () => {
+    // An empty JWKS would read as "signed with no keys" — a verifier could
+    // misinterpret it. A 404 with a code cannot be.
+    const res = await get("/.well-known/jwks.json");
+    expect(res.status).toBe(404);
+    expect(await res.json()).toMatchObject({ error: "card_signing_not_configured" });
+  });
+});

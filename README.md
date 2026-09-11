@@ -117,7 +117,8 @@ one middleware rather than a copy of it.
 
 | Route | Returns |
 |---|---|
-| `GET /.well-known/agent-card.json` | A2A Agent Card: both skills, prices, payment terms |
+| `GET /.well-known/agent-card.json` | A2A Agent Card: both skills, prices, payment terms. Signed (A2A v1.0 §8.4 JWS format) when a signing key is configured |
+| `GET /.well-known/jwks.json` | the card's public signing key — `404 card_signing_not_configured` until one exists |
 | `GET /api/negotiate?resource=&offer=` | accept or decline a counter-offer, with the list price attached |
 | `GET /api/receipts?limit=n` | settlement log — payer, amount, resource, tx hash |
 | `GET /api/payers` | settlements per wallet, split into ours and external |
@@ -240,6 +241,7 @@ Update `SELLER_URL` in `.env` to point at your deployed Worker URL.
 
 | Secret | Purpose |
 | --- | --- |
+| `AGENT_CARD_SIGNING_KEY` | EC P-256 private JWK that signs the Agent Card. Create it with `node scripts/generate-card-key.mjs --yes`, which pipes it into `wrangler secret put` **without printing it** and prints only the public key. Unset means the card is served unsigned |
 | `EXPORT_TOKEN` | Guards `GET /api/subscribers.csv`. Set with `npx wrangler secret put EXPORT_TOKEN`. **Unset means the export returns `503` and exports nothing** — an unprotected export endpoint on a public Worker is an email list published to the internet |
 
 ### Buyer (`.env`)
@@ -254,6 +256,7 @@ Update `SELLER_URL` in `.env` to point at your deployed Worker URL.
 | `MANDATE_EXPIRY_HOURS` | No | Hours until the mandate expires (default 24) |
 | `LOOP_INTERVAL_MS` | No | Pause between purchases (ms, default 30000) |
 | `BUYER_ENABLED` | No | Kill switch — set to `false` to stop the loop |
+| `SELLER_CARD_PUBLIC_JWK` | No | The seller's card-signing **public** key, pinned. Set → the agent refuses to buy from an unsigned or invalid card. Unset → it trusts the card on TLS alone and prints a warning saying so |
 
 ---
 
@@ -292,7 +295,7 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ### Automated
 
 ```bash
-npm test                        # vitest — 61 tests: 38 regression, 23 over HTTP
+npm test                        # vitest — 72 tests: 47 regression, 25 over HTTP
 node scripts/mutation-check.mjs # put each known defect back; the suite must go red
 npx tsc --noEmit  # typecheck
 ```
@@ -388,6 +391,7 @@ Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
 │   ├── types.ts         shared interfaces (SensorReading, Env)
 │   ├── paid-route.ts    THE payment gate, shared by every priced resource
 │   ├── rate-limiter.ts  Durable Object limiter — exact under concurrency
+│   ├── card-signing.ts  JWS-over-JCS Agent Card signing (A2A v1.0 §8.4 format)
 │   ├── mandate.ts       seller-side mandate verification (401 / 403)
 │   ├── device-twin.ts   DeviceTwin Durable Object; alarm-driven telemetry
 │   ├── inference.ts     pay-per-inference on Workers AI
@@ -401,16 +405,18 @@ Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
 │   ├── pay.mjs          single-purchase buyer (Week 2, preserved)
 │   ├── agent.mjs        autonomous loop: mandate, cap, kill switch, negotiation
 │   ├── mandate.mjs      createMandate(), verifyMandate()
+│   ├── card-verify.mjs  verify the seller's card against a pinned key
 │   ├── soak.mjs         timed unattended run; reports real elapsed time
 │   ├── x402-harness.mjs shared test helper (captures the payment header)
 │   └── test_*.mjs       replay, fresh-after-replay, negative, rate limit,
 │                        fail-closed, mandate, inference
 ├── test/
-│   ├── regressions.spec.ts   38 tests, one group per defect that shipped
-│   └── http.spec.ts          23 tests through SELF.fetch — real routing, real DOs
+│   ├── regressions.spec.ts   47 tests, one group per defect that shipped
+│   └── http.spec.ts          25 tests through SELF.fetch — real routing, real DOs
 ├── scripts/
 │   ├── backup-kv.mjs    dump KV to backups/ — the only backup that exists
-│   └── mutation-check.mjs   reintroduce each known defect, expect a red suite
+│   ├── mutation-check.mjs   reintroduce each known defect, expect a red suite
+│   └── generate-card-key.mjs create the card signing key without displaying it
 ├── docs/
 │   ├── OPEN-ITEMS.md          every known gap, in one list
 │   ├── PENDING-HUMAN-TESTS.md checks a script cannot run
@@ -496,7 +502,7 @@ The ERC-20 `Transfer` event is the **second** log in the receipt. The first is `
 - [x] A2A price negotiation — buyer counter-offers, seller may decline
 - [x] Regression suite, mutation-verified against every defect that shipped
 - [x] External-payer accounting that excludes our own wallets
-- [ ] Signed Agent Cards (A2A v1.0, JWS) — discovery currently trusts TLS alone
+- [x] Signed Agent Cards (A2A v1.0 §8.4 signature format) — built; activates when the key is generated
 - [x] Rolling 24 h spending cap instead of a UTC calendar day
 - [ ] Dispute handling
 

@@ -10,7 +10,8 @@
  *   GET  /reading                   week 2 legacy route, kept as evidence
  *
  * Free
- *   GET  /.well-known/agent-card.json   A2A discovery: skills, prices, terms
+ *   GET  /.well-known/agent-card.json   A2A discovery: skills, prices, terms (signed if keyed)
+ *   GET  /.well-known/jwks.json         the card's public signing key
  *   GET  /api/negotiate                 counter-offer, accept or decline
  *   GET  /api/receipts                  settlement log
  *   GET  /api/payers                    who paid, ours vs external
@@ -37,7 +38,7 @@ import { HTTPFacilitatorClient } from "@x402/core/server";
 import type { Env } from "./types";
 import { DeviceTwin } from "./device-twin";
 import { RateLimiter } from "./rate-limiter";
-import { agentCardHandler } from "./agent-card";
+import { agentCardHandler, jwksHandler } from "./agent-card";
 import { demoPageHandler, sseHandler } from "./demo";
 import { createPaidRoute, rejectReplay, isSettledReceipt, DOCS_URL } from "./paid-route";
 import { inferenceHandler, validateInferenceInput } from "./inference";
@@ -199,6 +200,7 @@ app.get("/api/receipts", async (c) => {
 // ---------------------------------------------------------------------------
 
 app.get("/.well-known/agent-card.json", agentCardHandler);
+app.get("/.well-known/jwks.json", jwksHandler);
 
 // ---------------------------------------------------------------------------
 // Observability and negotiation — free, public, aggregate

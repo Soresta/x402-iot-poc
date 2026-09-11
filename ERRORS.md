@@ -37,6 +37,7 @@ All error responses follow the structured format:
 | `inference_failed` | 503 | The model run failed | Retry. **You were not charged** — the middleware does not settle a failed response |
 | `inference_input_required` | 400 | `?text=` missing or blank on `/api/inference` | Send text to classify. Refused **before** the `402`, so you are never asked to sign for it |
 | `inference_input_too_long` | 400 | `?text=` longer than 512 characters | Shorten it. Refused before the `402`; the text is not silently truncated |
+| `card_signing_not_configured` | 404 | `/.well-known/jwks.json` requested but no signing key is set, so the card is unsigned | Expected until `AGENT_CARD_SIGNING_KEY` is configured. A 404 rather than an empty key set, so a verifier cannot misread it as "signed with no keys" |
 | `unknown_resource` | 404 | `/api/negotiate` was asked about a resource that is not for sale | Use a resource id from the Agent Card |
 | `offer_invalid` | 400 | `?offer=` was not a non-negative number | Send a numeric offer |
 | `subscribe_malformed` | 400 | The subscribe body could not be parsed | Send JSON or form-encoded `{ email, consent }` |

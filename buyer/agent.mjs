@@ -22,6 +22,7 @@ import { registerExactEvmScheme } from "@x402/evm/exact/client";
 import { privateKeyToAccount } from "viem/accounts";
 import { createMandate, verifyMandate, checkPriceInScope } from "./mandate.mjs";
 import { spentInWindow } from "./budget.mjs";
+import { verifyCard } from "./card-verify.mjs";
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
@@ -36,6 +37,19 @@ const LOOP_INTERVAL_MS = Number(process.env.LOOP_INTERVAL_MS) || 30_000;
 const DAILY_CAP = parseFloat(process.env.DAILY_CAP || "0.05");    // USDC, over any rolling 24 h
 const MAX_PER_CALL = parseFloat(process.env.MAX_PER_CALL || "0.002"); // USDC
 const MANDATE_EXPIRY_HOURS = Number(process.env.MANDATE_EXPIRY_HOURS) || 24;
+
+// Optional pinned public key for the seller's signed Agent Card (JSON JWK).
+// Set → a card that is unsigned or fails verification is refused and nothing is
+// bought. Unset → the card is trusted on TLS alone, and the agent says so.
+let SELLER_CARD_PUBLIC_JWK = null;
+if (process.env.SELLER_CARD_PUBLIC_JWK) {
+  try {
+    SELLER_CARD_PUBLIC_JWK = JSON.parse(process.env.SELLER_CARD_PUBLIC_JWK);
+  } catch {
+    console.error("[agent] FATAL: SELLER_CARD_PUBLIC_JWK is set but is not valid JSON. Exiting.");
+    process.exit(1);
+  }
+}
 
 if (!BUYER_PRIVATE_KEY) {
   console.error("[agent] FATAL: BUYER_PRIVATE_KEY not set. Exiting.");
@@ -128,10 +142,28 @@ function backoffMs(errors) {
 // Discovery
 // ---------------------------------------------------------------------------
 
+let cardTrustWarned = false;
+
 async function discoverSeller() {
   const res = await fetch(`${SELLER_URL}/.well-known/agent-card.json`);
   if (!res.ok) throw new Error(`agent-card fetch failed: ${res.status}`);
   const card = await res.json();
+
+  // Verify the card before believing any price in it — when we have a key to
+  // verify against. A failure here is not a transient error to retry: someone is
+  // serving a card this seller did not sign.
+  if (SELLER_CARD_PUBLIC_JWK) {
+    const verdict = await verifyCard(card, SELLER_CARD_PUBLIC_JWK);
+    if (!verdict.ok) {
+      const err = new Error(`Agent Card rejected: ${verdict.reason}`);
+      err.code = verdict.reason;
+      throw err;
+    }
+  } else if (!cardTrustWarned) {
+    console.warn("[agent] Agent Card NOT verified — no SELLER_CARD_PUBLIC_JWK pinned. Trusting TLS alone.");
+    cardTrustWarned = true;
+  }
+
   const skills = card.skills ?? [];
   if (skills.length === 0) throw new Error("agent-card has no skills");
 
@@ -179,6 +211,11 @@ async function onePurchase() {
   try {
     offers = await discoverSeller();
   } catch (err) {
+    if (err.code === "card_unsigned" || err.code === "card_signature_invalid") {
+      console.error(`[agent] ${err.message}. No payment attempted.`);
+      appendLedger({ ts: new Date().toISOString(), result: "card_rejected", reason: err.code });
+      return "card_rejected";
+    }
     console.error(`[agent] Discovery failed: ${err.message}`);
     return "discovery_error";
   }
@@ -342,7 +379,8 @@ while (running) {
     result === "cap_reached" ||
     result === "mandate_invalid" ||
     result === "scope_rejected" ||
-    result === "mandate_refused"
+    result === "mandate_refused" ||
+    result === "card_rejected"
   ) {
     console.log(`[agent] Stopping loop: ${result}`);
     break;

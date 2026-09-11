@@ -208,11 +208,12 @@ they say:
       settlement and one delivery.
 - [ ] Decide a refund/dispute policy. Not because a failure mode needs it — none
       was found — but because real value will eventually produce a dispute.
-- [ ] Sign the Agent Card (A2A v1.0, JWS). Discovery currently trusts TLS alone.
+- [~] Sign the Agent Card (A2A v1.0 §8.4 JWS format). *Built and tested 2026-09-11;
+      active once the key holder generates the key.*
 - [x] Make the spending cap a rolling window rather than a UTC calendar day.
       *Done 2026-09-11.*
-- [x] Automated test suite. *61 tests — 38 regression, 23 over HTTP — and every
-      known defect caught when reintroduced (8 of 8). Previously: one per defect that shipped,
+- [x] Automated test suite. *72 tests — 47 regression, 25 over HTTP — and every
+      known defect caught when reintroduced (9 of 9). Previously: one per defect that shipped,
       mutation-checked. Route behaviour over HTTP is still verified by hand.*
 - [ ] Facilitator diligence: named counterparty, written terms, security
       attestation.

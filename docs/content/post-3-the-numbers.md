@@ -36,7 +36,7 @@ Disclosure: I work with the team at Pragma.Vision. The code is MIT.
 | Distinct paying wallets | **1** |
 | **External paying wallets** | **0** |
 | Infrastructure cost | **$0** |
-| Automated tests | **61** — written after the bugs below, and checked by putting each bug back |
+| Automated tests | **72** — written after the bugs below, and checked by putting each bug back |
 
 The number that decides whether any of this is interesting is the sixth one.
 Every payment this API has ever taken came from a wallet I own. I built a thing
@@ -115,7 +115,9 @@ for five weeks I was only ever checking the second.
 
 ### What I still have not solved
 
-- The Agent Card is unsigned. Discovery trusts TLS and nothing else.
+- The Agent Card can now be signed (A2A v1.0's JWS format) and the buyer verifies
+  it against a pinned key — but the key has not been generated yet, so today the
+  live card is still unsigned.
 - **My rate limiter didn't work, and every test said it did.** It passed the
   sequential test — request 11 got a 429 — from week 3 onward. I finally fired 30
   requests at once: all 30 got through a quota of 10. KV reads and writes aren't

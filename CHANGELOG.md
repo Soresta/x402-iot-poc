@@ -31,6 +31,16 @@ USDC. No release has ever been wired for real value.
 - **Per-IP rate-limit bucket** (`IP_RATE_LIMIT_QUOTA`). The payer address the
   limiter keys on comes from an unverified proof, so it could be rotated.
 
+- **Agent Card signing** (`src/card-signing.ts`), using the A2A v1.0 §8.4
+  signature format read from the specification source: detached JWS over the
+  JCS-canonicalized card minus `signatures`, ES256, `kid` as the RFC 7638
+  thumbprint, `jku` pointing at the new `/.well-known/jwks.json`. The buyer
+  verifies against a **pinned** public key and refuses to buy on an unsigned or
+  invalid card. **Inactive until the key is generated** with
+  `node scripts/generate-card-key.mjs --yes`, which stores the private key via
+  stdin and never prints it. Not a claim of A2A v1.0 schema compliance for the
+  card body.
+
 ### Changed
 
 - **Rate limiting moved from KV to a `RateLimiter` Durable Object.** Measured on

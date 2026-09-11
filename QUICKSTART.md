@@ -140,8 +140,8 @@ Two HTTP requests. The status code has been in the spec, unused, since 1997.
 ## Before you build on this
 
 Read the [limitations](./README.md#known-gotchas--things-that-cost-real-time-here)
-first. Short version: the Agent Card is unsigned, and nobody outside this project
-has paid it yet — so if you do, you are the first.
+first. Short version: nobody outside this project has paid it yet — so if you
+do, you are the first.
 
 Three 2026 papers document real attacks on x402 implementations. They are worth
 reading before you put anything of value behind this.

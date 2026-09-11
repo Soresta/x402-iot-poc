@@ -70,6 +70,12 @@ const MUTATIONS = [
     to: `  if (!decoded) return false;`,
   },
   {
+    name: "A4 signed card: buyer accepts any signature",
+    file: "buyer/card-verify.mjs",
+    from: `    if (valid) return { ok: true, kid: expectedKid };`,
+    to: `    return { ok: true, kid: expectedKid };`,
+  },
+  {
     name: "A6 rate limit: limiter switched off",
     file: "src/paid-route.ts",
     from: `  if (!env.RATE_LIMITER) return null; // binding absent: payment is still verified downstream`,
