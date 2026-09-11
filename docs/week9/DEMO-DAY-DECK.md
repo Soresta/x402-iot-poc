@@ -141,7 +141,7 @@ Zero revenue. Six reusable assets:
 | Asset | State |
 |---|---|
 | Working PoC, deployed, tagged v1.0.0 | live |
-| 38-test regression suite, mutation-verified | live |
+| 57-test suite, 7 of 7 known defects caught when reintroduced | live |
 | Real-value readiness memo, 12 counsel questions | delivered |
 | Agentic-payments research board — 11 technologies, 21 dated signals | drafted |
 | Ten publishable assets — tutorial, 3 posts, threads, Show HN, deck | written |

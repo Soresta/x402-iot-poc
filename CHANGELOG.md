@@ -20,6 +20,26 @@ USDC. No release has ever been wired for real value.
   twice its cap inside 24 hours. It is now a rolling 24-hour window
   (`buyer/budget.mjs`), pinned by regression test 5.
 
+### Added
+
+- **HTTP integration tests** (`test/http.spec.ts`, 19 tests) through `SELF.fetch`,
+  including the concurrent rate-limit burst through the real Durable Object.
+- **`scripts/mutation-check.mjs`** — reintroduces seven known defects one at a
+  time and expects the suite to go red. **7 of 7 caught.** Restores in `finally`
+  and refuses to report if any file differs afterwards, because the first,
+  throwaway version of this check crashed mid-mutation and left a bug in the tree.
+- **Per-IP rate-limit bucket** (`IP_RATE_LIMIT_QUOTA`). The payer address the
+  limiter keys on comes from an unverified proof, so it could be rotated.
+
+### Changed
+
+- **Rate limiting moved from KV to a `RateLimiter` Durable Object.** Measured on
+  the deployed Worker: 30 simultaneous requests from one payer passed a quota of
+  10 **30 times out of 30** with KV; **exactly 10** with the Durable Object.
+- **Inference input is validated before the `402`** via a `validate` hook on the
+  payment gate. Empty or over-length text is `400`; the old silent sample
+  substitution and truncation are gone.
+
 ### Corrected — two limitations this project stated were wrong
 
 Both were published in this changelog, the README, `ERRORS.md`, the real-value

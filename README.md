@@ -292,7 +292,8 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ### Automated
 
 ```bash
-npm test          # vitest — 38 regression tests
+npm test                        # vitest — 57 tests: 38 regression, 19 over HTTP
+node scripts/mutation-check.mjs # put each known defect back; the suite must go red
 npx tsc --noEmit  # typecheck
 ```
 
@@ -404,9 +405,11 @@ Block 7, [`docs/week5/BUILD-LOG.md`](./docs/week5/BUILD-LOG.md) Block 2, and
 │   └── test_*.mjs       replay, fresh-after-replay, negative, rate limit,
 │                        fail-closed, mandate, inference
 ├── test/
-│   └── regressions.spec.ts   38 tests, one group per defect that shipped
+│   ├── regressions.spec.ts   38 tests, one group per defect that shipped
+│   └── http.spec.ts          19 tests through SELF.fetch — real routing, real DOs
 ├── scripts/
-│   └── backup-kv.mjs    dump KV to backups/ — the only backup that exists
+│   ├── backup-kv.mjs    dump KV to backups/ — the only backup that exists
+│   └── mutation-check.mjs   reintroduce each known defect, expect a red suite
 ├── docs/
 │   ├── OPEN-ITEMS.md          every known gap, in one list
 │   ├── PENDING-HUMAN-TESTS.md checks a script cannot run

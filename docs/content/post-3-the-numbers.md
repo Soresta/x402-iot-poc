@@ -36,7 +36,7 @@ Disclosure: I work with the team at Pragma.Vision. The code is MIT.
 | Distinct paying wallets | **1** |
 | **External paying wallets** | **0** |
 | Infrastructure cost | **$0** |
-| Automated tests | **38** — written after the bugs below, one per bug |
+| Automated tests | **57** — written after the bugs below, and checked by putting each bug back |
 
 The number that decides whether any of this is interesting is the sixth one.
 Every payment this API has ever taken came from a wallet I own. I built a thing

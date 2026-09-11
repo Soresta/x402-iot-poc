@@ -40,10 +40,10 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 
 | # | Item | Notes |
 |---|---|---|
-| C1 | **Mandate suite is not idempotent under its own rate limiter.** Running `test_mandate.mjs` twice inside 60 s trips the 10/min quota. | Case 7 now waits out a `429` and retries once; **case 6 can still flake the same way** and does not retry. Fix: give case 6 the same treatment, or reset the limiter between runs. |
-| C2 | **No integration test hits the worker over HTTP.** The vitest suite tests pure functions; route behaviour is verified by scripts run by hand. | A `SELF.fetch` test for `402` on both resources, the negotiation endpoint and the subscribe flow would cover it. |
-| C3 | **No test covers `rejectReplay` or `enforceRateLimit`.** Both are reachable only after a real settlement, so neither is exercised by the unit suite. | Test them directly with a stub KV, the way the mandate functions are tested. |
-| C4 | **Mutation testing is manual.** The four-bug mutation check was a throwaway script in a scratch directory. | Either commit it as a documented script or drop the claim that the suite is mutation-verified. |
+| ~~C1~~ | ~~Mandate suite trips its own rate limiter.~~ **CLOSED 2026-09-11** — case 6 now waits out a `429` and retries once, like case 7. |
+| ~~C2~~ | ~~No integration test hits the worker over HTTP.~~ **CLOSED 2026-09-11** — `test/http.spec.ts`, 19 tests through `SELF.fetch`: `402` on all three paid routes, `400` before the `402` for bad inference input, screen codes, `403` before payment for an expired mandate, negotiation, subscribe consent, the export guard — and the A6 burst through the real Durable Object (30 concurrent, exactly 10 pass). No facilitator or chain call, so deterministic. |
+| ~~C3~~ | ~~No test covers `rejectReplay` or `enforceRateLimit`.~~ **CLOSED 2026-09-11** — `rejectReplay` is tested against a stub KV (records once for 24 h, refuses a repeat, keeps proofs separate, records nothing without a proof). `enforceRateLimit` is tested through HTTP with the real Durable Object, which is the only way to test the concurrency it exists for. |
+| ~~C4~~ | ~~Mutation testing is manual.~~ **CLOSED 2026-09-11** — `scripts/mutation-check.mjs`. Seven mutations (the four shipped defects plus A3, A5, A6), each restored in `finally`, and the run refuses to report success if any touched file differs afterwards. Result: **7 of 7 caught.** |
 
 ## D · Documentation and consistency
 
@@ -80,7 +80,7 @@ Not ours to fix, listed so the final report can say what was blocked and for how
 2. **B1–B8** need a person: about an hour for B1–B4, plus an afternoon for the
    tutorial run and two rehearsals. `PENDING-HUMAN-TESTS.md` has the exact steps
    for B1–B5; the plan is to run them as one batch.
-3. **C1–C4** are test debt created this week while paying off older test debt.
+3. **C1–C4** are closed.
 4. **D1–D7** are an afternoon. D1 and D7 are closed; D2–D6 remain.
 5. **E1–E6** are decisions, not work.
 

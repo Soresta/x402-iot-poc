@@ -74,7 +74,7 @@ meant the second product inherited every security control for free. The Week 4
 mandate layer made the Week 8 negotiation feature a small addition rather than a
 redesign. By Week 8 the seller does identity, authorization, payment, replay
 protection, rate limiting, receipts, live streaming, two products, negotiation,
-metrics and email capture — on a free tier, with 38 regression tests behind it.
+metrics and email capture — on a free tier, with 57 tests behind it.
 
 **What worked: the verification discipline paid for itself.**
 
@@ -114,7 +114,7 @@ rather than escalating it once, hard, in Week 3.
 | Asset | Status | Attributable revenue |
 |---|---|---|
 | Working PoC, deployed, MIT, v1.0.0 tagged | live | **none** |
-| 38-test regression suite, mutation-verified | live | **none** |
+| 57-test suite, 7 of 7 known defects caught when reintroduced | live | **none** |
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
 | Agentic-payments research board — 11 technologies, 21 dated signals | drafted | **none yet.** This is the Watch subscription's content |
 | Flagship tutorial, 3 posts, 2 X threads, Show HN, 2 subreddit posts, outreach template, 10-slide deck, 90-second video script | written, unpublished | **none** |

@@ -129,10 +129,23 @@ let spentProof = null;
 {
   const m = await createMandate(account, baseBody());
   const { paidFetch, getLastPaymentHeader } = makeRecordingPaidFetch(account);
-  const res = await paidFetch(READINGS_URL, {
-    method: "GET",
-    headers: { "X-Agent-Mandate": encodeMandate(m) },
-  });
+  const buy = () =>
+    paidFetch(READINGS_URL, {
+      method: "GET",
+      headers: { "X-Agent-Mandate": encodeMandate(m) },
+    });
+
+  // Same treatment as case 7: a 429 here means our own limiter tripped because
+  // the suite ran twice inside a minute, not that a legitimate buy was blocked.
+  // Wait it out once instead of reporting a red that is the limiter working.
+  let res = await buy();
+  if (res.status === 429) {
+    const waitS = Math.min(Number(res.headers.get("retry-after")) || 60, 70);
+    console.log(`[rate limited by our own quota — waiting ${waitS}s, then retrying once]`);
+    await res.text();
+    await new Promise((r) => setTimeout(r, (waitS + 2) * 1000));
+    res = await buy();
+  }
   const body = await res.text();
   console.log(`--- Valid mandate + payment ---`);
   console.log(`status: ${res.status}`);
