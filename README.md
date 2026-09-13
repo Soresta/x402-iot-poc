@@ -295,7 +295,7 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ### Automated
 
 ```bash
-npm test                        # vitest — 72 tests: 47 regression, 25 over HTTP
+npm test                        # vitest — 73 tests: 48 regression, 25 over HTTP
 node scripts/mutation-check.mjs # put each known defect back; the suite must go red
 npx tsc --noEmit  # typecheck
 ```

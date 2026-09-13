@@ -299,7 +299,19 @@ async function onePurchase() {
       headers: { "X-Agent-Mandate": mandateHeader },
     });
   } catch (err) {
-    console.error(`[agent] Network error: ${err.message}`);
+    // The payment may have gone through with only the response lost. Observed on
+    // 2026-09-11: the laptop went to sleep mid-request, the seller settled and
+    // logged a receipt, and the buyer saw "fetch failed" and recorded nothing, so
+    // its cap undercounted. Count it as spent. Overcounting a cap is the safe way
+    // to be wrong; the tx, if any, is in the seller's /api/receipts.
+    console.error(`[agent] Network error: ${err.message}. Counting ${price} against the cap as unconfirmed.`);
+    appendLedger({
+      ts: new Date().toISOString(),
+      skill: skillId,
+      price,
+      result: "payment_unconfirmed",
+      reason: err.message,
+    });
     return "network_error";
   }
 
@@ -328,7 +340,12 @@ async function onePurchase() {
     return "unexpected_status";
   }
 
-  const data = await res.json();
+  // A 200 means the seller settled. A body that does not parse must not stop
+  // the payment from being recorded.
+  let data = {};
+  try {
+    data = await res.json();
+  } catch {}
   const paymentResponseHeader = res.headers.get("payment-response");
 
   let txHash = null;

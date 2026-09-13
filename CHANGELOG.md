@@ -51,6 +51,22 @@ USDC. No release has ever been wired for real value.
   payment gate. Empty or over-length text is `400`; the old silent sample
   substitution and truncation are gone.
 
+### Fixed — the spending cap missed a payment, and counted refusals
+
+From the 2026-09-11 unattended run (`docs/soak-runs/SOAK-2026-09-11.md`). The run
+shows 147 buyer → seller transfers on-chain and 146 successes in the ledger. The
+odd one out settled at 16:49, and the seller logged a receipt for it. The buyer
+went offline mid-request, saw `fetch failed`, and recorded nothing, so the cap
+undercounted it. A network error during a paid request is now recorded as
+`payment_unconfirmed` and counts against the cap.
+
+The fix exposed a second bug: `cap_reached` entries carry the price that was
+refused, and the cap summed them as spend. Only `success` and
+`payment_unconfirmed` count now. Regression test and mutation added.
+
+Soak runs now write `docs/soak-runs/soak-<date>.log` instead of appending to the
+week 3 evidence file.
+
 ### Fixed — failed settlements were counted as sales
 
 The middleware sets a `payment-response` header on failure as well as success,

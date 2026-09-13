@@ -22,11 +22,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 
 const DURATION_MIN = Number(process.env.SOAK_DURATION_MIN) || 60;
-const LOG_DIR = join(REPO_ROOT, "docs", "week3");
-mkdirSync(LOG_DIR, { recursive: true });
-const LOG_PATH = join(LOG_DIR, "soak-run.log");
-
 const startedAt = new Date();
+
+// One file per run. This used to append to docs/week3/soak-run.log, so every
+// later run was silently mixed into the week 3 evidence.
+const LOG_DIR = join(REPO_ROOT, "docs", "soak-runs");
+mkdirSync(LOG_DIR, { recursive: true });
+const LOG_PATH = process.env.SOAK_LOG || join(LOG_DIR, `soak-${startedAt.toISOString().slice(0, 10)}.log`);
 const log = createWriteStream(LOG_PATH, { flags: "a" });
 
 function emit(line) {

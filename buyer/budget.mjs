@@ -11,10 +11,17 @@
  * The cap is now a ROLLING window: everything spent in the last 24 hours counts,
  * whatever the calendar says.
  *
+ * Only entries that record money leaving the wallet count: `success`, and
+ * `payment_unconfirmed` — a payment whose response never arrived. Anything else
+ * carrying a price is not spend. `cap_reached` entries carry the price that WOULD
+ * have been paid, and used to be summed as if it had been.
+ *
  * Pure function, no filesystem access, so it can be tested directly.
  */
 
 export const DAY_MS = 24 * 60 * 60 * 1000;
+
+const SPEND_RESULTS = new Set(["success", "payment_unconfirmed"]);
 
 /**
  * @param {Array<{ts?: string, price?: number}>} entries ledger entries
@@ -26,7 +33,8 @@ export function spentInWindow(entries, nowMs, windowMs = DAY_MS) {
   const windowStart = nowMs - windowMs;
   let total = 0;
   for (const entry of entries) {
-    if (typeof entry?.price !== "number") continue; // refusals carry no price
+    if (!SPEND_RESULTS.has(entry?.result)) continue; // refusals, stops, cap_reached
+    if (typeof entry.price !== "number") continue;
     const t = Date.parse(entry.ts ?? "");
     if (Number.isNaN(t)) continue;
     if (t > windowStart && t <= nowMs) total += entry.price;

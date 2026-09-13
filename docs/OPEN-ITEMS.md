@@ -33,7 +33,7 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 | B3 | **Real `Ctrl+C` clean exit** | **Ledger half observed 2026-09-11** — `{"ts":"2026-09-11T09:51:07.218Z","result":"agent_stopped","signal":"SIGINT"}`, written by the handler after a real console `Ctrl+C`. Screenshot of the console half pending | The screenshot showing `SIGINT received` |
 | B4 | **Explorer link followed by a human** | Open since W3 | A screenshot of the transaction on `sepolia.basescan.org` |
 | B5 | **Tutorial run on a clean machine** | Open since W5 | Every block executed from an empty directory, timed |
-| B6 | **24-hour unattended run** | PARTIAL — longest is 1 h | Either run it, or the DoD stays PARTIAL with the real number |
+| B6 | **24-hour unattended run** | **PARTIAL — not 24 h.** 2026-09-11: 8 h 50 m wall clock, ≈ 2 h 37 m actually buying (laptop asleep/off in between), 146 purchases, $0.147 spent against a $2.00 cap, never exceeded. Longest *continuous* run is still the 1 h one. Found and fixed: a payment whose response was lost went uncounted by the cap. `docs/soak-runs/SOAK-2026-09-11.md` | A 24 h run needs a machine that stays awake. Otherwise the DoD stays PARTIAL with these numbers |
 | B7 | **Demo Day deck rehearsed twice** | Not rehearsed | Two run-throughs, timed |
 | B8 | **Fallback demo video recorded** | Not recorded | Follow `docs/content/demo-video-script.md`; needed so a failed live demo does not end the talk |
 

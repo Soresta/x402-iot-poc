@@ -303,23 +303,38 @@ describe("regression 5: spending cap is a rolling 24 h window", () => {
 
   it("counts spending from before midnight that is still inside 24 hours", () => {
     const ledger = [
-      { ts: "2026-09-11T23:50:00Z", price: 0.01 }, // 40 min ago, previous UTC day
-      { ts: "2026-09-12T00:10:00Z", price: 0.01 }, // 20 min ago
+      { ts: "2026-09-11T23:50:00Z", result: "success", price: 0.01 }, // 40 min ago, previous UTC day
+      { ts: "2026-09-12T00:10:00Z", result: "success", price: 0.01 }, // 20 min ago
     ];
     // The calendar-day version returned 0.01 here.
     expect(spentInWindow(ledger, now)).toBe(0.02);
   });
 
   it("drops spending older than 24 hours", () => {
-    const ledger = [{ ts: new Date(now - DAY_MS - 1).toISOString(), price: 0.5 }];
+    const ledger = [{ ts: new Date(now - DAY_MS - 1).toISOString(), result: "success", price: 0.5 }];
     expect(spentInWindow(ledger, now)).toBe(0);
+  });
+
+  it("counts a payment whose response was lost, and not a cap_reached entry", () => {
+    // 2026-09-11: a 16:49 payment settled on-chain while the buyer saw
+    // "fetch failed", and the cap never counted it. Meanwhile every cap_reached
+    // entry, which carries the price it refused to pay, was counted as spend.
+    const ledger = [
+      { ts: "2026-09-12T00:05:00Z", result: "success", price: 0.001 },
+      { ts: "2026-09-12T00:06:00Z", result: "payment_unconfirmed", price: 0.002 },
+      { ts: "2026-09-12T00:07:00Z", result: "cap_reached", price: 0.5, runningTotal: 0.003 },
+    ];
+    // Distinct amounts on purpose. With equal ones, dropping the unconfirmed
+    // entry and adding the cap_reached one summed to the same total, and the
+    // mutation check reported this test as not catching the bug.
+    expect(spentInWindow(ledger, now)).toBe(0.003);
   });
 
   it("ignores refusals and unparseable lines, which carry no price", () => {
     const ledger = [
       { ts: "2026-09-12T00:20:00Z", result: "cap_reached" },
-      { ts: "not a date", price: 1 },
-      { price: 1 },
+      { ts: "not a date", result: "success", price: 1 },
+      { result: "success", price: 1 },
     ];
     expect(spentInWindow(ledger, now)).toBe(0);
   });

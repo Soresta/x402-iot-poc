@@ -1,0 +1,667 @@
+
+=== SOAK RUN START 2026-09-11T13:29:38.571Z ===
+planned duration: 1440 min
+seller: https://x402-iot-poc.akifk-x402-26.workers.dev
+interval: 60000 ms | daily cap: $2.00
+[agent] Buyer address: 0x936F147d5489Fa2236827bd5bc98C6b104718945
+[agent] Seller URL: https://x402-iot-poc.akifk-x402-26.workers.dev
+[agent] Daily cap: $2 USDC | Max per call: $0.001 USDC
+[agent] Loop interval: 60000ms
+[agent] Kill switch: set BUYER_ENABLED=false to stop
+[agent] Mandate created. Expiry: 2026-09-12T13:29:38.927Z
+[agent] Starting autonomous loop. Press Ctrl+C to stop.
+[agent] Agent Card NOT verified — no SELLER_CARD_PUBLIC_JWK pinned. Trusting TLS alone.
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0150)
+[agent] ✅ Purchased sell-iot-reading seq=49102 | tx=0xf0a4b51688… | total=$0.0160
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf0a4b51688326adc9c67963894896f2c3e989cd0caa6a429d32c14a6d122c35d
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0160)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0160)
+[agent] ✅ Purchased sell-iot-reading seq=49104 | tx=0x9227b5451c… | total=$0.0170
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9227b5451c35de4917352241d85b875229e9a4db67750c2bddfd1fe38316a952
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0170)
+[agent] ✅ Purchased sell-iot-reading seq=49106 | tx=0x2f57932350… | total=$0.0180
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2f57932350c2da124abc25ef859149f7148417c65948970d9467caaa1aa51564
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0180)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0180)
+[agent] ✅ Purchased sell-iot-reading seq=49108 | tx=0x811579470c… | total=$0.0190
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x811579470c36c03c3223ffdca1a415a0b6a3efadf12e30ca547d1e08c335b749
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0190)
+[agent] ✅ Purchased sell-iot-reading seq=49109 | tx=0xac2eef56bf… | total=$0.0200
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xac2eef56bf0b22317c1186dbcbb40dc083f07bb37072ac5ed300fa4d241df6b9
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0200)
+[agent] ✅ Purchased sell-iot-reading seq=49110 | tx=0x9a12c8fb70… | total=$0.0210
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9a12c8fb70dead0f635f3684b28173dee5fc13120d32f43caab2ef974e457d84
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0210)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0210)
+[agent] ✅ Purchased sell-iot-reading seq=49112 | tx=0x8d45160cbf… | total=$0.0220
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x8d45160cbf25628f8a5e9bea67a6cfa28cd7ad6534413fdcb459c13bcfda2c53
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0220)
+[agent] ✅ Purchased sell-iot-reading seq=49113 | tx=0x4f3d79c584… | total=$0.0230
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4f3d79c584e3b8b560de00f1894862726d4cc615b563838e49c41e45a66057c1
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0230)
+[agent] ✅ Purchased sell-iot-reading seq=49114 | tx=0x67c403d786… | total=$0.0240
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x67c403d7862aba26572146aff1e19301de2610c2687c46cb1d99b48711bbe656
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0240)
+[agent] ✅ Purchased sell-iot-reading seq=49115 | tx=0xdc58b8f0c2… | total=$0.0250
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xdc58b8f0c24972dd33cc644274cf82dcb5c98d2426537ba14e4637f9b5172cae
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0250)
+[agent] ✅ Purchased sell-iot-reading seq=49116 | tx=0x5c43429fb0… | total=$0.0260
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5c43429fb0c17c15f58a4128bbfecbd75308179856f926892f36c60331ca9008
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0260)
+[agent] ✅ Purchased sell-iot-reading seq=49117 | tx=0x110db34d90… | total=$0.0270
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x110db34d9034c065bb2ab2ff6819a863d330c14c51ca73697f3e0e01daa3dad5
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0270)
+[agent] ✅ Purchased sell-iot-reading seq=49118 | tx=0x61dccff639… | total=$0.0280
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x61dccff63902441ab4ec1f341fc8717bf9fe53b3d50f75a89b45fc86e2250fc0
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0280)
+[agent] ✅ Purchased sell-iot-reading seq=49119 | tx=0x2fccb645b5… | total=$0.0290
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2fccb645b58a21151813c82cd5b5906f75d85c1925bc7e226f08350c66391c8b
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0290)
+[agent] ✅ Purchased sell-iot-reading seq=49120 | tx=0xb17a704f1b… | total=$0.0300
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb17a704f1b02022f70309e86ff0a0897d8634fdb48e1d1cf59056c0f5365917c
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0300)
+[agent] ✅ Purchased sell-iot-reading seq=49121 | tx=0x7e939f10ce… | total=$0.0310
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7e939f10cef56e90f13c6d2cf894d947f5ca754132c15dd9193e9e24c6d5fe8b
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0310)
+[agent] ✅ Purchased sell-iot-reading seq=49122 | tx=0xd8ef12814f… | total=$0.0320
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd8ef12814f4b47757d74231ef375fd1f662047f25b068bcaf5b5daa7d5e13e5d
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0320)
+[agent] ✅ Purchased sell-iot-reading seq=49123 | tx=0xe66a4675cd… | total=$0.0330
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe66a4675cddc0fea948cad7b80efc9a6a0ddf4a56d5f8520decf0a5df2607d55
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0330)
+[agent] ✅ Purchased sell-iot-reading seq=49124 | tx=0x2d8f940823… | total=$0.0340
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2d8f94082334a56b89503f229b88ec9bf0065c2ae5b3f37a4bf7cb92dafb8017
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0340)
+[agent] ✅ Purchased sell-iot-reading seq=49125 | tx=0xeeff98b2e4… | total=$0.0350
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xeeff98b2e431abbab55c6494643d3c6a78c2dc37b62df87036d3ffb6c05319e9
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0350)
+[agent] ✅ Purchased sell-iot-reading seq=49126 | tx=0x6eb30d3696… | total=$0.0360
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6eb30d369667c6513e22a0f5d0457eb2f40267628a4b59928bb4a3e6d31f3580
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0360)
+[agent] ✅ Purchased sell-iot-reading seq=49127 | tx=0xc209a0fb58… | total=$0.0370
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc209a0fb58a2a56b2a4059c7234a3aa265737c633178df6e4fc181ce57146eea
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0370)
+[agent] ✅ Purchased sell-iot-reading seq=49128 | tx=0xe0b7e9fd18… | total=$0.0380
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe0b7e9fd18605ea40d27552e7ce7ce40b21572594688020e0b72c31c0dc49a14
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0380)
+[agent] ✅ Purchased sell-iot-reading seq=49129 | tx=0xd12e107536… | total=$0.0390
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd12e107536f03d18ef6cefb7b637fdffdd5b6ad56ecb28e46d57ed263dd0fbd8
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0390)
+[agent] ✅ Purchased sell-iot-reading seq=49130 | tx=0x1bfd7bfa54… | total=$0.0400
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1bfd7bfa54f109cfb69c855734c5786a0ae14a51040d680ca213d2cc120d4c9b
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0400)
+[agent] ✅ Purchased sell-iot-reading seq=49131 | tx=0xb76f8703c3… | total=$0.0410
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb76f8703c366d054eeee42bac3bca525de77fc5018a6091745e18ba6b64a23b4
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0410)
+[agent] ✅ Purchased sell-iot-reading seq=49132 | tx=0x6e8c62ba9e… | total=$0.0420
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6e8c62ba9ed23a9307180df50b6eb31151b3b09504dcbf4e958450fe57e9d7f3
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0420)
+[agent] ✅ Purchased sell-iot-reading seq=49133 | tx=0x9da72ab516… | total=$0.0430
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9da72ab516e0e923f7688120bc496a011d6ae65df2a60cc832760a65e15143a5
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0430)
+[agent] ✅ Purchased sell-iot-reading seq=49135 | tx=0xbb4de11e34… | total=$0.0440
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbb4de11e34099d4f6f333f0840412dc48da1867d850e454e8ab12d6f70c0fa8d
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0440)
+[agent] ✅ Purchased sell-iot-reading seq=49136 | tx=0x6b21609246… | total=$0.0450
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6b216092461f7eddf57ba3ac2bef5869af7bb53f75cb0021eb676190d4526abe
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0450)
+[agent] ✅ Purchased sell-iot-reading seq=49137 | tx=0x5ab028f929… | total=$0.0460
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5ab028f92964b39706d48b1d562cd23b08610ed68fe33d7d0340a1bf75452067
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0460)
+[agent] ✅ Purchased sell-iot-reading seq=49138 | tx=0x5e7fd38587… | total=$0.0470
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5e7fd3858775f9332473230cd68fef975a4ab1d387653afbef1e50c6fa0585ed
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0470)
+[agent] ✅ Purchased sell-iot-reading seq=49139 | tx=0x1f67d4a181… | total=$0.0480
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1f67d4a181f9601d847dfdeb92428398fa83d556abaceffda84693984d2d19dd
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0480)
+[agent] ✅ Purchased sell-iot-reading seq=49140 | tx=0x5d1e2bc63f… | total=$0.0490
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5d1e2bc63f8f21662158a3bc02ba186740a742c289dfeb31d25d0bfa4e846c8f
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0490)
+[agent] ✅ Purchased sell-iot-reading seq=49141 | tx=0x1b5b0c01fa… | total=$0.0500
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1b5b0c01faba5add3aedbb4ff58e7f26c7ebc0c61457fa0c35acd0e3b303ba06
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0500)
+[agent] ✅ Purchased sell-iot-reading seq=49142 | tx=0x472285af65… | total=$0.0510
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x472285af6509cbdaa581d9f311821774a4b6a779188445b6a11ea1fc409cb3de
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0510)
+[agent] ✅ Purchased sell-iot-reading seq=49143 | tx=0xa9129df0ea… | total=$0.0520
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa9129df0eacedf897dd904597248812f17a69b07425cd5860c7ce2c6fb9d1d04
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0520)
+[agent] ✅ Purchased sell-iot-reading seq=49144 | tx=0xd63acc57e8… | total=$0.0530
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd63acc57e8dbd97e761357a7c31eabed0823c510b6da164fcf568eab680d4341
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0530)
+[agent] ✅ Purchased sell-iot-reading seq=49145 | tx=0xf04bf2866c… | total=$0.0540
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf04bf2866c694cac69d9d8bcfc33d5b2ee69a9e41baf2e77f6db608e57938487
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0540)
+[agent] ✅ Purchased sell-iot-reading seq=49167 | tx=0x0c40b13731… | total=$0.0550
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x0c40b13731540389ee21b57c76a8807b5617036515f54c98c4e3a314db11c93c
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0550)
+[agent] ✅ Purchased sell-iot-reading seq=49168 | tx=0x4c3d26d841… | total=$0.0560
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4c3d26d841b5c3677ea2d146833434771d8f78cae77fbbed317fc5bd9ba53f3a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0560)
+[agent] ✅ Purchased sell-iot-reading seq=49169 | tx=0x4a96da5c24… | total=$0.0570
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4a96da5c24342ba708d73969d47805a4aa5d631328ad17c0a5f7197fbed73aec
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0570)
+[agent] ✅ Purchased sell-iot-reading seq=49170 | tx=0x014e21da8c… | total=$0.0580
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x014e21da8c8c9e461b961a3dacdc8862574de4109002f3f8396d657b5d622370
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0580)
+[agent] ✅ Purchased sell-iot-reading seq=49171 | tx=0x66fa2fa16c… | total=$0.0590
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x66fa2fa16c9a0b19d83bc126e9211f8ab0c57dc7fe3aa870a9ce6f8962bf8ac7
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0590)
+[agent] ✅ Purchased sell-iot-reading seq=49172 | tx=0xc06fe2c184… | total=$0.0600
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc06fe2c184d526939c6a59c264c03add31e9fc5c9300648222f8ce3155b9222e
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0600)
+[agent] ✅ Purchased sell-iot-reading seq=49173 | tx=0xc89e6a091c… | total=$0.0610
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc89e6a091c2d02095a0bf95db278c1c84559b93222045ccea8f63b9e43805fb2
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0610)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0610)
+[agent] ✅ Purchased sell-iot-reading seq=49175 | tx=0x0080d93fd4… | total=$0.0620
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x0080d93fd4f35e2a6ab111d9b4a1fb737a8f6fbf4af8c8aa0e853a3eb32d7812
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0620)
+[agent] ✅ Purchased sell-iot-reading seq=49176 | tx=0x84ca22399b… | total=$0.0630
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x84ca22399b2073baa7c0fa8ca43765b707724cf8c5e7b3f5816ab8dce1780c67
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0630)
+[agent] ✅ Purchased sell-iot-reading seq=49177 | tx=0x7c738de268… | total=$0.0640
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7c738de2683702795574b4a256dfe38641c1d18ffaa86f236720aa54b24f67be
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0640)
+[agent] ✅ Purchased sell-iot-reading seq=49178 | tx=0x995c66b8d7… | total=$0.0650
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x995c66b8d713bbf8699264b2ce8cb4cef78f5fc4da0e7927546492b1c4c6cef2
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0650)
+[agent] ✅ Purchased sell-iot-reading seq=49179 | tx=0x367d9b45d1… | total=$0.0660
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x367d9b45d19f056e2ba8dd3c9655718bb1e2f34ced02c67cf748a15dd2a3b5e7
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0660)
+[agent] ✅ Purchased sell-iot-reading seq=49180 | tx=0x66a6f8fb4b… | total=$0.0670
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x66a6f8fb4b3803d7d3cbef37edb291304642549ed2f150db617969e593f06435
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0670)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0670)
+[agent] ✅ Purchased sell-iot-reading seq=49182 | tx=0x23dff637bf… | total=$0.0680
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x23dff637bf4d2935c575ed34ffcf6941ad6fee8e72616120151473260194c7f3
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0680)
+[agent] ✅ Purchased sell-iot-reading seq=49183 | tx=0x2055d4b7c6… | total=$0.0690
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2055d4b7c6f717ce6a54e8abff0dc996e34a5ee26fed774b6c9664b6f3d7bd39
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0690)
+[agent] ✅ Purchased sell-iot-reading seq=49184 | tx=0x6c3d55c0ba… | total=$0.0700
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6c3d55c0bac1c437e227186653917749f4723c48bed2403184ebc12c422101f6
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0700)
+[agent] ✅ Purchased sell-iot-reading seq=49185 | tx=0x79b481e906… | total=$0.0710
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x79b481e90696442de6f4ead9bcd8e049c0bc40a7c4e7c95f8fbab31abbdf0048
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0710)
+[agent] ✅ Purchased sell-iot-reading seq=49186 | tx=0x8979a8b05c… | total=$0.0720
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x8979a8b05c317672f562eea81079ed3b18c8f8e431105cab334d98e6e11fb271
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0720)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0720)
+[agent] ✅ Purchased sell-iot-reading seq=49188 | tx=0x5569dca181… | total=$0.0730
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5569dca181d6bc29c8ed56d98aa6b4692e37279ed243f590d002915e36c2a2d5
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0730)
+[agent] ✅ Purchased sell-iot-reading seq=49189 | tx=0x50a2365846… | total=$0.0740
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x50a23658464e1a7f891fd06b02968b50448d38a823ffedbfd7e72af51ed64add
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0740)
+[agent] ✅ Purchased sell-iot-reading seq=49190 | tx=0x091e8f036e… | total=$0.0750
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x091e8f036e7f55f415c6501f162788cc0aa6987c8670e8ba7ef48020d6246031
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0750)
+[agent] ✅ Purchased sell-iot-reading seq=49191 | tx=0xd43988a207… | total=$0.0760
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd43988a207e371aa26b62580f624b761d48d177de355f3b00eaf8b8823cb620b
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0760)
+[agent] ✅ Purchased sell-iot-reading seq=49192 | tx=0x047b643518… | total=$0.0770
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x047b6435184751db736b880a0917d4191e67f604cd8cbf44835a7b9cb1ba7515
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0770)
+[agent] ✅ Purchased sell-iot-reading seq=49193 | tx=0x139bc66ca4… | total=$0.0780
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x139bc66ca433be0b49c0a8bdeed7a6492b3d786cef225add5586030dae80be0c
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0780)
+[agent] ✅ Purchased sell-iot-reading seq=49194 | tx=0x6316365c39… | total=$0.0790
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6316365c39f250e63c9d9767faf55e6ed1ae07f06870d4189f58cfbf73762af7
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0790)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0790)
+[agent] ✅ Purchased sell-iot-reading seq=49197 | tx=0x1c03d61bf8… | total=$0.0800
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1c03d61bf864fc9d1a3f6f9291092bf96bf0ae0a1ee42e488bb2ca27bbfbfb01
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0800)
+[agent] ✅ Purchased sell-iot-reading seq=49198 | tx=0x6aaf21f10b… | total=$0.0810
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6aaf21f10bc536ce9aac97a5ead34c6335a5224bf2787bc8efe94e6ce8b510ff
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0810)
+[agent] ✅ Purchased sell-iot-reading seq=49199 | tx=0xbb06ae823a… | total=$0.0820
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbb06ae823abed97f6c4e9f968026c7f329cfdb1664a1a3bb4109e291f6a1543e
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0820)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0820)
+[agent] ✅ Purchased sell-iot-reading seq=49201 | tx=0x07772803ec… | total=$0.0830
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x07772803ec41b90a5a135d2857625730dfe501a37ce07563be9c14577aee2045
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0830)
+[agent] ✅ Purchased sell-iot-reading seq=49202 | tx=0xb0a90df53c… | total=$0.0840
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb0a90df53c0a6c2df9133c1eaae67197db6f6a2f0c9ae1b03d56d042556d94c0
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0840)
+[agent] ✅ Purchased sell-iot-reading seq=49210 | tx=0x64bad368f6… | total=$0.0850
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x64bad368f6121580ffc0fb2e937bf3fd273cb169f19214e802080db12d5adf30
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0850)
+[agent] ✅ Purchased sell-iot-reading seq=49211 | tx=0x00bca988d0… | total=$0.0860
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x00bca988d07046ee980f96f63d9f4a40eaeb54120a5c336ee068c6481e122544
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0860)
+[agent] ✅ Purchased sell-iot-reading seq=49212 | tx=0xd7c25d0075… | total=$0.0870
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd7c25d007575e2bd4e31c87d6c7b2c34dc804a01fae0394becbaa3d1aa5465e4
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0870)
+[agent] ✅ Purchased sell-iot-reading seq=49213 | tx=0x8abf64c5cb… | total=$0.0880
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x8abf64c5cb102930839346b9c54c66ae0fce3202521f726881165895f0c3b042
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0880)
+[agent] ✅ Purchased sell-iot-reading seq=49214 | tx=0xd5a0fb4c34… | total=$0.0890
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd5a0fb4c3416de2de3c3610a5255b8b895139c01f50dc55ba1133b0823ec7d73
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0890)
+[agent] ✅ Purchased sell-iot-reading seq=49215 | tx=0x7ab5881e9b… | total=$0.0900
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7ab5881e9be6934053c2a022f8b713a2f4a85bdf7e07c39f92eb8b09b04ebac4
+[agent] Discovery failed: fetch failed
+[agent] Backing off 1962ms (error #1)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 4742ms (error #2)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 7988ms (error #3)
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0900)
+[agent] ✅ Purchased sell-iot-reading seq=49261 | tx=0xf92af9ef87… | total=$0.0910
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf92af9ef87633798de6f0c75028563255a7fd50ae860ab998ede186914819da0
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0910)
+[agent] ✅ Purchased sell-iot-reading seq=49262 | tx=0xa7052d8b5f… | total=$0.0920
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa7052d8b5fbd94f9c153b42fa8d65ce676cd101fc10a26384d96fc0f0b812abd
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0920)
+[agent] ✅ Purchased sell-iot-reading seq=49263 | tx=0x676dcaa516… | total=$0.0930
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x676dcaa5164f9f58f6b42d82edc24c14359c101b4896993fe75a6ad0df061bfe
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0930)
+[agent] ✅ Purchased sell-iot-reading seq=49265 | tx=0x635ce20739… | total=$0.0940
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x635ce207397ac469dd74f9e151b02c53475ebcdbd9d2256d432b6a7e0c9183ab
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0940)
+[agent] ✅ Purchased sell-iot-reading seq=49266 | tx=0x342f53ea72… | total=$0.0950
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x342f53ea724273cd0419902afc12dd264d6e9387c50a63812ebbfb3b1a546eb0
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0950)
+[agent] ✅ Purchased sell-iot-reading seq=49267 | tx=0xc583a867e8… | total=$0.0960
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc583a867e8cd15b6be755678d7f69baf2da08ba8c1c18f0be9eedd72606bcb41
+[agent] Discovery failed: fetch failed
+[agent] Backing off 1928ms (error #1)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 4625ms (error #2)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 7819ms (error #3)
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0960)
+[agent] ✅ Purchased sell-iot-reading seq=49297 | tx=0x705474ffab… | total=$0.0970
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x705474ffab14586e62452e1448e41cf6f7291df3221ded8d8f131e4c335218d3
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0970)
+[agent] ✅ Purchased sell-iot-reading seq=49298 | tx=0x140ed87851… | total=$0.0980
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x140ed878517a3ef3dc1c7c5bf678e907f3f3926a8f84aaac343f16143201ff28
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0980)
+[agent] ✅ Purchased sell-iot-reading seq=49299 | tx=0x88d9fd21d3… | total=$0.0990
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x88d9fd21d3ac83fde79e9ca44bb94575a71d5d5ec14ede223ed0666b292fb540
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.0990)
+[agent] ✅ Purchased sell-iot-reading seq=49300 | tx=0x73090dfc47… | total=$0.1000
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x73090dfc47155a9f42909a09b480de939e81f3c274a7598d6667bbf22aa8a407
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1000)
+[agent] ✅ Purchased sell-iot-reading seq=49301 | tx=0x1af422fa83… | total=$0.1010
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1af422fa834993c14a5d3fa9292681bc0b10cb7f271656a69acb915220d0db6a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1010)
+[agent] Network error: fetch failed
+[agent] Backing off 1733ms (error #1)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 3515ms (error #2)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 8582ms (error #3)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 14905ms (error #4)
+[agent] Discovery failed: fetch failed
+[agent] 5 consecutive errors. Pausing loop for 5 minutes.
+[agent] Discovery failed: fetch failed
+[agent] Backing off 2140ms (error #1)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 3561ms (error #2)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 9282ms (error #3)
+[agent] Discovery failed: fetch failed
+[agent] Backing off 15033ms (error #4)
+[agent] Discovery failed: fetch failed
+[agent] 5 consecutive errors. Pausing loop for 5 minutes.
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1010)
+[agent] ✅ Purchased sell-iot-reading seq=49567 | tx=0x8eac7d589b… | total=$0.1020
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x8eac7d589b6b6f04dc993419f513db82a0fb743ff33a391f3efd576f517106fc
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1020)
+[agent] ✅ Purchased sell-iot-reading seq=49568 | tx=0x903b65f784… | total=$0.1030
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x903b65f7841f081d94ed75a45a92f45ce46e99dda68ab39c97dbd6768bd91be8
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1030)
+[agent] ✅ Purchased sell-iot-reading seq=49569 | tx=0xfcf7910dbb… | total=$0.1040
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfcf7910dbb2e27c17318dad534eabeed64786fa01c039a5ed716f6d6cfe6e233
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1040)
+[agent] ✅ Purchased sell-iot-reading seq=49570 | tx=0x86f65c42a7… | total=$0.1050
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x86f65c42a765a7d5a45a71f60ea811f71621a116ebb41c3bfae11167ac17a288
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1050)
+[agent] ✅ Purchased sell-iot-reading seq=49571 | tx=0xe3e29d59d7… | total=$0.1060
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xe3e29d59d7dc6bdc2b671b9896b49a260b2f38f3c2186a284d38953297ccbbd1
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1060)
+[agent] ✅ Purchased sell-iot-reading seq=49572 | tx=0xcc7a5bf3aa… | total=$0.1070
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xcc7a5bf3aa750d43335f36ef69d10313c1d321ffd622b26fc72210be6a6782f6
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1070)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1070)
+[agent] ✅ Purchased sell-iot-reading seq=49574 | tx=0x50340be07c… | total=$0.1080
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x50340be07c13a567fd2f5cea99f7b9a2ffe3f8370e9f5b50b1936a5f0aa1c34a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1080)
+[agent] ✅ Purchased sell-iot-reading seq=49575 | tx=0x6d0949f455… | total=$0.1090
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6d0949f4556fb54633cc593df1ea3777ed8ff42ab4c82ee29ff41c8d96979cd4
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1090)
+[agent] ✅ Purchased sell-iot-reading seq=49576 | tx=0x73d208caa0… | total=$0.1100
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x73d208caa08d27f004f2a218f6f479bf69cb7c0928276277579f74baa74f1b78
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1100)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1100)
+[agent] ✅ Purchased sell-iot-reading seq=49578 | tx=0x70d8da8210… | total=$0.1110
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x70d8da82106d23e9496aa8979d8d91b32c9847b80c74347e02203393bc579171
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1110)
+[agent] ✅ Purchased sell-iot-reading seq=49580 | tx=0x2def5e6f87… | total=$0.1120
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2def5e6f873f7615d2b3658bd2bb22e38ba60fe4ccafc0708a1cbe5b29d471d3
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1120)
+[agent] ✅ Purchased sell-iot-reading seq=49581 | tx=0x465fc5ecd0… | total=$0.1130
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x465fc5ecd0f60de0af01b5db9a23521bc7d71093fdc86f7859aa90e5f4e8aee8
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1130)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1130)
+[agent] ✅ Purchased sell-iot-reading seq=49583 | tx=0x1d2bc8dd64… | total=$0.1140
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1d2bc8dd645f4ddf94c2a85ecdae4225cd3e5a3e2619cd7370d5d25e2b027325
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1140)
+[agent] ✅ Purchased sell-iot-reading seq=49584 | tx=0xbb15bb149a… | total=$0.1150
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xbb15bb149af1f063febe557324f9e91e537054f6103d5c7ac1b7f70b1f3b1ab7
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1150)
+[agent] ✅ Purchased sell-iot-reading seq=49585 | tx=0x21d9060f7b… | total=$0.1160
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x21d9060f7bb572c8c125f7a4cbf1ea590d773730e153af12f029dbcef1ec5a51
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1160)
+[agent] ✅ Purchased sell-iot-reading seq=49586 | tx=0x7d731b30c7… | total=$0.1170
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7d731b30c77e7529b602f9b96b694886d2b5ea96761481291af34e6d9522f1e3
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1170)
+[agent] ✅ Purchased sell-iot-reading seq=49587 | tx=0x3c805274d6… | total=$0.1180
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x3c805274d60e75b27b316a778a24d1c2601a4bdf3c73761b554d6ff4cefa5d92
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1180)
+[agent] ✅ Purchased sell-iot-reading seq=49588 | tx=0xf74970aa18… | total=$0.1190
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf74970aa18c370cad8400f8939279ecba09b3fc0fd3d8bfa33537621dd0b4553
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1190)
+[agent] ✅ Purchased sell-iot-reading seq=49589 | tx=0xa375bc7b11… | total=$0.1200
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa375bc7b116397f9c5b314129e507dd5fcd17df2bfcd20c67cc4e24ab42363a4
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1200)
+[agent] ✅ Purchased sell-iot-reading seq=49590 | tx=0x5c6adfbc31… | total=$0.1210
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5c6adfbc31c4790c5208d4d77625346fd5a8ea97435cb2630bee09f0a82c52ae
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1210)
+[agent] ✅ Purchased sell-iot-reading seq=49591 | tx=0xee4f4ad9d4… | total=$0.1220
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xee4f4ad9d41f20b69c5cb57a084953aff7ee36834a8bedc7320b368b00e2d20a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1220)
+[agent] ✅ Purchased sell-iot-reading seq=49592 | tx=0xd71c8ad285… | total=$0.1230
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd71c8ad2857f76d3d197d8feecf2aa1161fdc005c9e76c199222d54574d5c509
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1230)
+[agent] ✅ Purchased sell-iot-reading seq=49593 | tx=0x4544d0afb5… | total=$0.1240
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x4544d0afb535e8fd35d15c58dc7d4f4b2ca23bfc28498202c034f652ee56252c
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1240)
+[agent] ✅ Purchased sell-iot-reading seq=49594 | tx=0x1892fdd52c… | total=$0.1250
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x1892fdd52c758fc36f153ff320a048aad23bc5c61d5c7e491e3019dbf6cec4c6
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1250)
+[agent] ✅ Purchased sell-iot-reading seq=49595 | tx=0xb22044d5d7… | total=$0.1260
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb22044d5d70fe4f6008d0bf5a6ab6199b9cacc4418aa9028f7e2e77b5564c15a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1260)
+[agent] Unexpected status 402: {}
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1260)
+[agent] ✅ Purchased sell-iot-reading seq=49597 | tx=0x7161ada2ca… | total=$0.1270
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7161ada2caea978f88eb35c9901345a534c985a89d4008c7cbf5b7847ab7f560
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1270)
+[agent] ✅ Purchased sell-iot-reading seq=49598 | tx=0x685f41e019… | total=$0.1280
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x685f41e019852d70066ec067e2f4fe9818cc8f0d44c4b5feb0344071f652cdce
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1280)
+[agent] ✅ Purchased sell-iot-reading seq=49599 | tx=0xaaa06dab97… | total=$0.1290
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xaaa06dab97070d7ea294e8cadeed9d6ae66326e7d466c7fd5be676cb51a2a866
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1290)
+[agent] ✅ Purchased sell-iot-reading seq=49600 | tx=0x2f850e7ce9… | total=$0.1300
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2f850e7ce9ce1354bf7879651dbed28f896046023a069ae787342f9d0bfa2548
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1300)
+[agent] ✅ Purchased sell-iot-reading seq=49601 | tx=0xf0767ffe20… | total=$0.1310
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf0767ffe20a7598eb1df66dca0d009173c13eda3f3e689eabaca8997d507e50b
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1310)
+[agent] ✅ Purchased sell-iot-reading seq=49602 | tx=0x7a75ed9639… | total=$0.1320
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7a75ed9639047434c5ae792f0582f8e09ab8d756bc64f3b260f5b5b0edf81f89
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1320)
+[agent] ✅ Purchased sell-iot-reading seq=49603 | tx=0xfac2454f72… | total=$0.1330
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfac2454f7271c33965a795881458a36821ac4476bcd0e8ebdae53a51ec8bf91f
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1330)
+[agent] ✅ Purchased sell-iot-reading seq=49604 | tx=0xfa9afc20b7… | total=$0.1340
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfa9afc20b7dcc2187e6eec150ae7d00840e96c05a19301c34e243495be52034e
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1340)
+[agent] ✅ Purchased sell-iot-reading seq=49605 | tx=0xf367818c96… | total=$0.1350
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xf367818c9611b38d56d06922c42d8786686d0ec746b80ef202ce45b94b96bcd0
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1350)
+[agent] ✅ Purchased sell-iot-reading seq=49606 | tx=0xc7c06882c1… | total=$0.1360
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc7c06882c16e4d145d1a09562739a8ca49726d7fe0b219e3a3b10f90e510928e
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1360)
+[agent] ✅ Purchased sell-iot-reading seq=49607 | tx=0x7c19ab06c9… | total=$0.1370
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x7c19ab06c9ea31e2af1d1f4d618c36fe536e79e6a27ceef7383e4d06d98e4d9f
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1370)
+[agent] ✅ Purchased sell-iot-reading seq=49608 | tx=0x78620d9236… | total=$0.1380
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x78620d923648e4f873a1b49f0861378b6c3bf135a8e605f54aa426970b1c834a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1380)
+[agent] ✅ Purchased sell-iot-reading seq=49609 | tx=0x35d6a42d6a… | total=$0.1390
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x35d6a42d6ad671be837d4ff9c057164b38d4c0e954a948d644957f33bd3e8111
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1390)
+[agent] ✅ Purchased sell-iot-reading seq=49610 | tx=0x94b82c3732… | total=$0.1400
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x94b82c3732195b6b0e716f535316ad72562b4d3fc56eca864e328120952284cb
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1400)
+[agent] ✅ Purchased sell-iot-reading seq=49611 | tx=0xd35c99919c… | total=$0.1410
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd35c99919c5717b9ff713cbbd051c7c43892a0febb9802d7d49094c38731d8eb
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1410)
+[agent] ✅ Purchased sell-iot-reading seq=49613 | tx=0x2a2feba419… | total=$0.1420
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x2a2feba41989ba665e63f570ced2dbba7ef45322c470a5ddf198ac7fcb2fbe43
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1420)
+[agent] ✅ Purchased sell-iot-reading seq=49614 | tx=0xb258169c7d… | total=$0.1430
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xb258169c7d912ea212f74cd339772b7dcaefed5b1d990830ed14e14b53f7d112
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1430)
+[agent] ✅ Purchased sell-iot-reading seq=49615 | tx=0x066d4f831e… | total=$0.1440
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x066d4f831e343795bbc8439e8e21a7a172b8d9fc0709abd7fecb084a314d2ba2
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1440)
+[agent] ✅ Purchased sell-iot-reading seq=49616 | tx=0xee5dced8bf… | total=$0.1450
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xee5dced8bf69d59451a5970dc07034be720916760f851e37d7afcba924998394
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1450)
+[agent] ✅ Purchased sell-iot-reading seq=49617 | tx=0xa2860eaa5a… | total=$0.1460
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xa2860eaa5a86e40adbe4726f27db8841c6c9982711ceb88c14691f9dfb3345fe
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1460)
+[agent] ✅ Purchased sell-iot-reading seq=49618 | tx=0x3bfe36c2e1… | total=$0.1470
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x3bfe36c2e1ac109219cfaaaef7a952dbe663765bf21216ff5d02d5d76a7cdb3a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1470)
+[agent] ✅ Purchased sell-iot-reading seq=49619 | tx=0xcde099a09f… | total=$0.1480
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xcde099a09f7b75f915639d3b54a009d6bee7c86abdce12edc6760f3cec226a97
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1480)
+[agent] ✅ Purchased sell-iot-reading seq=49620 | tx=0x8d3a95c7f3… | total=$0.1490
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x8d3a95c7f3028705a9656e97768a54279822e694baca378436718f91394e84ab
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1490)
+[agent] ✅ Purchased sell-iot-reading seq=49621 | tx=0x986f2da9a9… | total=$0.1500
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x986f2da9a90b70ec1fec6c5eb0cfb25036d745393b310cb4baffc40e35f4e844
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1500)
+[agent] ✅ Purchased sell-iot-reading seq=49622 | tx=0x57c96b2a03… | total=$0.1510
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x57c96b2a0373b01853775ac4107de914fbb71fa29446f8134200d56eabc69885
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1510)
+[agent] ✅ Purchased sell-iot-reading seq=49623 | tx=0x334c659c3f… | total=$0.1520
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x334c659c3fbcfd19e862c19a2e638a25e2555426473c8d23741ca58eafb0dbd8
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1520)
+[agent] ✅ Purchased sell-iot-reading seq=49624 | tx=0x6be607ec19… | total=$0.1530
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x6be607ec19e580d221741e1e21789bda4f998942e4162a70c666f5ec692e0825
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1530)
+[agent] ✅ Purchased sell-iot-reading seq=49625 | tx=0x46cc8c3eff… | total=$0.1540
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x46cc8c3eff556dc9e93338c7f9a3ba34ecb5412bedadd0e5af74d81ed59b650e
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1540)
+[agent] ✅ Purchased sell-iot-reading seq=49626 | tx=0xfbb62d6a2e… | total=$0.1550
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xfbb62d6a2ea43ac937106157a36612b7898e7067d4b314137969b0bf028b95d1
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1550)
+[agent] ✅ Purchased sell-iot-reading seq=49627 | tx=0x3adfe7033e… | total=$0.1560
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x3adfe7033ef50e6f86c415eec059e2eda32dafb4b943ed0abb6bbcd4862662e5
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1560)
+[agent] ✅ Purchased sell-iot-reading seq=49628 | tx=0x16a6ffaaf4… | total=$0.1570
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x16a6ffaaf47d52782dfc5089dba1f83a75ab899815a95fb4c3dd0c392615028a
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1570)
+[agent] ✅ Purchased sell-iot-reading seq=49629 | tx=0xc8dab96abf… | total=$0.1580
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xc8dab96abf3daaa3f6986b82eb87b44a98a60aa47987c8dbb0e35c0f5801f521
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1580)
+[agent] ✅ Purchased sell-iot-reading seq=49630 | tx=0xd4eb6169e2… | total=$0.1590
+[agent]    Explorer: https://sepolia.basescan.org/tx/0xd4eb6169e22de87d5628076e1757530ca4376515e9e8a2424649fe01fca6a32c
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1590)
+[agent] ✅ Purchased sell-iot-reading seq=49631 | tx=0x9a8ab8b22b… | total=$0.1600
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x9a8ab8b22b7d0b8693612b4b6504e3094882b58cd988d0beb0df7daff67046d3
+[agent] Counter-offer declined for sell-inference: offered $0.001, they want $0.002
+[agent] Paying $0.001 for sell-iot-reading (running total: $0.1600)
+[agent] ✅ Purchased sell-iot-reading seq=49632 | tx=0x5e1d697136… | total=$0.1610
+[agent]    Explorer: https://sepolia.basescan.org/tx/0x5e1d697136e6884e0454c20783da4dd69aef21829629e19d503f55025bfe8f38

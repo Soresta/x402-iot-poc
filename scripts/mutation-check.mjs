@@ -76,6 +76,12 @@ const MUTATIONS = [
     to: `    return { ok: true, kid: expectedKid };`,
   },
   {
+    name: "Spend accounting: lost-response payments uncounted, cap_reached counted",
+    file: "buyer/budget.mjs",
+    from: `    if (!SPEND_RESULTS.has(entry?.result)) continue; // refusals, stops, cap_reached`,
+    to: `    if (entry?.result === "payment_unconfirmed") continue;`,
+  },
+  {
     name: "A6 rate limit: limiter switched off",
     file: "src/paid-route.ts",
     from: `  if (!env.RATE_LIMITER) return null; // binding absent: payment is still verified downstream`,
