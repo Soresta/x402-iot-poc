@@ -50,14 +50,14 @@ guess. **No row in this table is classified `assisted` or `unknown` on a hunch.*
 
 | | |
 |---|---|
-| Settlements executed | **189** |
-| Volume settled | **$0.191** testnet USDC |
+| Purchases by the buyer agent | **382** *(2026-09-14; 189 when this memo was drafted)* |
+| Volume settled | **$0.405** testnet USDC *(was $0.191)* |
 | Distinct paying wallets | **1** — ours |
 | External paying wallets | **0** |
 | Infrastructure spend | **$0** |
 | Paid acquisition spend | **$0** |
 
-The 189 settlements are a working system exercising itself. **They are not
+The 382 purchases are a working system exercising itself. **They are not
 revenue and I am not presenting them as a proxy for it.** The temptation in a
 memo like this is to reclassify activity as impact; the whole reason the payer
 count is computed by excluding our own wallets in code is so that this paragraph
@@ -78,8 +78,9 @@ metrics and email capture — on a free tier, with 81 tests behind it.
 
 **What worked: the verification discipline paid for itself.**
 
-Four defects reached production. All four were found by re-testing rather than
-by users, because there were no users. Each is written up with the failing
+Four defects reached production before v1.0.0, and the final verification pass
+found eight more. All were found by re-testing rather than by users, because
+there were no users. Each is written up with the failing
 output. One of them — the payment header name — had two security controls
 silently switched off for a week while every test passed. Finding that ourselves
 is worth more than the fix.
@@ -118,7 +119,7 @@ rather than escalating it once, hard, in Week 3.
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted | **none yet.** This is the Watch subscription's content |
 | Flagship tutorial, 3 posts, 2 X threads, Show HN, 2 subreddit posts, outreach template, 10-slide deck, 90-second video script | written, unpublished | **none** |
-| Four documented defect classes in a young ecosystem | published in-repo | **none.** Credible material for the briefings |
+| Sixteen documented defects, each with its failing output | published in-repo | **none.** Credible material for the briefings |
 
 **The honest summary of cost versus value:** the programme produced reusable
 assets and zero revenue. The assets are real and the zero is real, and I would
@@ -159,13 +160,13 @@ unreachable and I will not sign up for a number I cannot influence.
 Three things.
 
 **The build is defensible.** Every claim in the README can be reproduced from a
-clean clone; four real bugs are documented with their failing output; the
+clean clone; sixteen real defects are documented with their failing output; the
 external-payer count is computed in code precisely so it cannot be flattered.
 
 **The distribution is not started, and that is the whole gap.** Not
 underperformed — not started. One input from Week 2 and one decision from Week 4
 would have made this a different memo.
 
-**Do not read 189 settlements as traction.** It is a system proving it works, by
+**Do not read 382 purchases as traction.** It is a system proving it works, by
 buying from itself. The interesting number is still 0, and it will stay 0 until
 someone outside this project is shown the door.

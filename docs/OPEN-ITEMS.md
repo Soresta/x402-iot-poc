@@ -7,7 +7,7 @@ pass has one list to work from instead of eight weekly reports.
 "done" looks like. Items are ordered by what would embarrass us most if a
 reviewer found it first.
 
-Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
+Last updated: 2026-09-14 (submission pass — v1.1.0). Full check-by-check results: [`VERIFICATION.md`](./VERIFICATION.md).
 
 ---
 
@@ -23,6 +23,9 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 | ~~A7~~ | ~~A proof can be used up without a charge.~~ **ACCEPTED AND DOCUMENTED 2026-09-11.** Resending a proof whose request failed returns `payment_already_used` although nothing was spent; observed live today when a settlement failed at the facilitator. **Deliberately not "fixed" by deleting the key on failure:** two concurrent requests with one proof would share that key, and the failing one would delete the key the succeeding one wrote, weakening replay protection to save a round trip. The x402 client re-signs automatically. Documented in `ERRORS.md`. | | |
 | ~~A8~~ | ~~Failed settlements were recorded as receipts.~~ **FOUND AND CLOSED 2026-09-11.** The middleware sets a `payment-response` header on failure too (`success:false`), and `recordSettlement` recorded anything carrying one. Failed settlements became receipts with no transaction hash and were counted as sales by the demo page, `/api/payers` and `/api/metrics/daily` — including the two "transient failures" in the week 5 soak run. Measured on the deployed Worker: **100 settlements / $0.101 before, 97 / $0.098 after.** Now only `success:true` with a transaction is recorded, and every reader filters old entries through `isSettledReceipt()` rather than deleting them. Buyer-side ledger counts (189 purchases, 111 in the soak run) were never affected — the ledger only records `200` responses. | | |
 | ~~A6~~ | ~~Rate limiting is not atomic.~~ **CLOSED 2026-09-11 — and it was worse than this row said.** The row predicted the quota "can be exceeded" under load. Measured against the deployed Worker: **30 simultaneous requests, 30 passed a quota of 10, three runs out of three.** The limiter now counts in a `RateLimiter` Durable Object; the same burst lets **exactly 10** through, three runs out of three. It also gained a per-IP bucket, because the payer address it keyed on is unverified at that point and could be rotated. `buyer/test_ratelimit_burst.mjs` reproduces it. | | |
+
+| ~~A9~~ | ~~The spending cap missed a payment whose response was lost, and counted refusals as spend.~~ **FOUND AND CLOSED 2026-09-13.** Found by reconciling the 2026-09-11 run against the chain: 147 transfers, 146 ledger entries. The missing one settled while the laptop went offline mid-request. A network error during a paid request is now `payment_unconfirmed` and counts against the cap. The same pass found `cap_reached` entries being summed as spend. Regression test and mutation. | | |
+| ~~A10~~ | ~~The demo page misreported and its live feed misbehaved.~~ **FOUND AND CLOSED 2026-09-14**, all from one screenshot. (1) Stat cards said "today" and counted the last 20 receipts. (2) The live feed replayed the latest settlement on every 25-second reconnect: 31 copies of one payment. (3) An ad blocker blocked `/api/events`, so the feed never connected. The feed moved to `/api/feed/settlements` with a cursor, and the cards are relabelled. Observed working on the deployed Worker, and confirmed in the affected browser. Tests and a mutation. | | |
 
 ## B · Verification gaps — things claimed but not proven
 
@@ -42,9 +45,9 @@ Last updated: 2026-09-08 (Week 9 — final; D1 and D7 closed in the README pass)
 | # | Item | Notes |
 |---|---|---|
 | ~~C1~~ | ~~Mandate suite trips its own rate limiter.~~ **CLOSED 2026-09-11** — case 6 now waits out a `429` and retries once, like case 7. |
-| ~~C2~~ | ~~No integration test hits the worker over HTTP.~~ **CLOSED 2026-09-11** — `test/http.spec.ts`, 19 tests through `SELF.fetch`: `402` on all three paid routes, `400` before the `402` for bad inference input, screen codes, `403` before payment for an expired mandate, negotiation, subscribe consent, the export guard — and the A6 burst through the real Durable Object (30 concurrent, exactly 10 pass). No facilitator or chain call, so deterministic. |
+| ~~C2~~ | ~~No integration test hits the worker over HTTP.~~ **CLOSED 2026-09-11** — `test/http.spec.ts`, 19 tests at the time (29 now) through `SELF.fetch`: `402` on all three paid routes, `400` before the `402` for bad inference input, screen codes, `403` before payment for an expired mandate, negotiation, subscribe consent, the export guard — and the A6 burst through the real Durable Object (30 concurrent, exactly 10 pass). No facilitator or chain call, so deterministic. |
 | ~~C3~~ | ~~No test covers `rejectReplay` or `enforceRateLimit`.~~ **CLOSED 2026-09-11** — `rejectReplay` is tested against a stub KV (records once for 24 h, refuses a repeat, keeps proofs separate, records nothing without a proof). `enforceRateLimit` is tested through HTTP with the real Durable Object, which is the only way to test the concurrency it exists for. |
-| ~~C4~~ | ~~Mutation testing is manual.~~ **CLOSED 2026-09-11** — `scripts/mutation-check.mjs`. Seven mutations (the four shipped defects plus A3, A5, A6), each restored in `finally`, and the run refuses to report success if any touched file differs afterwards. Result: **7 of 7 caught.** |
+| ~~C4~~ | ~~Mutation testing is manual.~~ **CLOSED 2026-09-11** — `scripts/mutation-check.mjs`. Seven mutations at first (the four shipped defects plus A3, A5, A6); **eleven now**, adding receipts (A8), card signing (A4), spend accounting (A9) and the live feed (A10). Each is restored in `finally`, and the run refuses to report success if any touched file differs afterwards. Last result: **11 of 11 caught.** |
 
 ## D · Documentation and consistency
 
@@ -75,13 +78,12 @@ Not ours to fix, listed so the final report can say what was blocked and for how
 
 ## How this list gets closed
 
-1. **A** is closed on the code side. A1 and A2 were wrong and are withdrawn;
-   A3, A5, A6 and A8 are fixed and measured; A7 is accepted with its reasoning;
-   A4 is closed: active on the live card, and a buyer with the key pinned was
-   observed buying from it.
-2. **B1–B8** need a person: about an hour for B1–B4, plus an afternoon for the
-   tutorial run and two rehearsals. `PENDING-HUMAN-TESTS.md` has the exact steps
-   for B1–B5; the plan is to run them as one batch.
+1. **A** is closed. A1 and A2 were wrong and are withdrawn; A3, A5, A6, A8, A9
+   and A10 are fixed and measured; A7 is accepted with its reasoning; A4 is active
+   and was observed working with a pinned key.
+2. **B3 and B4 passed on 2026-09-14. B6 is PARTIAL** with real numbers. **B1, B2,
+   B5, B7 and B8 are open**: a stranger for ~20 minutes, a tutorial run, two
+   rehearsals and a recording. Steps are in `PENDING-HUMAN-TESTS.md`.
 3. **C1–C4** are closed.
 4. **D** is closed.
 5. **E1–E6** are decisions, not work.

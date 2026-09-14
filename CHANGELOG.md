@@ -11,7 +11,31 @@ USDC. No release has ever been wired for real value.
 
 ---
 
-## [Unreleased] — 2026-09-11
+## [1.1.0] — 2026-09-14
+
+The verification and submission release. v1.0.0 was the point at which the
+README's claims could be reproduced. This release is what re-checking those claims
+against the chain, a concurrent burst and a real browser turned up, fixed and
+pinned by tests. Status of every check: [`docs/VERIFICATION.md`](./docs/VERIFICATION.md).
+
+### Documentation
+
+- **README restructured.** The architecture diagram showed the idempotency key
+  written *after* settlement, which is the claim withdrawn below. It now follows
+  the real order, and includes the rate limiter and card verification. Stale
+  statements are gone: "four defects", an unverified `Ctrl+C`, and an Agent Card
+  that "activates when the key is generated". Gotchas are renumbered, with four
+  new ones. The full results table moved to `docs/VERIFICATION.md`.
+- **`docs/README.md`**: a map of every document, with what each is for.
+- **Removed `subscribers.csv`** from the repo root. It held no addresses, only an
+  `export_unauthorized` error response saved by the handoff's export command, which
+  wrote into the working tree. The command now writes to Downloads.
+- `docs/402-transcript.txt` moved to `docs/evidence/week2-402-transcript.txt`.
+- Final-state figures refreshed in `HANDOFF.md`, `CLEAN-EXIT-CHECKLIST.md`,
+  `OPEN-ITEMS.md`, the Demo Day deck, the revenue memo and post #3: 382 purchases
+  and $0.405 (was 189 and $0.191), 81 tests, 11/11 mutations. A secrets scan of
+  the full history: 312 matches (270 distinct), all Base Sepolia transaction
+  hashes.
 
 ### Fixed
 
@@ -191,7 +215,7 @@ discovered.
 
 Listed in full in [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md). At the time of
 tagging, this entry also listed a "write-after-settle window" and a
-"paid-but-undelivered" case. **Both were wrong** — see the Unreleased section.
+"paid-but-undelivered" case. **Both were wrong** — see 1.1.0.
 
 ---
 

@@ -105,8 +105,8 @@ and buys what it can afford instead.
 
 | | |
 |---|---:|
-| Settlements executed | 189 |
-| Volume | $0.191 testnet |
+| Purchases by the buyer agent | 382 |
+| Volume | $0.405 testnet |
 | Distinct paying wallets | 1 |
 | **External paying wallets** | **0** |
 | Email list | 0 |
@@ -114,7 +114,7 @@ and buys what it can afford instead.
 
 **Nothing has been published.** Ten assets are written and unposted.
 
-The 189 settlements are the system buying from itself. The external-payer count
+*Figures as of 2026-09-14, from the buyer agent's ledger.* The 382 purchases are the system buying from itself. The external-payer count
 is computed by excluding our own wallets **in code** — `/api/payers` returns
 `milestone_w7_met: false` — so this slide cannot be written any other way.
 
@@ -145,7 +145,7 @@ Zero revenue. Six reusable assets:
 | Real-value readiness memo, 12 counsel questions | delivered |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted |
 | Ten publishable assets — tutorial, 3 posts, threads, Show HN, deck | written |
-| Four documented defect classes in a young ecosystem | published |
+| Sixteen documented defects, each with its failing output | published |
 
 The memo shortens a future legal review. The board is the Watch subscription's
 content. Both are real and neither is revenue, and I would rather you see both
@@ -155,7 +155,8 @@ numbers than have one dressed as the other.
 
 ## 10 · What broke — the most useful slide here
 
-Four defects reached production in nine weeks. All four shared one property:
+Sixteen defects were found in nine weeks — eight of them in the final verification
+pass, after v1.0.0 was tagged. Almost all of them shared one property:
 
 > **In this stack, wrong looks like working.**
 
@@ -179,6 +180,10 @@ the tree. The suite failed immediately, unprompted.
 
 > That defect survived a week of manual testing in Week 3.
 > It survived ninety seconds this time.
+
+The suite now reintroduces eleven known defects on demand, and catches all
+eleven. It also caught a weak test of its own: a fixture whose amounts summed the
+same with the bug as without it.
 
 ---
 
@@ -248,6 +253,6 @@ readiness briefings, and the PoC as its evidence. Written up in
   produce a settlement from a different address and it would not be adoption. The
   KPI is wallets we do not own, and the exclusion is in config so the line cannot
   blur later.
-- Expected question — *"is 189 settlements good?"* Answer: it is 189 settlements
+- Expected question — *"are 382 purchases good?"* Answer: it is 382 purchases
   the system made buying from itself. It proves the machine runs. It proves
   nothing about demand.

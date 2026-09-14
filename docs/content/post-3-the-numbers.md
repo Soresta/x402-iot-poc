@@ -12,7 +12,7 @@ usually contains, and the reason is in the post itself.
 
 ## Title
 
-`189 payments, 0 customers: five weeks of building an API for machines`
+`382 payments, 0 customers: building an API for machines`
 
 *(Alternative: "What five weeks of machine payments actually looks like")*
 
@@ -29,10 +29,10 @@ Disclosure: I work with the team at Pragma.Vision. The code is MIT.
 
 | | |
 |---|---|
-| Total settlements | **189** |
-| Total volume | **$0.191** in testnet USDC |
-| Days with activity | **5** |
-| Longest unattended run | **1 hour** — 111 settlements, 98.2% success |
+| Total purchases | **382** |
+| Total volume | **$0.405** in testnet USDC |
+| Days with activity | **8** |
+| Longest continuous unattended run | **1 hour** — 111 settlements, 98.2% success |
 | Distinct paying wallets | **1** |
 | **External paying wallets** | **0** |
 | Infrastructure cost | **$0** |
@@ -40,7 +40,7 @@ Disclosure: I work with the team at Pragma.Vision. The code is MIT.
 
 The number that decides whether any of this is interesting is the sixth one.
 Every payment this API has ever taken came from a wallet I own. I built a thing
-that sells, and then I bought from myself 189 times.
+that sells, and then I bought from myself 382 times.
 
 That is not a failure of the technology. It is a failure to have shown it to
 anyone, and those are different problems with different fixes.
@@ -56,7 +56,7 @@ So the funnel is complete and empty. Instrumentation, consent-first email
 capture, a page that shows exactly which wallets are ours and which are not. All
 of it wired to a top that nobody has walked through.
 
-I could have written this post about the 189. It reads better. It would also be
+I could have written this post about the 382. It reads better. It would also be
 the same mistake this project keeps catching itself making: reporting the shape
 of success rather than checking the value.
 
@@ -156,14 +156,14 @@ itself in public.
 ## Notes on this draft
 
 Every figure is measured, not estimated: settlement counts from the receipt log
-and the buyer's ledger, the hour-long run from `docs/week5/soak-run.log`, the
+and the buyer's ledger, the hour-long run from `docs/week3/soak-run.log`, the
 external payer count from `/api/payers`, which computes it by excluding
 configured own-wallets rather than by eye.
 
 The post leads with a zero. That is the point of it. The brief asks for real
 numbers and what broke; the honest version of this project's numbers at week
 seven is "the machine works and nobody has seen it", and a post that buried that
-under 189 settlements would be the same overclaiming this project has spent five
+under 382 purchases would be the same overclaiming this project has spent five
 weeks catching in itself.
 
 **Publication note:** if the launch happens before this posts, the numbers

@@ -6,7 +6,7 @@
  * matter how recently the agent had spent, so an agent running across midnight
  * could spend up to twice its cap inside a single 24-hour period. Found by
  * running the agent for an hour across midnight and reading the ledger
- * (docs/week5/soak-run.log).
+ * (docs/week3/soak-run.log).
  *
  * The cap is now a ROLLING window: everything spent in the last 24 hours counts,
  * whatever the calendar says.
