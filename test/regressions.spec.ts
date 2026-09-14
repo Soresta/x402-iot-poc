@@ -27,6 +27,7 @@ import { pickTopClass, validateInferenceInput, MAX_INPUT_CHARS } from "../src/in
 import { ownWallets, shortenAddress } from "../src/payers";
 import { evaluateWindow } from "../src/rate-limiter";
 import { canonicalize, signCard, verifyCard } from "../src/card-signing";
+import { sseStartCursor, sseShouldEmit } from "../src/demo";
 // @ts-expect-error — plain ESM module from the buyer side, no type declarations
 import { verifyCard as buyerVerifyCard } from "../buyer/card-verify.mjs";
 // @ts-expect-error — plain ESM module from the buyer side, no type declarations
@@ -499,5 +500,33 @@ describe("A4: the Agent Card is signed, and a buyer can tell", () => {
     const header = JSON.parse(atob(signed.signatures[0].protected.replace(/-/g, "+").replace(/_/g, "/")));
     expect(header).toMatchObject({ alg: "ES256", typ: "JOSE", jku: "https://seller.test/.well-known/jwks.json" });
     expect(typeof header.kid).toBe("string");
+  });
+});
+
+// --------------------------------------------------------------------------
+// Live events cursor
+// --------------------------------------------------------------------------
+
+describe("SSE cursor: a stream never re-sends what the page has seen", () => {
+  const LATEST = "2026-09-14T09:18:29.000Z";
+  const NOW = "2026-09-14T09:43:00.000Z";
+
+  it("first connection starts at the latest stored event, so it is not replayed", () => {
+    const cursor = sseStartCursor(null, LATEST, NOW);
+    expect(sseShouldEmit(LATEST, cursor)).toBe(false);
+  });
+
+  it("a reconnect resumes from the page's cursor", () => {
+    const cursor = sseStartCursor("2026-09-14T09:17:00.000Z", LATEST, NOW);
+    expect(sseShouldEmit(LATEST, cursor)).toBe(true);
+    expect(sseShouldEmit(LATEST, LATEST)).toBe(false);
+  });
+
+  it("with nothing stored, starts at now", () => {
+    expect(sseStartCursor(null, null, NOW)).toBe(NOW);
+  });
+
+  it("ignores events without a timestamp", () => {
+    expect(sseShouldEmit(undefined, NOW)).toBe(false);
   });
 });

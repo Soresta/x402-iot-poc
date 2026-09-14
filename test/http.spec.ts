@@ -352,3 +352,50 @@ describe("A4: without a signing key the card is served unsigned, and says so", (
     expect(await res.json()).toMatchObject({ error: "card_signing_not_configured" });
   });
 });
+
+// --------------------------------------------------------------------------
+// Live events: a reconnect must not replay the last settlement
+// --------------------------------------------------------------------------
+
+describe("SSE: the live feed resumes from a cursor instead of replaying", () => {
+  /**
+   * THE BUG: each stream started with no cursor and re-sent `latest_event` on
+   * its first poll. Streams close every 25 s and the page reconnects, so the
+   * demo's Live Events panel filled with copies of one settlement — 31 of the
+   * same 12:18:29 payment on 2026-09-14.
+   */
+  async function readStreamFor(path: string, ms: number): Promise<string> {
+    const res = await get(path);
+    const reader = res.body!.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
+    const deadline = Date.now() + ms;
+    while (Date.now() < deadline) {
+      const chunk = await Promise.race([
+        reader.read(),
+        new Promise<null>((r) => setTimeout(() => r(null), deadline - Date.now())),
+      ]);
+      if (!chunk || chunk.done) break;
+      text += decoder.decode(chunk.value);
+    }
+    await reader.cancel();
+    return text;
+  }
+
+  const EVENT_TS = "2026-09-14T09:18:29.000Z";
+
+  it("a first connection does not replay the stored latest settlement", async () => {
+    await env.IOT_KV.put("latest_event", JSON.stringify({ type: "payment_settled", ts: EVENT_TS, amount: "$0.002" }));
+    const text = await readStreamFor("/api/events", 3_000);
+    expect(text).toContain("event: connected");
+    expect(text).toContain(EVENT_TS); // reported as the cursor
+    expect(text).not.toContain("event: payment_settled");
+  }, 15_000);
+
+  it("a reconnect with an older cursor receives the newer settlement exactly once", async () => {
+    await env.IOT_KV.put("latest_event", JSON.stringify({ type: "payment_settled", ts: EVENT_TS, amount: "$0.002" }));
+    const text = await readStreamFor(`/api/events?since=${encodeURIComponent("2026-09-14T09:17:00.000Z")}`, 5_000);
+    // The server polls every 2 s, so 5 s covers two polls: one send, no repeat.
+    expect(text.match(/event: payment_settled/g) ?? []).toHaveLength(1);
+  }, 15_000);
+});

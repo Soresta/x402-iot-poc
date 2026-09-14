@@ -82,6 +82,12 @@ const MUTATIONS = [
     to: `    if (entry?.result === "payment_unconfirmed") continue;`,
   },
   {
+    name: "Live events: every stream replays the latest settlement",
+    file: "src/demo.ts",
+    from: `  return since || latestTs || nowIso;`,
+    to: `  return since || "";`,
+  },
+  {
     name: "A6 rate limit: limiter switched off",
     file: "src/paid-route.ts",
     from: `  if (!env.RATE_LIMITER) return null; // binding absent: payment is still verified downstream`,

@@ -18,8 +18,29 @@ import type { Context } from "hono";
 import type { Env } from "./types";
 
 // ---------------------------------------------------------------------------
-// SSE endpoint — GET /api/events
+// SSE endpoint — GET /api/events[?since=<ISO ts>]
 // ---------------------------------------------------------------------------
+
+/**
+ * Where a new stream starts reading. THE BUG this replaces: every stream began
+ * with no cursor, so its first poll re-sent whatever `latest_event` was. Streams
+ * close every 25 s and the page reconnects, so the panel got the same
+ * settlement again every ~25 s. Observed 2026-09-14: 31 copies of one 12:18:29
+ * payment, and nothing else.
+ *
+ * - The client passes the last event it has seen as `since`; resume from there.
+ * - No `since` (first connection): start at the current latest event, so a page
+ *   shows settlements that happen while it is open, not a stale one as "live".
+ * - Nothing in KV yet: start at the server's now.
+ */
+export function sseStartCursor(since: string | null, latestTs: string | null, nowIso: string): string {
+  return since || latestTs || nowIso;
+}
+
+/** Send only events strictly newer than the cursor. ISO-8601 UTC strings sort as time. */
+export function sseShouldEmit(eventTs: unknown, cursor: string): eventTs is string {
+  return typeof eventTs === "string" && eventTs > cursor;
+}
 
 export async function sseHandler(c: Context<{ Bindings: Env }>) {
   if (!c.env.IOT_KV) {
@@ -27,7 +48,7 @@ export async function sseHandler(c: Context<{ Bindings: Env }>) {
   }
 
   const kvRef = c.env.IOT_KV;
-  let lastEventTs: string | null = null;
+  const since = c.req.query("since") || null;
   let closed = false;
 
   const stream = new ReadableStream({
@@ -45,6 +66,13 @@ export async function sseHandler(c: Context<{ Bindings: Env }>) {
         controller.enqueue(encoder.encode(": ping\n\n"));
       }
 
+      let latestTs: string | null = null;
+      try {
+        const raw = await kvRef.get("latest_event");
+        latestTs = raw ? (JSON.parse(raw).ts ?? null) : null;
+      } catch {}
+      let cursor = sseStartCursor(since, latestTs, new Date().toISOString());
+
       // Heartbeat every 15 s to keep proxies alive
       const hbInterval = setInterval(heartbeat, 15_000);
 
@@ -59,8 +87,8 @@ export async function sseHandler(c: Context<{ Bindings: Env }>) {
           const raw = await kvRef.get("latest_event");
           if (raw) {
             const event = JSON.parse(raw);
-            if (event.ts !== lastEventTs) {
-              lastEventTs = event.ts;
+            if (sseShouldEmit(event.ts, cursor)) {
+              cursor = event.ts;
               send("payment_settled", event);
             }
           }
@@ -73,12 +101,15 @@ export async function sseHandler(c: Context<{ Bindings: Env }>) {
       // Send initial connection event
       send("connected", {
         ts: new Date().toISOString(),
+        cursor,
         message: "SSE stream established",
       });
 
-      // Workers have a max response duration; after 25 s close gracefully
-      // The client's EventSource will reconnect automatically.
+      // Workers have a max response duration; after 25 s close gracefully.
+      // Announce it, so the page reconnects at once, with its cursor, instead of
+      // treating a planned close as an error and showing "Reconnecting…".
       setTimeout(() => {
+        send("reconnect", { cursor });
         clearInterval(pollInterval);
         clearInterval(hbInterval);
         closed = true;
@@ -854,22 +885,38 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
   // ---- SSE connection ----
   let sse;
   let sseRetries = 0;
+  // Last event this page has seen. Sent on every reconnect so the server resumes
+  // after it rather than replaying the latest settlement again.
+  let sseCursor = null;
 
   function connectSSE() {
-    sse = new EventSource("/api/events");
+    sse = new EventSource(sseCursor ? "/api/events?since=" + encodeURIComponent(sseCursor) : "/api/events");
 
-    sse.addEventListener("connected", () => {
+    sse.addEventListener("connected", (e) => {
       sseDot.classList.remove("disconnected");
       statSse.textContent = "Live";
       sseRetries = 0;
+      try {
+        const d = JSON.parse(e.data);
+        if (!sseCursor) sseCursor = d.cursor || d.ts;
+      } catch {}
     });
 
     sse.addEventListener("payment_settled", (e) => {
       try {
         const data = JSON.parse(e.data);
+        if (sseCursor && data.ts <= sseCursor) return; // already shown
+        sseCursor = data.ts;
         addEvent(data);
         loadReceipts(); // refresh table immediately
       } catch {}
+    });
+
+    // Planned close (Workers cap stream duration): reconnect now, keep status.
+    sse.addEventListener("reconnect", () => {
+      sse.onerror = null;
+      sse.close();
+      connectSSE();
     });
 
     sse.onerror = () => {

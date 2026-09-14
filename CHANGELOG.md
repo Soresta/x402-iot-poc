@@ -51,6 +51,22 @@ USDC. No release has ever been wired for real value.
   payment gate. Empty or over-length text is `400`; the old silent sample
   substitution and truncation are gone.
 
+### Fixed — the Live Events panel replayed one settlement every 25 seconds
+
+Every SSE stream started without a cursor and sent the stored `latest_event` on
+its first poll. Workers streams close after 25 s and the page reconnects, so the
+panel filled with copies of one payment: **31 copies of the same 12:18:29
+settlement** on 2026-09-14. The planned close also went through the error path,
+which is why screenshots showed "Reconnecting…".
+
+The page now sends the last event it has seen as `?since=`. A first connection
+starts at the latest stored event instead of replaying it. The server announces
+its planned close, so the page reconnects at once without touching the status.
+Checked on the deployed Worker over 145 s: the panel stayed empty through several
+reconnects, one real payment appeared once within a second and was not repeated,
+and the status read "Live" throughout. 4 regression tests, 2 HTTP tests over the
+real stream, and a mutation. **79 tests, 11 of 11 mutations caught.**
+
 ### Fixed — demo page stat cards said "today" and meant "last 20"
 
 "Settlements today", "Total volume" and "Distinct payers" were computed from the

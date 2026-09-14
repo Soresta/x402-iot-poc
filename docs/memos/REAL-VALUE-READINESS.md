@@ -212,8 +212,8 @@ they say:
       active once the key holder generates the key.*
 - [x] Make the spending cap a rolling window rather than a UTC calendar day.
       *Done 2026-09-11.*
-- [x] Automated test suite. *73 tests — 48 regression, 25 over HTTP — and every
-      known defect caught when reintroduced (10 of 10). Previously: one per defect that shipped,
+- [x] Automated test suite. *79 tests — 52 regression, 27 over HTTP — and every
+      known defect caught when reintroduced (11 of 11). Previously: one per defect that shipped,
       mutation-checked. Route behaviour over HTTP is still verified by hand.*
 - [ ] Facilitator diligence: named counterparty, written terms, security
       attestation.

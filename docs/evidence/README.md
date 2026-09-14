@@ -41,6 +41,9 @@ ledger and explorer times are UTC.
   `Reconnecting…` and the live-events panel is empty. The receipts table loads
   over plain HTTP. The live stream had dropped when the screenshot was taken, so
   this screenshot is evidence for the receipts and not for live streaming.
+  *Later the same day:* "Reconnecting…" turned out to be the Worker's planned
+  25-second stream close taken as an error. The panel, when not empty, replayed
+  the last settlement on every reconnect. Both are fixed; see the CHANGELOG.
 - **The stat cards on this screenshot are mislabelled, and the screenshot showed
   why.** "Settlements today: 20" on a day with two purchases. The page counted
   the last 20 receipts it had fetched. The SSE handler also kept a second,
