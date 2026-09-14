@@ -10,11 +10,11 @@ pass has one list to work from instead of eight weekly reports.
 | Section | 🟢 | 🔴 | What the 🔴 are |
 |---|---:|---:|---|
 | A · Correctness and safety | 10 | 0 | — |
-| B · Verification gaps | 3 | 5 | 30-second demo test (B2), tutorial clean run (B5), 24 h run partial (B6), rehearsals (B7), fallback video (B8) |
+| B · Verification gaps | 5 | 3 | 24 h run partial (B6), rehearsals (B7), fallback video (B8) |
 | C · Test suite | 4 | 0 | — |
 | D · Documentation | 7 | 0 | — |
 | E · Blocked on someone else | 1 | 5 | E3 met by a recruited tester; the other five wait on the manager |
-| F · Programme tasks W1–W9 | 31 | 19 | see §F; most need the manager or a publish decision |
+| F · Programme tasks W1–W9 | 33 | 17 | see §F; most need the manager or a publish decision |
 
 **Nothing here is hidden elsewhere.** Each item says where it came from and what
 "done" looks like. Items are ordered by what would embarrass us most if a
@@ -45,10 +45,10 @@ Last updated: 2026-09-14 (submission pass — v1.1.0). Full check-by-check resul
 | # | Item | Status | Done when |
 |---|---|---|---|
 | 🟢 B1 | **Stranger test — README reproducibility** | **PASS 2026-09-14, with guidance at three documentation defects, all fixed the same day.** One first-time tester on macOS. **Quickstart:** no wallet to a settled payment on the live Worker in ≈ 15 min. **README "run your own seller":** clone to both products bought from their own local seller in **14 min**. They set their own `PAY_TO` and `OWN_WALLETS` (step 3); `wrangler dev` ran with AI remote; the agent bought a reading and an inference; the local demo page showed the settlement live. The three stops were quickstart step 4 (`pay.mjs` ignored `SELLER_URL`), README step 5 (no `wrangler login`), and README step 5 again (a new account needs a `workers.dev` subdomain). Each was answered by the intern, so the times include help | One person, watched, ≤15 min, findings recorded — see `PENDING-HUMAN-TESTS.md` |
-| 🔴 B2 | **30-second demo comprehension test** | Open since W3 | One person, 30 s, their answer written down verbatim even if wrong |
+| 🟢 B2 | **30-second demo comprehension test** | **PASS 2026-09-14, with a finding.** A person who had not seen the page, 30 seconds, no explanation. Verbatim answer (Turkish): *"Bir sensörden okunan bilgi karşılığında bir ücret ödemesi gerçekleştiriyoruz."*, meaning "We make a payment in exchange for data read from a sensor." Understood: data is sold, per reading. **Missed: that the payer is software, not a person** ("we make a payment"). That is the page's central point. Testnet and the second product were not mentioned. | One person, 30 s, their answer written down verbatim even if wrong |
 | 🟢 B3 | **Real `Ctrl+C` clean exit** | **PASS 2026-09-14.** Console screenshot shows `[agent] SIGINT received. Flushing and exiting cleanly.` after two purchases. The ledger's last line is `{"ts":"2026-09-14T09:18:58.791Z","result":"agent_stopped","signal":"SIGINT"}` (first observed 2026-09-11 09:51:07Z) | — |
 | 🟢 B4 | **Explorer link followed by a human** | **PASS 2026-09-14.** `sepolia.basescan.org` opened by hand for the first purchase above: Status **Success**, block 46804595, 09:17:58 UTC, ERC-20 transfer **0.001 USDC from `0x936F…8945` (buyer) to `0x219b…d99E` (seller)**. The transaction's own `From` is `0xd407…f1bf`, the facilitator's relayer, which pays the gas. The buyer signs an EIP-3009 authorization and never sends a transaction itself | — |
-| 🔴 B5 | **Tutorial run on a clean machine** | Open since W5 | Every block executed from an empty directory, timed |
+| 🟢 B5 | **Tutorial run on a clean machine** | **PASS 2026-09-14, as reported by the intern.** Run end to end on a separate computer, which is closer to the "clean machine" the DoD asks for than an empty folder on the build machine. Duration and any steps that needed a change: to be added. | Every block executed from an empty directory, timed |
 | 🔴 B6 | **24-hour unattended run** | **PARTIAL — not 24 h.** 2026-09-11: 8 h 50 m wall clock, ≈ 2 h 37 m actually buying (laptop asleep/off in between), 146 purchases, $0.147 spent against a $2.00 cap, never exceeded. Longest *continuous* run is still the 1 h one. Found and fixed: a payment whose response was lost went uncounted by the cap. `docs/soak-runs/SOAK-2026-09-11.md` | A 24 h run needs a machine that stays awake. Otherwise the DoD stays PARTIAL with these numbers |
 | 🔴 B7 | **Demo Day deck rehearsed twice** | Not rehearsed | Two run-throughs, timed |
 | 🔴 B8 | **Fallback demo video recorded** | Not recorded | Follow `docs/content/demo-video-script.md`; needed so a failed live demo does not end the talk |
@@ -124,7 +124,7 @@ deliberately, because it names people.
 |---|---|---|---|
 | 🟢 | Seller — device twin | Paid request returns data; replay rejected | PASS, local and deployed |
 | 🔴 | Buyer — autonomous customer | Runs 24 h without exceeding its mandate | **PARTIAL** — 1 h continuous; 8 h 50 m with sleep gaps (B6) |
-| 🔴 | Live demo page | A stranger understands it in 30 s | Page works; **stranger test not run** (B2) |
+| 🟢 | Live demo page | A stranger understands it in 30 s | **PASS with a finding** (B2): the purpose was understood; that the buyer is a machine was not |
 | 🟢 | Post #2 draft ⚑ | Draft to manager | Delivered (`docs/content/post-2-architecture.md`) |
 | 🔴 | Channel #1 follow-through | Replies answered, scores logged | **Blocked** — no channel live (E2) |
 
@@ -143,7 +143,7 @@ deliberately, because it names people.
 | | Task | DoD | State |
 |---|---|---|---|
 | 🟢 | Second resource — inference | Buyer buys both; demo shows both | PASS |
-| 🔴 | Flagship tutorial draft ⚑ | Every code block re-tested from a clean checkout | Draft complete; **clean run not done** (B5) |
+| 🟢 | Flagship tutorial draft ⚑ | Every code block re-tested from a clean checkout | Run end to end on a separate computer, 2026-09-14 (B5); manager review pending |
 | 🟢 | Research board v2 + funnel map | Funnel map agreed | Written (`docs/content/funnel-map-and-utm.md`); agreement pending |
 | 🔴 | 90-second demo video ⚑ | File to manager | Script ready; **not recorded** (B8) |
 | 🔴 | Email capture ⚑ | Capture live + first CSV export handed over | Capture live; **export with the real token not yet run and handed over** — one command, HANDOFF §2.4 |
@@ -200,14 +200,14 @@ deliberately, because it names people.
 ### What is left, by who can do it
 
 **You, with no one else (about half a day):**
-1. 🔴 Tutorial run from an empty directory, timed (B5)
+1. 🟢 ~~Tutorial run from an empty directory, timed (B5)~~ — done on a separate computer
 2. 🔴 Rehearse the Demo Day deck twice, timed (B7)
 3. 🔴 Record the 90-second fallback video (B8)
 4. 🔴 Run the subscriber export with the real token, confirm `200`, keep the file outside the repo (W5 email capture)
 5. 🔴 *Optional:* write up the W1 distribution scouting, if notes exist anywhere
 
 **You and one other person (about 20 minutes):**
-6. 🔴 30-second demo test with someone who has **not** seen the page (B2). An answer has been given; whether that person had seen the page before is still to be confirmed
+6. 🟢 ~~30-second demo test (B2)~~ — passed; the finding (machine buyer not noticed) is a one-line copy fix on the demo page
 
 **Needs a machine that stays awake, or stays PARTIAL:**
 7. 🔴 24-hour unattended run (B6)
@@ -228,9 +228,8 @@ deliberately, because it names people.
    and A10 are fixed and measured; A7 is accepted with its reasoning; A4 is active
    and was observed working with a pinned key.
 2. **B1, B3 and B4 passed on 2026-09-14. B6 is PARTIAL** with real numbers.
-   **B2, B5, B7 and B8 are open**: a 30-second test with a fresh person, a
-   tutorial run, two rehearsals and a recording. Steps are in
-   `PENDING-HUMAN-TESTS.md`.
+   **B2 and B5 passed the same day. B7 and B8 are open**: two rehearsals and a
+   recording. Steps are in `PENDING-HUMAN-TESTS.md`.
 3. **C1–C4** are closed.
 4. **D** is closed.
 5. **E1–E6** are decisions, not work.

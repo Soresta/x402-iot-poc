@@ -66,6 +66,14 @@ they stall?
 
 **Part B — the demo page (30 seconds)**
 
+> **PASS 2026-09-14, with a finding.** Run with a person who had not seen the
+> page. Their answer, verbatim: *"Bir sensörden okunan bilgi karşılığında bir ücret
+> ödemesi gerçekleştiriyoruz."* ("We make a payment in exchange for data read from
+> a sensor.") They got the transaction: data sold per reading. **They missed that
+> the buyer is an autonomous agent.** "We make a payment" puts a person in the
+> loop, which is the one thing the page exists to show is absent. Testnet and the
+> second product went unmentioned.
+
 1. Open the live demo. Give them 30 seconds. Say nothing.
 2. Ask: "What is this page showing you?"
 3. Write down their answer verbatim, including if it is wrong.

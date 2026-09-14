@@ -225,7 +225,7 @@ The suite is not general coverage. It pins the defects that were actually found,
 | Signed Agent Card, clean `Ctrl+C`, explorer check by a person | PASS 2026-09-14, with [screenshots](./docs/evidence/) |
 | Unattended run | **PARTIAL**: 1 h continuous. A second run spanned 8 h 50 m with ≈ 2 h 37 m of buying. Not 24 h |
 | A first-time user follows the docs | PASS 2026-09-14: the quickstart in ≈ 15 min, "run your own seller" in 14 min, with help at three doc defects (now fixed) |
-| A stranger understands the demo page in 30 s | **NOT VERIFIED** |
+| A stranger understands the demo page in 30 s | PASS 2026-09-14, with a finding: the purpose was clear; that the buyer is software was not |
 
 ---
 
