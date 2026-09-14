@@ -53,6 +53,27 @@ private key" and nothing more.
 - The README and the tutorial link to the walkthrough. The quickstart no longer
   promises five minutes to someone starting without a wallet.
 
+### Fixed — "Run your own seller" could not start without a Cloudflare login
+
+Same tester, README path. Step 5, `npx wrangler dev`, failed with *"Failed to start
+the remote proxy session … Timed out waiting for authorization code"*. The Workers
+AI binding always runs remotely, even in local development, so `wrangler dev`
+needs Cloudflare credentials before it serves anything. The README listed "a
+Cloudflare account" as a requirement but never said to log in, or why.
+
+- README step 5 now offers two paths: `npx wrangler login` then `npx wrangler dev`,
+  or **`npm run dev:local`** with no account at all.
+- **`scripts/dev-local.mjs`** generates `wrangler.local.jsonc` (gitignored) from
+  `wrangler.jsonc` on every run, minus the `ai` binding, so it cannot drift from
+  the real config, and starts `wrangler dev` with it.
+- Reproduced with no credentials present (empty home directory, `CI=true`): the
+  real config exits in 1.9 s asking for `wrangler login`. `dev:local` serves in
+  15 s: `/api/readings` `402`, `/api/device/status` `200`, `/api/inference` `402`
+  unpaid. A paid inference request gets `503 inference_unavailable`. The middleware
+  does not settle responses of `400` and above, which is the path verified on-chain
+  for a failing device. Not yet observed end to end with the agent against `dev:local`.
+- The requirements line and a new gotcha say which parts need an account.
+
 ## [1.1.0] — 2026-09-14
 
 The verification and submission release. v1.0.0 was the point at which the

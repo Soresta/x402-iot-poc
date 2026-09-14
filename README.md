@@ -118,7 +118,7 @@ Every error has the shape `{ "error": "machine_readable_code", "docs_url": "…"
 
 > **Just want to pay the live one?** [QUICKSTART.md](./QUICKSTART.md) is the shorter path and needs no Cloudflare account. This section runs the whole thing yourself.
 
-Requires Node 20+, a Cloudflare account (free tier) and two throwaway wallets.
+Requires Node 20+ and two throwaway wallets. A Cloudflare account (free tier) is needed for the inference resource and for deploying. Sensor readings run locally without one (step 5).
 
 **1. Clone and install**
 
@@ -147,7 +147,10 @@ DAILY_CAP=0.05
 MAX_PER_CALL=0.002
 ```
 
-**5. Run the seller:** `npx wrangler dev`
+**5. Run the seller.** Pick one:
+
+- **With a Cloudflare account**: run `npx wrangler login` once, then `npx wrangler dev`. Both products work. The login is not optional here: Workers AI always runs on Cloudflare, even in local development, so without it `wrangler dev` stops with *"Failed to start the remote proxy session … Timed out waiting for authorization code"*.
+- **Without an account**: `npm run dev:local`. It starts the same seller minus the AI binding. Readings work and settle on testnet as normal; `/api/inference` answers `503 inference_unavailable` and nothing is charged for it.
 
 **6. Run the buyer agent** in a second terminal: `node buyer/agent.mjs`
 
@@ -234,7 +237,7 @@ The suite is not general coverage. It pins the defects that were actually found,
 │   ├── mandate.ts          seller-side mandate verification (401 / 403)
 │   ├── rate-limiter.ts     Durable Object limiter, exact under concurrency
 │   ├── device-twin.ts      DeviceTwin Durable Object: alarm-driven telemetry
-│   ├── inference.ts        pay-per-inference on Workers AI
+│   ├── inference.ts        pay-per-inference on Workers AI (needs a Cloudflare login, even locally)
 │   ├── agent-card.ts       A2A Agent Card and JWKS
 │   ├── card-signing.ts     JWS-over-JCS card signing (A2A v1.0 §8.4)
 │   ├── negotiate.ts        price negotiation
@@ -253,7 +256,7 @@ The suite is not general coverage. It pins the defects that were actually found,
 │   ├── x402-harness.mjs    shared helper for the scripts below
 │   └── test_*.mjs          manual checks against a real facilitator
 ├── test/                   vitest: regressions.spec.ts, http.spec.ts
-├── scripts/                mutation-check · generate-card-key · backup-kv
+├── scripts/                mutation-check · generate-card-key · backup-kv · dev-local (no-account local seller)
 ├── docs/                   verification, open items, weekly logs, memos,
 │                           content drafts, evidence (map: docs/README.md)
 ├── wrangler.jsonc          Worker config: DOs, KV, AI, vars
@@ -298,9 +301,11 @@ app.use(async (c, next) => {
 
 **10. Ad blockers block `/api/events`.** Some tracker filter lists treat it as an analytics endpoint, so an SSE feed at that path never connects in those browsers, with only `net::ERR_BLOCKED_BY_CLIENT` in the console. The feed here lives at `/api/feed/settlements`.
 
-**11. Only run one `wrangler dev` at a time.** Two instances against the same local Durable Object database produce `SQLITE_BUSY`, and the error does not mention the real problem.
+**11. An AI binding makes `wrangler dev` need a login.** Workers AI has no local simulation, so a project with an `ai` binding cannot start `wrangler dev` without Cloudflare credentials. The error says "remote proxy session" and "authorization code", not "log in". `npm run dev:local` here starts without the binding.
 
-**12. `sepolia.basescan.org` challenges automated browsers.** To check a settlement from a script, read the chain:
+**12. Only run one `wrangler dev` at a time.** Two instances against the same local Durable Object database produce `SQLITE_BUSY`, and the error does not mention the real problem.
+
+**13. `sepolia.basescan.org` challenges automated browsers.** To check a settlement from a script, read the chain:
 
 ```bash
 curl -sS -X POST https://sepolia.base.org -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"eth_getTransactionReceipt","params":["0xTXHASH"]}'
