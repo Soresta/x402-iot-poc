@@ -51,6 +51,14 @@ USDC. No release has ever been wired for real value.
   payment gate. Empty or over-length text is `400`; the old silent sample
   substitution and truncation are gone.
 
+### Fixed — demo page stat cards said "today" and meant "last 20"
+
+"Settlements today", "Total volume" and "Distinct payers" were computed from the
+last 20 receipts the page had fetched. A 2026-09-14 screenshot showed 20 on a day
+with two purchases. The SSE handler also kept its own since-page-load counter,
+which overwrote the cards between polls. The cards are relabelled to what they
+measure, and only the poll writes them. Evidence: `docs/evidence/`.
+
 ### Fixed — the spending cap missed a payment, and counted refusals
 
 From the 2026-09-11 unattended run (`docs/soak-runs/SOAK-2026-09-11.md`). The run

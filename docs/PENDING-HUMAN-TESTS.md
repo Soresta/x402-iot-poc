@@ -8,7 +8,7 @@ Each entry names the DoD it closes, the exact steps, and what must be visible in
 the evidence. Nothing here is marked PASS until it has actually been run —
 several of these correspond to DoD rows currently sitting at NOT VERIFIED.
 
-**Status (2026-09-14):** #2, #3, #6 **PASS**. #7 ran as PARTIAL, not 24 h. #1 not
+**Status (2026-09-14):** #2, #3, #6 **PASS**. Screenshots in `docs/evidence/`. #7 ran as PARTIAL, not 24 h. #1 not
 run (needs a person). #4 and #5 wait on decisions and on strangers.
 
 ---

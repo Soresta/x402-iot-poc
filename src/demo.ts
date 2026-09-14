@@ -595,15 +595,15 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
   <div class="stats-bar" role="region" aria-label="Settlement statistics">
     <div class="stat-card">
       <div class="value" id="stat-total" aria-live="polite">0</div>
-      <div class="label">Settlements today</div>
+      <div class="label">Recent settlements (last 20)</div>
     </div>
     <div class="stat-card">
       <div class="value" id="stat-volume" aria-live="polite">$0.000</div>
-      <div class="label">Total volume (USDC)</div>
+      <div class="label">Volume, last 20 (USDC)</div>
     </div>
     <div class="stat-card">
       <div class="value" id="stat-payers" aria-live="polite">0</div>
-      <div class="label">Distinct payers</div>
+      <div class="label">Payers, last 20</div>
     </div>
     <div class="stat-card">
       <div class="value" id="stat-sse" aria-live="polite">—</div>
@@ -743,9 +743,6 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
   const statPayers = document.getElementById("stat-payers");
   const statSse = document.getElementById("stat-sse");
 
-  let settlementCount = 0;
-  let volumeTotal = 0;
-  const payers = new Set();
 
   // ---- Format helpers ----
   function fmtTime(iso) {
@@ -802,13 +799,9 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       eventsEl.removeChild(eventsEl.lastChild);
     }
 
-    // Update stats
-    settlementCount++;
-    volumeTotal += amountToNumber(data.amount);
-    if (data.payer) payers.add(data.payer.toLowerCase());
-    statTotal.textContent = settlementCount;
-    statVolume.textContent = "$" + volumeTotal.toFixed(3);
-    statPayers.textContent = payers.size;
+    // Stats are not updated here. They come from loadReceipts() every 10 s.
+    // Two writers (a since-page-load counter here and the last-20 poll) made
+    // the cards jump between two different numbers.
   }
 
   // ---- Render receipts table ----
@@ -841,7 +834,9 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       const data = await res.json();
       renderReceipts(data);
 
-      // Update totals from receipts
+      // These stats describe the receipts fetched above: the last 20, not "today".
+      // The cards used to say "Settlements today" and "Total volume", and showed
+      // 20 on a day with two purchases.
       statTotal.textContent = data.length;
       const vol = data.reduce((sum, r) => sum + amountToNumber(r.amount), 0);
       statVolume.textContent = "$" + vol.toFixed(3);
