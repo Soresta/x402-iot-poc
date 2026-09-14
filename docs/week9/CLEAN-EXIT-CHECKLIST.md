@@ -16,7 +16,7 @@ the exit does not depend on which one it is.
 | 1 | Ten publishable assets | written, unpublished | publish decision |
 | 2 | Research board | drafted, not loaded | manager loads it |
 | 3 | Real-value memo | delivered | counsel review |
-| 4 | Human-dependent tests | 2 passed (`Ctrl+C`, explorer), 24 h run PARTIAL; stranger tests and tutorial run open | a stranger for 20 minutes, an afternoon |
+| 4 | Human-dependent tests | 3 passed (stranger docs test, `Ctrl+C`, explorer); 24 h run PARTIAL; 30-second demo test and tutorial run open | a fresh person for 30 seconds, an afternoon |
 | 5 | Signed Agent Card (A4) | **done 2026-09-14**: live, verified with a pinned key | — |
 | 6 | Channel #1 | never went live | five book posts, requested W2 |
 | 7 | B2B outreach | 0 sent | target list + sign-off |
@@ -75,7 +75,7 @@ consented list that nobody honours is worse than not having collected it.
 The repository ends in a state where:
 
 - every claim in the README can be reproduced from a clean clone;
-- every defect found — eighteen, listed in `docs/VERIFICATION.md` — is documented
+- every defect found — twenty, listed in `docs/VERIFICATION.md` — is documented
   with its failing output, in the version where it was fixed, and eleven are
   re-checked by the mutation script;
 - the one metric that would flatter us is computed in code that excludes our own
@@ -103,7 +103,7 @@ buyer purchases 382 in the agent ledger, $0.405 testnet, across 8 days
                 (excludes one-off test scripts, which do not write the ledger)
 external payers 1 (milestone_w7_met: true) — a recruited quickstart tester;
                 organic external payers 0
-open            A: none · B: 5 open, 1 partial · E: 6 blocked on decisions
+open            A: none · B: 4 open, 1 partial · E: 5 blocked on decisions
 ```
 
 Previous snapshot, 2026-09-08: v1.0.0, 26 tests, 4/4 mutations, 189 purchases,

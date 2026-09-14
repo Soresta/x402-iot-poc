@@ -12,7 +12,7 @@ An HTTP API whose customers are software. It sells two things, simulated IoT sen
 
 ### What is honest about this repo
 
-Every defect found during the build is documented with the output that exposed it and has a regression test. There are eighteen, and almost none of them produced an error. Eleven of them are put back into the code by a script to prove the suite still catches them. The metric that would flatter this project most, payments from wallets we do not own, is computed in code that excludes our own addresses. It reads **1**. That wallet belongs to a first-time tester we recruited to follow the quickstart, which makes it a usability result and not a customer. Organic external payers: **0**.
+Every defect found during the build is documented with the output that exposed it and has a regression test. There are twenty, and almost none of them produced an error. Eleven of them are put back into the code by a script to prove the suite still catches them. The metric that would flatter this project most, payments from wallets we do not own, is computed in code that excludes our own addresses. It reads **1**. That wallet belongs to a first-time tester we recruited to follow the quickstart, which makes it a usability result and not a customer. Organic external payers: **0**.
 
 - What was checked, and how: [`docs/VERIFICATION.md`](./docs/VERIFICATION.md)
 - What is still wrong, missing or unverified: [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md)
@@ -224,7 +224,8 @@ The suite is not general coverage. It pins the defects that were actually found,
 | Mandate identity and scope, seller binding | PASS |
 | Signed Agent Card, clean `Ctrl+C`, explorer check by a person | PASS 2026-09-14, with [screenshots](./docs/evidence/) |
 | Unattended run | **PARTIAL**: 1 h continuous. A second run spanned 8 h 50 m with ≈ 2 h 37 m of buying. Not 24 h |
-| Stranger reproduces the README; stranger understands the demo | **NOT VERIFIED** |
+| A first-time user follows the docs | PASS 2026-09-14: the quickstart in ≈ 15 min, "run your own seller" in 14 min, with help at three doc defects (now fixed) |
+| A stranger understands the demo page in 30 s | **NOT VERIFIED** |
 
 ---
 

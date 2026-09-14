@@ -148,7 +148,7 @@ Zero revenue. Six reusable assets:
 | Real-value readiness memo, 12 counsel questions | delivered |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted |
 | Ten publishable assets — tutorial, 3 posts, threads, Show HN, deck | written |
-| Eighteen documented defects, each with its failing output | published |
+| Twenty documented defects, each with its failing output | published |
 
 The memo shortens a future legal review. The board is the Watch subscription's
 content. Both are real and neither is revenue, and I would rather you see both
@@ -158,7 +158,7 @@ numbers than have one dressed as the other.
 
 ## 10 · What broke — the most useful slide here
 
-Eighteen defects were found in nine weeks — ten of them in the final verification
+Twenty defects were found in nine weeks — twelve of them in the final verification
 pass, after v1.0.0 was tagged. Almost all of them shared one property:
 
 > **In this stack, wrong looks like working.**

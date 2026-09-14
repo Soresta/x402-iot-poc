@@ -119,7 +119,7 @@ rather than escalating it once, hard, in Week 3.
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted | **none yet.** This is the Watch subscription's content |
 | Flagship tutorial, 3 posts, 2 X threads, Show HN, 2 subreddit posts, outreach template, 10-slide deck, 90-second video script | written, unpublished | **none** |
-| Eighteen documented defects, each with its failing output | published in-repo | **none.** Credible material for the briefings |
+| Twenty documented defects, each with its failing output | published in-repo | **none.** Credible material for the briefings |
 
 **The honest summary of cost versus value:** the programme produced reusable
 assets and zero revenue. The assets are real and the zero is real, and I would
@@ -160,7 +160,7 @@ unreachable and I will not sign up for a number I cannot influence.
 Three things.
 
 **The build is defensible.** Every claim in the README can be reproduced from a
-clean clone; eighteen real defects are documented with their failing output; the
+clean clone; twenty real defects are documented with their failing output; the
 external-payer count is computed in code precisely so it cannot be flattered.
 
 **The distribution is not started, and that is the whole gap.** Not

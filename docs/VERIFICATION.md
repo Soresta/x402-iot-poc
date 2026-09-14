@@ -121,7 +121,7 @@ between runs of `test_mandate.mjs`**, or it trips the seller's own rate limiter.
 | Live feed works with an ad blocker installed | **PASS 2026-09-14**, confirmed in the affected browser after moving the feed to `/api/feed/settlements` |
 | Understood by a stranger in 30 s | **NOT VERIFIED** |
 | Quickstart followed by a first-time user | **PASS with one hint, 2026-09-14**: no wallet to a settled payment in ≈ 15 min on macOS. The hint was for a doc defect, since fixed |
-| README "run your own seller" reproduced by a stranger | **NOT VERIFIED** |
+| README "run your own seller" reproduced by a stranger | **PASS with guidance, 2026-09-14**: 14 min, own seller address, both products bought from a local seller. Two stops at step 5, both doc defects, since fixed |
 | An external wallet settles | **PASS 2026-09-14**: recruited tester, verified on-chain. Organic external payers: 0 |
 | Tutorial run from an empty directory | **NOT VERIFIED** |
 
@@ -155,6 +155,8 @@ the CHANGELOG entry for the version that fixed it.
 | 09-14 | Live feed blocked by an ad blocker | Visible only in a browser with one |
 | 09-14 | Quickstart step 4 could not work as written (`pay.mjs` ignored `SELLER_URL`) | Found by the first stranger to follow it |
 | 09-14 | No wallet guidance; MetaMask keys exported without `0x` were rejected | Found by the same stranger |
+| 09-14 | README never said `wrangler login`; the AI binding makes `wrangler dev` need it | Found by the same stranger |
+| 09-14 | A new Cloudflare account needs a `workers.dev` subdomain before `wrangler dev` | Found by the same stranger |
 
 What they have in common: **almost none of them produced an error.** Each
 response was well-formed and each check passed. The ones found late were found by

@@ -31,9 +31,24 @@ several of these correspond to DoD rows currently sitting at NOT VERIFIED.
 > start with no wallet to a settled payment took **about 15 minutes**, as reported by
 > the intern who watched. First payment `2026-09-14T17:02:34Z`, verified on-chain.
 > They then ran `buyer/agent.mjs`, which bought both resources (7 settlements by
-> 17:07Z). **Verdict: PARTIAL.** The quickstart path works for a newcomer, with
-> one hint that is now unnecessary. The README's "run your own seller" path was not
-> attempted. The tester has now seen the demo page, so Part B needs a different person.
+> 17:07Z).
+>
+> **Attempt 1, continued: the README "run your own seller" path.** Same tester,
+> same afternoon. **14 minutes** from clone to both products bought from their own
+> local seller. They set their own `PAY_TO` (`0x4524…`) and put their wallets in
+> `OWN_WALLETS`, as step 3 says. `npx wrangler dev` ran with DOs and KV local and
+> AI remote. `node buyer/agent.mjs` against `http://127.0.0.1:8787` bought a
+> reading (`seq=0`) and an inference (`NEGATIVE`), and the local demo page showed
+> the settlement live. **Two stops, both at step 5, both doc defects:** no
+> `wrangler login` step ("Timed out waiting for authorization code"), and a new
+> account needs a `workers.dev` subdomain ("You need to register a workers.dev
+> subdomain…"). Both were answered, and both are now in README step 5 and
+> gotcha 11, with `npm run dev:local` as a no-account path.
+>
+> **Verdict: PASS**, both paths within 15 minutes, **with guidance at three doc
+> defects**, all fixed the same day. A second tester with the fixed docs would
+> make it unassisted. The tester has now seen the demo page, so Part B needs a
+> different person.
 
 Recruit one person who has not seen this project. A friend or a community member
 is fine; it must not be you.

@@ -10,11 +10,11 @@ pass has one list to work from instead of eight weekly reports.
 | Section | 🟢 | 🔴 | What the 🔴 are |
 |---|---:|---:|---|
 | A · Correctness and safety | 10 | 0 | — |
-| B · Verification gaps | 2 | 6 | README stranger test partial (B1), 30-second demo test (B2), tutorial clean run (B5), 24 h run partial (B6), rehearsals (B7), fallback video (B8) |
+| B · Verification gaps | 3 | 5 | 30-second demo test (B2), tutorial clean run (B5), 24 h run partial (B6), rehearsals (B7), fallback video (B8) |
 | C · Test suite | 4 | 0 | — |
 | D · Documentation | 7 | 0 | — |
 | E · Blocked on someone else | 1 | 5 | E3 met by a recruited tester; the other five wait on the manager |
-| F · Programme tasks W1–W9 | 30 | 20 | see §F; most need the manager or a publish decision |
+| F · Programme tasks W1–W9 | 31 | 19 | see §F; most need the manager or a publish decision |
 
 **Nothing here is hidden elsewhere.** Each item says where it came from and what
 "done" looks like. Items are ordered by what would embarrass us most if a
@@ -44,7 +44,7 @@ Last updated: 2026-09-14 (submission pass — v1.1.0). Full check-by-check resul
 
 | # | Item | Status | Done when |
 |---|---|---|---|
-| 🔴 B1 | **Stranger test — README reproducibility** | **PARTIAL 2026-09-14.** A first-time tester (macOS) followed `QUICKSTART.md` from no wallet to a settled payment in ≈ 15 minutes. They needed **one hint**, because step 4 could not work as written. That defect and the wallet-setup gap are fixed. Not covered: the "run your own seller" path in the README | One person, watched, ≤15 min, findings recorded — see `PENDING-HUMAN-TESTS.md` |
+| 🟢 B1 | **Stranger test — README reproducibility** | **PASS 2026-09-14, with guidance at three documentation defects, all fixed the same day.** One first-time tester on macOS. **Quickstart:** no wallet to a settled payment on the live Worker in ≈ 15 min. **README "run your own seller":** clone to both products bought from their own local seller in **14 min**. They set their own `PAY_TO` and `OWN_WALLETS` (step 3); `wrangler dev` ran with AI remote; the agent bought a reading and an inference; the local demo page showed the settlement live. The three stops were quickstart step 4 (`pay.mjs` ignored `SELLER_URL`), README step 5 (no `wrangler login`), and README step 5 again (a new account needs a `workers.dev` subdomain). Each was answered by the intern, so the times include help | One person, watched, ≤15 min, findings recorded — see `PENDING-HUMAN-TESTS.md` |
 | 🔴 B2 | **30-second demo comprehension test** | Open since W3 | One person, 30 s, their answer written down verbatim even if wrong |
 | 🟢 B3 | **Real `Ctrl+C` clean exit** | **PASS 2026-09-14.** Console screenshot shows `[agent] SIGINT received. Flushing and exiting cleanly.` after two purchases. The ledger's last line is `{"ts":"2026-09-14T09:18:58.791Z","result":"agent_stopped","signal":"SIGINT"}` (first observed 2026-09-11 09:51:07Z) | — |
 | 🟢 B4 | **Explorer link followed by a human** | **PASS 2026-09-14.** `sepolia.basescan.org` opened by hand for the first purchase above: Status **Success**, block 46804595, 09:17:58 UTC, ERC-20 transfer **0.001 USDC from `0x936F…8945` (buyer) to `0x219b…d99E` (seller)**. The transaction's own `From` is `0xd407…f1bf`, the facilitator's relayer, which pays the gas. The buyer signs an EIP-3009 authorization and never sends a transaction itself | — |
@@ -133,7 +133,7 @@ deliberately, because it names people.
 | | Task | DoD | State |
 |---|---|---|---|
 | 🟢 | Hardening pass | Abuse-case checklist passes | PASS, 7 of 7 |
-| 🔴 | Docs that survive a stranger | Stranger reproduces from README ≤ 15 min | **PARTIAL 2026-09-14** — the quickstart path, wallet creation included, took ≈ 15 min with one hint, and two doc defects were found and fixed. The "run your own seller" path is not tested (B1) |
+| 🟢 | Docs that survive a stranger | Stranger reproduces from README ≤ 15 min | **PASS 2026-09-14**: README path in 14 min, quickstart in ≈ 15 min, one first-time tester. Guidance given at three doc defects, all fixed (B1) |
 | 🔴 | Midpoint gate demo ⚑ | Manager accepts or redirects | **Not held** — manager unavailable |
 | 🔴 | Publish wave #1 ⚑ | Live links, referral traffic | Drafts ready; **not published** (E1) |
 | 🟢 | Research-board package ⚑ | Accepted for loading | Delivered and source-checked; **loading pending** (E4) |
@@ -207,7 +207,7 @@ deliberately, because it names people.
 5. 🔴 *Optional:* write up the W1 distribution scouting, if notes exist anywhere
 
 **You and one other person (about 20 minutes):**
-6. 🔴 30-second demo test with someone who has **not** seen the page (B2). The quickstart tester has seen it now, so it has to be someone else. B1 is partial: the quickstart passed, with one hint
+6. 🔴 30-second demo test with someone who has **not** seen the page (B2). An answer has been given; whether that person had seen the page before is still to be confirmed
 
 **Needs a machine that stays awake, or stays PARTIAL:**
 7. 🔴 24-hour unattended run (B6)
@@ -227,9 +227,10 @@ deliberately, because it names people.
 1. **A** is closed. A1 and A2 were wrong and are withdrawn; A3, A5, A6, A8, A9
    and A10 are fixed and measured; A7 is accepted with its reasoning; A4 is active
    and was observed working with a pinned key.
-2. **B3 and B4 passed on 2026-09-14. B6 is PARTIAL** with real numbers. **B1, B2,
-   B5, B7 and B8 are open**: a stranger for ~20 minutes, a tutorial run, two
-   rehearsals and a recording. Steps are in `PENDING-HUMAN-TESTS.md`.
+2. **B1, B3 and B4 passed on 2026-09-14. B6 is PARTIAL** with real numbers.
+   **B2, B5, B7 and B8 are open**: a 30-second test with a fresh person, a
+   tutorial run, two rehearsals and a recording. Steps are in
+   `PENDING-HUMAN-TESTS.md`.
 3. **C1–C4** are closed.
 4. **D** is closed.
 5. **E1–E6** are decisions, not work.
