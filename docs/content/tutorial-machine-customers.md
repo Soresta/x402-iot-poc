@@ -490,8 +490,8 @@ machine*. Outstanding:
 
 - [x] Run every block start to finish on a machine that has never had this repo
       on it, from an empty directory. *2026-09-14, about 40 min, no problems.*
-- [ ] Confirm `npm create cloudflare@latest` still scaffolds the shape step 1
-      assumes.
+- [x] Confirm `npm create cloudflare@latest` still scaffolds the shape step 1
+      assumes. *Yes — part of the 2026-09-14 clean run.*
 - [ ] Confirm the faucet flow still works and note how long funding takes.
 - [x] Time the whole thing. If it exceeds 20 minutes, say so in the intro rather
       than trimming the truth. *About 40 minutes; the intro now says so.*
