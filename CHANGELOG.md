@@ -67,8 +67,8 @@ the same thing.
   what the page is doing at that point.
 - `/favicon.ico` returns 204 instead of a 404 in the console.
 
-Not verified: whether the blocker also allows the new path. That needs the same
-browser. Checked here: the new path streams on the deployed Worker (`57efe9ed`),
+After a reload, the maintainer reported the live feed working in that same browser.
+Checked here: the new path streams on the deployed Worker (`57efe9ed`),
 the card advertises it, and `/api/readings` is still 402. 81 tests.
 
 ### Fixed — the Live Events panel replayed one settlement every 25 seconds
