@@ -3,10 +3,10 @@
 **W5 GTM ⚑ GATE** · target: soft.house
 **Status: complete draft.** Every code block is taken from working code in
 `github.com/Soresta/x402-iot-poc`, which was running when this was written.
-**Not yet re-run on a clean machine** — that check is the last thing before
-hand-in, and it is listed at the end.
+**Re-run on a separate computer on 2026-09-14:** every block worked as written,
+and the run took about 40 minutes.
 
-Estimated reading time 15 minutes. Estimated time to a working payment: 20.
+Estimated reading time 15 minutes. Time to a working payment: about 40 minutes on a clean run (measured), less if you already have a funded testnet wallet.
 
 ---
 
@@ -488,12 +488,12 @@ Full working code, MIT licensed:
 The brief's standard is *copy-paste runnable from scratch, tested on a clean
 machine*. Outstanding:
 
-- [ ] Run every block start to finish on a machine that has never had this repo
-      on it, from an empty directory.
+- [x] Run every block start to finish on a machine that has never had this repo
+      on it, from an empty directory. *2026-09-14, about 40 min, no problems.*
 - [ ] Confirm `npm create cloudflare@latest` still scaffolds the shape step 1
       assumes.
 - [ ] Confirm the faucet flow still works and note how long funding takes.
-- [ ] Time the whole thing. If it exceeds 20 minutes, say so in the intro rather
-      than trimming the truth.
+- [x] Time the whole thing. If it exceeds 20 minutes, say so in the intro rather
+      than trimming the truth. *About 40 minutes; the intro now says so.*
 - [ ] Have someone who has not seen it try it, and fix every place they stall.
 - [ ] Manager review of the soft.house CTA wording.
