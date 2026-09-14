@@ -224,6 +224,15 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
       margin: 0 auto;
     }
 
+    /* The one sentence a 30-second visitor must leave with. Added after the
+       2026-09-14 stranger test: they understood "a payment for sensor data" and
+       described it as "we make a payment", i.e. missed that no person pays. */
+    header p.lede {
+      color: var(--text);
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
     .how-it-works {
       display: flex;
       justify-content: center;
@@ -605,6 +614,7 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
 
 <header>
   <h1>x402 IoT Sensor — Live Demo</h1>
+  <p class="lede"><strong>No human is paying here.</strong> A piece of software is buying data from this API on its own.</p>
   <p>
     A buyer agent autonomously purchases IoT readings from this seller using the
     <strong>x402 payment protocol</strong> — no account, no API key, no prior relationship.

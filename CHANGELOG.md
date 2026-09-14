@@ -11,7 +11,39 @@ USDC. No release has ever been wired for real value.
 
 ---
 
-## [Unreleased]
+## [1.2.0] — 2026-09-14
+
+The stranger-test release. v1.1.0 was checked by the people who built it. This
+release is what happened when people who had not built it followed the docs: two
+first-time users, one quickstart, one README, one 30-second look at the demo page.
+Every stop they hit was a documentation defect, and each is fixed below.
+
+### Changed — the demo page says the one thing a visitor missed
+
+The 30-second test answer was *"we make a payment in exchange for data read from a
+sensor"*. The tester understood the transaction and missed that no person is
+paying. The page now opens with **"No human is paying here. A piece of software is
+buying data from this API on its own."** Deployed `cb0a79fc`; the live smoke test
+from HANDOFF §2.2 passed.
+
+### Documentation — submission scan
+
+- Removed claims that the Agent Card is unsigned from the launch post draft, the
+  readiness deck and the research board. It has been signed since 2026-09-11.
+- A dated status banner on each weekly report (W3–W9) points at the later state.
+  The reports themselves are kept as written.
+- B6 (24 h run) is recorded as a decision: left PARTIAL and reported with the real
+  numbers, with acceptance left to the manager.
+- `ERRORS.md` re-checked against the code: 28 codes emitted, 0 undocumented.
+- Stale lines in the role proposal fixed: signed cards "to implement" and "four" findings.
+
+### Added — the Demo Day slide file
+
+`docs/week9/demo-day-deck.pptx`: 15 slides with speaker notes, following the
+programme's deck spine (use-case → live run with an external agent paying → funnel
+numbers → memo highlights → months 3–6 → the ask). It uses the real evidence
+screenshots, and every figure is taken from the verified documents. Rendered through
+PowerPoint and checked slide by slide. Not yet rehearsed (B7).
 
 ### Fixed — the quickstart could not work as written
 

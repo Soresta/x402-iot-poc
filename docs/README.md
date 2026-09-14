@@ -41,7 +41,7 @@ are no folders for Weeks 1–2. That work is recorded in `CHANGELOG.md` (0.1.0,
 | 6 | [`week6/`](./week6/) | Launch week: funnel instrumentation, launch assets (unpublished) | — |
 | 7 | [`week7/`](./week7/) | External adoption and real-value readiness: external-payer accounting, quickstart, readiness memo | `CHANNEL-2-DECISION.md`, `SELF-REVIEW.md` |
 | 8 | [`week8/`](./week8/) | Consolidate: revenue-impact memo, regression suite, price negotiation, v1.0.0 | — |
-| 9 | [`week9/`](./week9/) | Demo Day, handoff and decision | `HANDOFF.md` (runbooks), `DEMO-DAY-DECK.md`, `DISTRIBUTION-CALENDAR.md`, `ROLE-PROPOSAL.md`, `CLEAN-EXIT-CHECKLIST.md` |
+| 9 | [`week9/`](./week9/) | Demo Day, handoff and decision | `HANDOFF.md` (runbooks), `DEMO-DAY-DECK.md` + `demo-day-deck.pptx`, `DISTRIBUTION-CALENDAR.md`, `ROLE-PROPOSAL.md`, `CLEAN-EXIT-CHECKLIST.md` |
 
 Weekly reports are snapshots. When a later check proved one wrong, the report was
 corrected in place with a dated note rather than silently rewritten. The current

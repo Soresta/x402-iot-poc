@@ -1,7 +1,7 @@
 # Handoff pack
 
 **W9 OPS** · DoD: the manager can run everything without me.
-**Date:** 2026-09-08 · **updated for submission 2026-09-14 (v1.1.0)**
+**Date:** 2026-09-08 · **updated for submission 2026-09-14 (v1.2.0)**
 
 Every command here was run on the machine this project was built on, and the
 output is what it actually printed. Where something was not run, it says so.
@@ -12,7 +12,7 @@ output is what it actually printed. Where something was not run, it says so.
 
 | Thing | Where | Who owns it after handover |
 |---|---|---|
-| Source | `github.com/Soresta/x402-iot-poc` — public, MIT, tagged `v1.1.0` | company |
+| Source | `github.com/Soresta/x402-iot-poc` — public, MIT, tagged `v1.2.0` | company |
 | Live seller | `https://x402-iot-poc.akifk-x402-26.workers.dev` | Cloudflare account holder |
 | KV namespace `IOT_KV` | id `4ef9455bb906422f984e2eab491236c9` | same |
 | Durable Objects `DeviceTwin`, `RateLimiter` | same Worker | same |

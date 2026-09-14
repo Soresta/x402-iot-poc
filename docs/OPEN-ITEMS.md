@@ -20,7 +20,7 @@ pass has one list to work from instead of eight weekly reports.
 "done" looks like. Items are ordered by what would embarrass us most if a
 reviewer found it first.
 
-Last updated: 2026-09-14 (submission pass — v1.1.0). Full check-by-check results: [`VERIFICATION.md`](./VERIFICATION.md).
+Last updated: 2026-09-14 (submission pass — v1.2.0). Full check-by-check results: [`VERIFICATION.md`](./VERIFICATION.md).
 
 ---
 
@@ -49,8 +49,8 @@ Last updated: 2026-09-14 (submission pass — v1.1.0). Full check-by-check resul
 | 🟢 B3 | **Real `Ctrl+C` clean exit** | **PASS 2026-09-14.** Console screenshot shows `[agent] SIGINT received. Flushing and exiting cleanly.` after two purchases. The ledger's last line is `{"ts":"2026-09-14T09:18:58.791Z","result":"agent_stopped","signal":"SIGINT"}` (first observed 2026-09-11 09:51:07Z) | — |
 | 🟢 B4 | **Explorer link followed by a human** | **PASS 2026-09-14.** `sepolia.basescan.org` opened by hand for the first purchase above: Status **Success**, block 46804595, 09:17:58 UTC, ERC-20 transfer **0.001 USDC from `0x936F…8945` (buyer) to `0x219b…d99E` (seller)**. The transaction's own `From` is `0xd407…f1bf`, the facilitator's relayer, which pays the gas. The buyer signs an EIP-3009 authorization and never sends a transaction itself | — |
 | 🟢 B5 | **Tutorial run on a clean machine** | **PASS 2026-09-14, as reported by the intern.** Run end to end on a separate computer, which is closer to the "clean machine" the DoD asks for than an empty folder on the build machine. **About 40 minutes, with no problems**, as reported by the intern. That is over the tutorial's own "20 minutes to a working payment" estimate, and the intro should say so. | Every block executed from an empty directory, timed |
-| 🔴 B6 | **24-hour unattended run** | **PARTIAL — not 24 h.** 2026-09-11: 8 h 50 m wall clock, ≈ 2 h 37 m actually buying (laptop asleep/off in between), 146 purchases, $0.147 spent against a $2.00 cap, never exceeded. Longest *continuous* run is still the 1 h one. Found and fixed: a payment whose response was lost went uncounted by the cap. `docs/soak-runs/SOAK-2026-09-11.md` | A 24 h run needs a machine that stays awake. Otherwise the DoD stays PARTIAL with these numbers |
-| 🔴 B7 | **Demo Day deck rehearsed twice** | Not rehearsed | Two run-throughs, timed |
+| 🔴 B6 | **24-hour unattended run** | **PARTIAL — not 24 h.** 2026-09-11: 8 h 50 m wall clock, ≈ 2 h 37 m actually buying (laptop asleep/off in between), 146 purchases, $0.147 spent against a $2.00 cap, never exceeded. Longest *continuous* run is still the 1 h one. Found and fixed: a payment whose response was lost went uncounted by the cap. `docs/soak-runs/SOAK-2026-09-11.md` | **Decision 2026-09-14: left PARTIAL, not re-run.** Reported with the real numbers, and the manager decides whether that is acceptable. It is not reported as 24 h |
+| 🔴 B7 | **Demo Day deck rehearsed twice** | Slide file ready (`docs/week9/demo-day-deck.pptx`, 15 slides with notes, 2026-09-14). **Not rehearsed** | Two run-throughs, timed |
 | 🔴 B8 | **Fallback demo video recorded** | Not recorded | Follow `docs/content/demo-video-script.md`; needed so a failed live demo does not end the talk |
 
 ## C · Test suite gaps
@@ -175,7 +175,7 @@ deliberately, because it names people.
 |---|---|---|---|
 | 🟢 | Revenue Impact Memo | Every number checkable | Delivered, refreshed 2026-09-14 |
 | 🟢 | Funnel fixes from data | Top-3 drop-offs → proposals | Delivered; structural, as there is no funnel data |
-| 🟢 | PoC v1.0 — negotiation + release | Paths green, tagged, changelog | v1.0.0, then v1.1.0 (81 tests, 11/11 mutations) |
+| 🟢 | PoC v1.0 — negotiation + release | Paths green, tagged, changelog | v1.0.0, then v1.1.0 and v1.2.0 (81 tests, 11/11 mutations) |
 | 🟢 | Mandate hardening + minimal test suite | Expiry, scope, signature every call; tests | PASS, plus seller binding |
 | 🔴 | CFPs + podcast pitch | 2–3 proposals + 1 pitch submitted | Drafted; **not submitted** — needs sign-off |
 | 🔴 | B2B follow-ups → first paid engagement ⚑ | One proposal in a buyer's hands | **Not done** — no leads to follow up |
@@ -184,9 +184,9 @@ deliberately, because it names people.
 
 | | Task | DoD | State |
 |---|---|---|---|
-| 🔴 | Demo Day prep | 12–15 slides, rehearsed twice, video fallback | 14 slides written; **not rehearsed, no fallback** (B7, B8) |
+| 🔴 | Demo Day prep | 12–15 slides, rehearsed twice, video fallback | 15-slide deck file ready; **not rehearsed, no fallback video** (B7, B8) |
 | 🔴 | Demo Day ⚑ | Present; decision follows | **Not held** — manager unavailable |
-| 🟢 | Handoff pack | Manager can run everything without you | Delivered, refreshed for v1.1.0 |
+| 🟢 | Handoff pack | Manager can run everything without you | Delivered, refreshed for v1.2.0 |
 | 🟢 | Keep-the-lights-on calendar | 4 weeks queued with drafts | Delivered |
 | 🟢 | Months 3–6 role proposal | Written proposal with targets | Delivered; joint retro pending |
 | 🟢 | Clean-exit checklist | Nothing half-open | Delivered; every open thread named with its blocker |

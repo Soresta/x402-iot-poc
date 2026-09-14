@@ -1,5 +1,7 @@
 # Week 7 Report — External adoption & real-value readiness
 
+> **Status after the submission pass (2026-09-14):** Later: Milestone 4 was met by a **recruited** first-time tester who paid via the quickstart. Organic external payers: 0. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
+
 **Date:** 2026-09-08 · **Deployed version:** `fa271a80-8f79-434f-811a-314ac593ccce`
 **Evidence:** `docs/week7/BUILD-LOG.md`
 

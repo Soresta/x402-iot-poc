@@ -1,5 +1,7 @@
 # Week 4 Report — Ship it (midpoint gate)
 
+> **Status after the submission pass (2026-09-14):** Later: "Docs that survive a stranger" passed. A first-time tester reproduced the README in 14 minutes, after three doc defects were found and fixed. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
+
 **Date:** 2026-09-06 · **Deployed version:** `b15e7b09-d1be-4058-b364-fab697af3a60`
 **Evidence:** `docs/week4/BUILD-LOG.md` — every result below traces to a block there.
 

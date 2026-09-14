@@ -91,9 +91,9 @@ proof-of-concept is the more useful thing to hand over.
 ## Final state, verified 2026-09-14
 
 ```text
-repo            github.com/Soresta/x402-iot-poc — public, MIT, v1.1.0
+repo            github.com/Soresta/x402-iot-poc — public, MIT, v1.2.0
 worker          https://x402-iot-poc.akifk-x402-26.workers.dev — live
-deployed        57efe9ed-c5c2-4ef1-bac5-3fbea8c76cd3
+deployed        cb0a79fc-7b3c-4689-87c2-568f84a99bbc
 tests           81 passed (52 regression, 29 HTTP), 11/11 mutations caught
 typecheck       clean
 agent card      signed, kid 2bjtl1OfeQD-8gPflYz1G5f3q_usE3KNHVzOtrW098E

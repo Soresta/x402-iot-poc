@@ -77,8 +77,9 @@ question mark. HN punishes all three.
 >
 > **Known limitations, all in the repo's limitations list:**
 >
-> - The Agent Card is unsigned. Discovery trusts TLS and nothing else. A2A v1.0
->   specifies signed cards; I have not implemented them.
+> - The Agent Card is signed (A2A v1.0 JWS format) and the buyer checks it against
+>   a pinned key. That stops a forged price list. It does nothing about a seller who
+>   signs a dishonest one.
 > - My first rate limiter passed every sequential test and let 30 of 30
 >   simultaneous requests through a quota of 10 — KV read-modify-write isn't
 >   atomic. It now counts in a Durable Object, and the same burst lets exactly 10

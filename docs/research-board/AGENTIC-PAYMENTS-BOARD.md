@@ -120,7 +120,7 @@ convention, not the technology.
 
 | Facet | Score | Justification |
 |---|:--:|---|
-| Adoption | **2** | Formalised in A2A v1.0 (2026-03-12) using JWS with JCS canonicalization. We have seen little evidence of deployment in the wild — **our own Agent Card is unsigned**. |
+| Adoption | **2** | Formalised in A2A v1.0 (2026-03-12) using JWS with JCS canonicalization. We have seen little evidence of deployment in the wild. Our own card was unsigned until 2026-09-11; it is now signed, and the buyer verifies it against a pinned key, which took custom code on both sides. |
 | Spec stability | 4 | Built on RFC 7515 and RFC 8785, both stable. |
 | Tooling | 2 | Signing is straightforward; *verifying* on the buyer side is not yet a default in any SDK we used. |
 | Security | 4 | This is the piece that makes decentralised discovery trustworthy at all. |

@@ -1,5 +1,7 @@
 # Week 3 Supervisor Report — `x402-iot-poc`
 
+> **Status after the submission pass (2026-09-14):** Later: the demo page passed a 30-second stranger test, and `Ctrl+C` and the explorer check passed with screenshots. The 24 h buyer run is still PARTIAL. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
+
 > Rewritten 2026-08-14 from verified evidence only. Every `PASS` below was
 > executed and observed in the verification session recorded as **Block 7** of
 > `docs/week3/BUILD-LOG.md`. Anything not executed in that session is marked

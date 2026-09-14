@@ -5,7 +5,7 @@ check showed. The README keeps a short summary; this file holds the full record.
 
 **Rule:** a row reads PASS only when the behaviour was observed working. PARTIAL
 and NOT VERIFIED rows stay here with their real state. Status as of
-**2026-09-14**, deploy `57efe9ed`.
+**2026-09-14**, deploy `cb0a79fc`, release v1.2.0.
 
 ---
 

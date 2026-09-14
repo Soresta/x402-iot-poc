@@ -1,14 +1,38 @@
 # Demo Day — deck script
 
-**W9 OPS** · 14 slides · target runtime 20 minutes, 10 for questions
-**Status: written. Not rehearsed. No fallback video recorded.**
+**W9 OPS** · target runtime 20 minutes, 10 for questions
+**Status: slide file ready — [`demo-day-deck.pptx`](./demo-day-deck.pptx), 15 slides with speaker notes (2026-09-14). Not rehearsed. No fallback video recorded.**
 
-The DoD asks for two rehearsals and a recorded fallback for the live demo.
-Neither has happened, and both are listed in `docs/OPEN-ITEMS.md`. Rehearsing is
-an hour; the fallback recording follows `docs/content/demo-video-script.md`.
+The DoD asks for a 12–15 slide deck, two rehearsals and a recorded fallback for
+the live demo. The deck file exists; the rehearsals (B7) and the video (B8) do not
+yet. The fallback recording follows `docs/content/demo-video-script.md`.
 
-**The spine:** use-case (1) → live run (4) → funnel numbers (3) → impact memo
-(3) → months 3–6 (2) → the ask (1).
+**The spine, as the programme specifies it:** use-case (1) → live PoC run, external
+agent paying (4) → funnel numbers (3) → Revenue Impact Memo highlights (3) →
+months 3–6 proposal (2) → the ask (1), plus a title slide.
+
+### The slide file
+
+| # | Section | Slide |
+|---|---|---|
+| 1 | — | Title |
+| 2 | Use-case | Most of the traffic is machines. None of it can pay |
+| 3 | Live PoC run | Discovery: the buyer has never seen this seller |
+| 4 | Live PoC run | Payment: 402, sign, retry, settled on-chain (real screenshots) |
+| 5 | Live PoC run | Refusals: 401 → 403 → 402, and the 30-request burst |
+| 6 | Live PoC run | An external agent pays: a recruited tester, said plainly |
+| 7 | Funnel numbers | Built, instrumented, almost empty: 382 · $0.405 · 1 external · 0 organic |
+| 8 | Funnel numbers | Why the top of the funnel is zero, and the part that is mine |
+| 9 | Funnel numbers | Activation: what first-time users hit, fixed the same day |
+| 10 | Impact memo | Zero revenue, reusable assets |
+| 11 | Impact memo | In this stack, wrong looks like working: 20 defects, 11/11 |
+| 12 | Impact memo | Real value next quarter? Not yet — security, not regulation |
+| 13 | Months 3–6 | Targets I would sign up for |
+| 14 | Months 3–6 | The role: own the agentic-payments research vertical |
+| 15 | The ask | Three decisions |
+
+The sections below are the original talk script. The slide file supersedes their
+order and figures where the two differ.
 
 ---
 
@@ -38,7 +62,7 @@ API key, no prior relationship.
 HTTP has had a status code reserved for this since 1997 and unused: `402 Payment
 Required`.
 
-Live, MIT-licensed, testnet-only, `v1.0.0` tagged.
+Live, MIT-licensed, testnet-only, `v1.2.0` tagged.
 
 ---
 
@@ -143,7 +167,7 @@ Zero revenue. Six reusable assets:
 
 | Asset | State |
 |---|---|
-| Working PoC, deployed, tagged v1.0.0 | live |
+| Working PoC, deployed, tagged v1.2.0 | live |
 | 81-test suite, 11 of 11 known defects caught when reintroduced | live |
 | Real-value readiness memo, 12 counsel questions | delivered |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted |

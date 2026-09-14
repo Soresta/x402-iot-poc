@@ -1,5 +1,7 @@
 # Week 9 Report — Demo Day, handoff & decision
 
+> **Status after the submission pass (2026-09-14):** Later: a 15-slide deck file (`demo-day-deck.pptx`) was produced, following the programme's deck spine. Rehearsals and the fallback video are still open. The handoff pack and clean-exit checklist were refreshed. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
+
 **Date:** 2026-09-08 · **Deployed:** `a39edbbc-e0ae-4c77-9dd2-bc62bf5fd3ef` · **Tagged:** `v1.0.0`
 **Evidence:** `docs/week9/BUILD-LOG.md`
 

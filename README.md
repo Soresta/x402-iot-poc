@@ -6,7 +6,7 @@ An HTTP API whose customers are software. It sells two things, simulated IoT sen
 
 - **Live endpoint:** `https://x402-iot-poc.akifk-x402-26.workers.dev` (open it in a browser for the live demo page)
 - **Stack:** Cloudflare Workers · Hono · Durable Objects · Workers KV · Workers AI · x402 (`exact` scheme, EIP-3009) · Base Sepolia
-- **Version:** `v1.1.0`. See [CHANGELOG.md](./CHANGELOG.md)
+- **Version:** `v1.2.0`. See [CHANGELOG.md](./CHANGELOG.md)
 - **License:** MIT
 - **Want to pay it yourself?** [QUICKSTART.md](./QUICKSTART.md): five minutes, testnet, no signup
 

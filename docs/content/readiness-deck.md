@@ -139,9 +139,9 @@ would pay".**
 
 Said plainly, because you will find these anyway:
 
-- **Discovery is unsigned in practice.** A2A v1.0 specifies signed Agent Cards.
-  We have not implemented them; TLS is the only guarantee that a price came from
-  who you think.
+- **Discovery is unsigned in practice.** A2A v1.0 specifies signed Agent Cards,
+  but verification is not a default in any SDK we used. We sign ours and pin the
+  key by hand in the buyer. Most buyers will trust TLS alone.
 - **Agent spending controls are the least mature layer in the stack.** Our own
   build produced three findings: buyer-side enforcement is an honour system, a
   mandate without identity binding is a bearer token, and a "daily" cap that

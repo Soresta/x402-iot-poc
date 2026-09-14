@@ -80,10 +80,10 @@ weeks in, and I would rather not sign up for another quarter of it.
 
 | | |
 |---|---|
-| **Maintain the board** | Re-score quarterly against dated signals with sources. Confirm the four currently flagged as secondary coverage. Add technologies as they appear |
+| **Maintain the board** | Re-score quarterly against dated signals with sources. Primary-source checks are now part of every re-score (the 2026-09-11 check found two wrong citations). Add technologies as they appear |
 | **Run the briefings** | The 20-minute readiness briefing per sector, from the 10-slide deck. Honest scores; a briefing that concludes "not yet for you" is a success |
-| **Keep the PoC current** | It is the evidence. Close the six items gating v1.0; implement signed Agent Cards; keep the seller running as a live reference implementation |
-| **Publish the findings** | Every defect found becomes a board entry and a post. The four so far are the template |
+| **Keep the PoC current** | It is the evidence. Signed Agent Cards and the stranger-tested docs are done; keep the seller running as a live reference implementation, re-tested by people who did not build it |
+| **Publish the findings** | Every defect found becomes a board entry and a post. Twenty so far, each with its failing output, are the template |
 | **Feed the Watch product** | The board *is* the subscription's content. Making it worth paying for is the job |
 
 ---
@@ -123,7 +123,7 @@ number to explain away rather than hit.
    audience.
 4. **Counsel review** of the readiness memo. Cheap now; the answer expires
    slowly.
-5. **Confirm the four secondary-source signals**, then load the board.
+5. **Load the board.** The flagged signals were checked against primary sources on 2026-09-11.
 6. **Run six briefings** from the deck and rewrite it from what people actually
    ask.
 

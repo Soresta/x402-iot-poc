@@ -1,5 +1,7 @@
 # Week 6 Report — Launch week
 
+> **Status after the submission pass (2026-09-14):** Later: three demo-page defects were fixed (mislabelled stats, a replaying live feed, a feed blocked by ad blockers). Launch items still wait on the publish decision. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
+
 **Date:** 2026-09-06 · **Deployed version:** `61f7fd32-93a8-486a-8efa-73289ad1877c`
 **Evidence:** `docs/week6/BUILD-LOG.md`
 

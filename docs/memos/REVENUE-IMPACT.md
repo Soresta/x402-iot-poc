@@ -114,7 +114,7 @@ rather than escalating it once, hard, in Week 3.
 
 | Asset | Status | Attributable revenue |
 |---|---|---|
-| Working PoC, deployed, MIT, v1.0.0 tagged | live | **none** |
+| Working PoC, deployed, MIT, v1.2.0 tagged | live | **none** |
 | 81-test suite, 11 of 11 known defects caught when reintroduced | live | **none** |
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted | **none yet.** This is the Watch subscription's content |

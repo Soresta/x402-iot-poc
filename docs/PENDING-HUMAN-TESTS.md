@@ -15,7 +15,7 @@ several of these correspond to DoD rows currently sitting at NOT VERIFIED.
 ## 1. Stranger test — README reproducibility
 
 **Closes:** W4 "Docs that survive a stranger" · also the W3 30-second demo-page test
-**Currently:** NOT VERIFIED, open since W3
+**Currently:** PASS 2026-09-14 (Part A with guidance at three doc defects, all fixed; Part B with a finding)
 
 > **Attempt 1, 2026-09-14 (in progress).** A first-time tester followed
 > `QUICKSTART.md` on macOS, Node 24.12.0, and **stalled at step 4**:
@@ -217,6 +217,8 @@ printed — and prints a `SELLER_CARD_PUBLIC_JWK=…` line. Then:
 > wall clock, about 2 h 37 m of it buying; 146 purchases; cap never exceeded. It
 > exposed a real accounting bug, now fixed. Full write-up:
 > `docs/soak-runs/SOAK-2026-09-11.md`. Report it with those numbers, not as 24 h.
+> **Decision 2026-09-14: not re-run.** It stays PARTIAL, and acceptance is the
+> manager's call.
 
 **Closes:** W3 buyer DoD — "runs 24 h without exceeding its mandate". Currently
 PARTIAL at 1 hour.
