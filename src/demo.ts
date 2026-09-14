@@ -2,7 +2,8 @@
  * demo.ts — Live demo page and SSE settlement feed
  *
  * GET /          — Self-contained HTML page; a stranger must understand it in 30 s.
- * GET /api/events — SSE stream; emits settlement events polled from KV.
+ * GET /api/feed/settlements — SSE stream; emits settlement events polled from KV.
+ *     (/api/events is the same handler, kept as an alias.)
  *
  * SSE architecture note:
  *   Workers cannot share in-memory state across requests. The SSE stream
@@ -18,7 +19,7 @@ import type { Context } from "hono";
 import type { Env } from "./types";
 
 // ---------------------------------------------------------------------------
-// SSE endpoint — GET /api/events[?since=<ISO ts>]
+// SSE endpoint — GET /api/feed/settlements[?since=<ISO ts>]
 // ---------------------------------------------------------------------------
 
 /**
@@ -890,11 +891,13 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
   let sseCursor = null;
 
   function connectSSE() {
-    sse = new EventSource(sseCursor ? "/api/events?since=" + encodeURIComponent(sseCursor) : "/api/events");
+    const feed = "/api/feed/settlements";
+    sse = new EventSource(sseCursor ? feed + "?since=" + encodeURIComponent(sseCursor) : feed);
 
     sse.addEventListener("connected", (e) => {
       sseDot.classList.remove("disconnected");
       statSse.textContent = "Live";
+      statSse.title = "";
       sseRetries = 0;
       try {
         const d = JSON.parse(e.data);
@@ -921,7 +924,15 @@ export async function demoPageHandler(c: Context<{ Bindings: Env }>) {
 
     sse.onerror = () => {
       sseDot.classList.add("disconnected");
-      statSse.textContent = "Reconnecting…";
+      // After a few failures, say what the page is actually doing. A feed that
+      // never connects (blocked by an extension, or a proxy) is not "reconnecting";
+      // the receipts table still refreshes every 10 s without it.
+      if (sseRetries >= 2) {
+        statSse.textContent = "Polling";
+        statSse.title = "Live feed unavailable (a browser extension may be blocking it). Receipts still refresh every 10 s.";
+      } else {
+        statSse.textContent = "Reconnecting…";
+      }
       sse.close();
       // Exponential backoff: 1s, 2s, 4s, 8s, cap 30s
       const delay = Math.min(1000 * Math.pow(2, sseRetries), 30_000);

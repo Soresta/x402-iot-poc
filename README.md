@@ -123,7 +123,7 @@ one middleware rather than a copy of it.
 | `GET /api/receipts?limit=n` | settlement log — payer, amount, resource, tx hash |
 | `GET /api/payers` | settlements per wallet, split into ours and external |
 | `GET /api/metrics/daily?date=` | visits by source, settlements, volume, subscribers |
-| `GET /api/events` | SSE feed of settlements as they happen |
+| `GET /api/feed/settlements` | SSE feed of settlements as they happen (`/api/events` is an alias; some ad blockers block that name) |
 | `GET /api/device/status` · `GET /api/device/history?limit=n` | device twin health and ring buffer |
 | `GET /` | live demo page |
 
@@ -295,7 +295,7 @@ See [`ERRORS.md`](./ERRORS.md) for the full error code catalogue.
 ### Automated
 
 ```bash
-npm test                        # vitest — 79 tests: 52 regression, 27 over HTTP
+npm test                        # vitest — 81 tests: 52 regression, 29 over HTTP
 node scripts/mutation-check.mjs # put each known defect back; the suite must go red
 npx tsc --noEmit  # typecheck
 ```

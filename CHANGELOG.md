@@ -51,6 +51,26 @@ USDC. No release has ever been wired for real value.
   payment gate. Empty or over-length text is `400`; the old silent sample
   substitution and truncation are gone.
 
+### Fixed — an ad blocker hid the live feed, and the page kept saying "Reconnecting…"
+
+A browser extension on the maintainer's own machine refused `/api/events` with
+`net::ERR_BLOCKED_BY_CLIENT`, most likely because the path looks like an analytics
+endpoint to tracker filter lists. The feed never connected, the Live Events panel
+stayed empty through real purchases, and the status said "Reconnecting…"
+indefinitely. A professor or a stranger with a common blocker would have seen
+the same thing.
+
+- The feed moved to `/api/feed/settlements`, and the page and Agent Card use it.
+  `/api/events` stays as an alias.
+- After three failed attempts the status reads **"Polling"**, with a tooltip saying
+  the live feed is unavailable and receipts still refresh every 10 s. That is
+  what the page is doing at that point.
+- `/favicon.ico` returns 204 instead of a 404 in the console.
+
+Not verified: whether the blocker also allows the new path. That needs the same
+browser. Checked here: the new path streams on the deployed Worker (`57efe9ed`),
+the card advertises it, and `/api/readings` is still 402. 81 tests.
+
 ### Fixed — the Live Events panel replayed one settlement every 25 seconds
 
 Every SSE stream started without a cursor and sent the stored `latest_event` on

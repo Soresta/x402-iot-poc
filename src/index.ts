@@ -18,7 +18,7 @@
  *   GET  /api/metrics/daily             aggregate funnel counters
  *   GET  /api/device/status             DeviceTwin health
  *   GET  /api/device/history            DeviceTwin ring buffer
- *   GET  /api/events                    SSE settlement feed
+ *   GET  /api/feed/settlements          SSE settlement feed (also /api/events)
  *   GET  /                              live demo page
  *
  * Write
@@ -223,7 +223,14 @@ app.get("/api/subscribers.csv", exportSubscribersHandler);
 // Demo page + SSE feed
 // ---------------------------------------------------------------------------
 
+// The demo page uses /api/feed/settlements. On 2026-09-14 a browser extension
+// (an ad or tracker blocker) refused /api/events with ERR_BLOCKED_BY_CLIENT,
+// probably because "/api/events" looks like an analytics endpoint on the filter
+// lists. The live panel sat on "Reconnecting…" and never showed a payment. The
+// old path stays for anyone already reading it.
+app.get("/api/feed/settlements", sseHandler);
 app.get("/api/events", sseHandler);
+app.get("/favicon.ico", (c) => c.body(null, 204));
 app.get("/", demoPageHandler);
 
 export default app;

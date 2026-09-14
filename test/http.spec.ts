@@ -386,15 +386,25 @@ describe("SSE: the live feed resumes from a cursor instead of replaying", () => 
 
   it("a first connection does not replay the stored latest settlement", async () => {
     await env.IOT_KV.put("latest_event", JSON.stringify({ type: "payment_settled", ts: EVENT_TS, amount: "$0.002" }));
-    const text = await readStreamFor("/api/events", 3_000);
+    const text = await readStreamFor("/api/feed/settlements", 3_000);
     expect(text).toContain("event: connected");
     expect(text).toContain(EVENT_TS); // reported as the cursor
     expect(text).not.toContain("event: payment_settled");
   }, 15_000);
 
+  it("the old /api/events path is still the same feed", async () => {
+    const text = await readStreamFor("/api/events", 500);
+    expect(text).toContain("event: connected");
+  }, 15_000);
+
+  it("the Agent Card advertises the path the demo page uses", async () => {
+    const card: any = await (await get("/.well-known/agent-card.json")).json();
+    expect(JSON.stringify(card)).toContain("/api/feed/settlements");
+  });
+
   it("a reconnect with an older cursor receives the newer settlement exactly once", async () => {
     await env.IOT_KV.put("latest_event", JSON.stringify({ type: "payment_settled", ts: EVENT_TS, amount: "$0.002" }));
-    const text = await readStreamFor(`/api/events?since=${encodeURIComponent("2026-09-14T09:17:00.000Z")}`, 5_000);
+    const text = await readStreamFor(`/api/feed/settlements?since=${encodeURIComponent("2026-09-14T09:17:00.000Z")}`, 5_000);
     // The server polls every 2 s, so 5 s covers two polls: one send, no repeat.
     expect(text.match(/event: payment_settled/g) ?? []).toHaveLength(1);
   }, 15_000);

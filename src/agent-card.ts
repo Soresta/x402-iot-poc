@@ -45,7 +45,7 @@ export async function agentCardHandler(c: Context<{ Bindings: Env }>) {
       contact: "https://github.com/Soresta/x402-iot-poc",
     },
     capabilities: {
-      streaming: true, // SSE feed at /api/events
+      streaming: true, // SSE feed at /api/feed/settlements
       pushNotifications: false,
       stateTransitionHistory: false,
     },
@@ -95,7 +95,7 @@ export async function agentCardHandler(c: Context<{ Bindings: Env }>) {
       payment_resource: `${baseUrl}/api/readings`,
       inference_resource: `${baseUrl}/api/inference`,
       receipts: `${baseUrl}/api/receipts`,
-      events_sse: `${baseUrl}/api/events`,
+      events_sse: `${baseUrl}/api/feed/settlements`,
       demo: baseUrl,
     },
   };
