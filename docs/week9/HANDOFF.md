@@ -112,10 +112,11 @@ Without the token: `401`. Without the secret configured at all: `503` and
 nothing is exported. That fail-closed behaviour is deliberate — an open export
 endpoint on a public Worker is an email list published to the internet.
 
-**Not verified in this session:** a `200` with the correct token. The token is
-held by one person and was never shared with the agent session that wrote this,
-which is the arrangement that makes it a secret. The `503 → 401` transition was
-verified and is the proof the secret is configured.
+**Verified 2026-09-14:** the token holder ran the export with the real token. The
+file landed in Downloads, outside the repo, as the header
+`email,timestamp,source,consent` and no rows. That matches 0 subscribers. The token
+was never shared with the agent session that checked the file, which is the
+arrangement that keeps it a secret.
 
 ### 2.5 Pull metrics
 

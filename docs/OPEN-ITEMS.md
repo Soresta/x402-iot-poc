@@ -14,7 +14,7 @@ pass has one list to work from instead of eight weekly reports.
 | C · Test suite | 4 | 0 | — |
 | D · Documentation | 7 | 0 | — |
 | E · Blocked on someone else | 1 | 5 | E3 met by a recruited tester; the other five wait on the manager |
-| F · Programme tasks W1–W9 | 33 | 17 | see §F; most need the manager or a publish decision |
+| F · Programme tasks W1–W9 | 34 | 16 | see §F; most need the manager or a publish decision |
 
 **Nothing here is hidden elsewhere.** Each item says where it came from and what
 "done" looks like. Items are ordered by what would embarrass us most if a
@@ -146,7 +146,7 @@ deliberately, because it names people.
 | 🟢 | Flagship tutorial draft ⚑ | Every code block re-tested from a clean checkout | Run end to end on a separate computer, 2026-09-14 (B5); manager review pending |
 | 🟢 | Research board v2 + funnel map | Funnel map agreed | Written (`docs/content/funnel-map-and-utm.md`); agreement pending |
 | 🔴 | 90-second demo video ⚑ | File to manager | Script ready; **not recorded** (B8) |
-| 🔴 | Email capture ⚑ | Capture live + first CSV export handed over | Capture live; **export with the real token not yet run and handed over** — one command, HANDOFF §2.4 |
+| 🟢 | Email capture ⚑ | Capture live + first CSV export handed over | **Export run with the real token, 2026-09-14 21:29 local.** The file is saved outside the repo (`Downloads/subscribers.csv`, 31 bytes). It holds the header `email,timestamp,source,consent` and no rows, which matches `/api/subscribers/count` = 0. A wrong token returns a `401` JSON body instead, so this was the authorised path. Handover pending with the manager |
 
 ### W6 · Launch
 
@@ -203,7 +203,7 @@ deliberately, because it names people.
 1. 🟢 ~~Tutorial run from an empty directory, timed (B5)~~ — done on a separate computer
 2. 🔴 Rehearse the Demo Day deck twice, timed (B7)
 3. 🔴 Record the 90-second fallback video (B8)
-4. 🔴 Run the subscriber export with the real token, confirm `200`, keep the file outside the repo (W5 email capture)
+4. 🟢 ~~Run the subscriber export with the real token~~ — done; a header-only CSV, as there are 0 subscribers
 5. 🔴 *Optional:* write up the W1 distribution scouting, if notes exist anywhere
 
 **You and one other person (about 20 minutes):**
