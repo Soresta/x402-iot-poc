@@ -12,7 +12,7 @@ An HTTP API whose customers are software. It sells two things, simulated IoT sen
 
 ### What is honest about this repo
 
-Every defect found during the build is documented with the output that exposed it and has a regression test. There are sixteen, and almost none of them produced an error. Eleven of them are put back into the code by a script to prove the suite still catches them. The metric that would flatter this project most, payments from wallets we do not own, is computed in code that excludes our own addresses. It reads **0**.
+Every defect found during the build is documented with the output that exposed it and has a regression test. There are eighteen, and almost none of them produced an error. Eleven of them are put back into the code by a script to prove the suite still catches them. The metric that would flatter this project most, payments from wallets we do not own, is computed in code that excludes our own addresses. It reads **1**. That wallet belongs to a first-time tester we recruited to follow the quickstart, which makes it a usability result and not a customer. Organic external payers: **0**.
 
 - What was checked, and how: [`docs/VERIFICATION.md`](./docs/VERIFICATION.md)
 - What is still wrong, missing or unverified: [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md)
@@ -312,7 +312,7 @@ The ERC-20 `Transfer` is the **second** log. The first is `AuthorizationUsed`, w
 
 ## Still open
 
-External adoption (no wallet we do not own has paid), a 24-hour continuous run, the stranger tests, and dispute handling. Each item, with what "done" looks like: [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).
+Organic external adoption (the one external wallet so far is a tester we recruited), a 24-hour continuous run, the 30-second demo comprehension test, and dispute handling. Each item, with what "done" looks like: [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).
 
 The first settlements (Week 2), [local](https://sepolia.basescan.org/tx/0xe18db4768d05030511485080ad850270b49e8a00df7965470a27ae2b93f4d1f3) and [on the public Worker](https://sepolia.basescan.org/tx/0xc5b68a953aa2ff89162a46c4a378d8c5fe35e3b86f77cf32dfbb4c2b403e92ff), are kept with the raw unpaid response they started from: [`docs/evidence/week2-402-transcript.txt`](./docs/evidence/week2-402-transcript.txt).
 
@@ -328,7 +328,7 @@ The first settlements (Week 2), [local](https://sepolia.basescan.org/tx/0xe18db4
 
 **Is this production-ready?** No. The sensor is simulated, the money has no value, and the gaps are listed in [`docs/OPEN-ITEMS.md`](./docs/OPEN-ITEMS.md).
 
-**Has anyone outside the project paid it?** No. `GET /api/payers` reports `external_payers: 0`, computed by excluding `OWN_WALLETS` in code rather than by anyone's judgement.
+**Has anyone outside the project paid it?** One wallet, and we asked them to. On 2026-09-14 a first-time tester followed the quickstart, created a MetaMask wallet, and paid from it in about 15 minutes. `GET /api/payers` reports `external_payers: 1`, computed by excluding `OWN_WALLETS` in code. No one has found this API and paid it unprompted.
 
 **Why is inference more expensive than a reading?** Compute costs more than a stored measurement, and the gap gives `max_per_call` a real decision to make. A mandate authorized for `$0.001` gets `403 mandate_scope_exceeded` when it reaches for the `$0.002` inference.
 

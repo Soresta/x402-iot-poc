@@ -107,16 +107,19 @@ and buys what it can afford instead.
 |---|---:|
 | Purchases by the buyer agent | 382 |
 | Volume | $0.405 testnet |
-| Distinct paying wallets | 1 |
-| **External paying wallets** | **0** |
+| Distinct paying wallets | 2 |
+| **External paying wallets** | **1** — a tester we recruited |
+| **Organic external payers** | **0** |
 | Email list | 0 |
 | Backlinks | 0 |
 
 **Nothing has been published.** Ten assets are written and unposted.
 
 *Figures as of 2026-09-14, from the buyer agent's ledger.* The 382 purchases are the system buying from itself. The external-payer count
-is computed by excluding our own wallets **in code** — `/api/payers` returns
-`milestone_w7_met: false` — so this slide cannot be written any other way.
+is computed by excluding our own wallets **in code**. It now reads 1, and the
+one is a friend who agreed to follow the quickstart cold: no wallet to a settled
+payment in about 15 minutes. **That proves a stranger can pay. It does not prove
+anyone wants to.**
 
 ---
 
@@ -145,7 +148,7 @@ Zero revenue. Six reusable assets:
 | Real-value readiness memo, 12 counsel questions | delivered |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted |
 | Ten publishable assets — tutorial, 3 posts, threads, Show HN, deck | written |
-| Sixteen documented defects, each with its failing output | published |
+| Eighteen documented defects, each with its failing output | published |
 
 The memo shortens a future legal review. The board is the Watch subscription's
 content. Both are real and neither is revenue, and I would rather you see both
@@ -155,7 +158,7 @@ numbers than have one dressed as the other.
 
 ## 10 · What broke — the most useful slide here
 
-Sixteen defects were found in nine weeks — eight of them in the final verification
+Eighteen defects were found in nine weeks — ten of them in the final verification
 pass, after v1.0.0 was tagged. Almost all of them shared one property:
 
 > **In this stack, wrong looks like working.**

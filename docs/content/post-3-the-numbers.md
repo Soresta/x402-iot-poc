@@ -33,14 +33,19 @@ Disclosure: I work with the team at Pragma.Vision. The code is MIT.
 | Total volume | **$0.405** in testnet USDC |
 | Days with activity | **8** |
 | Longest continuous unattended run | **1 hour** — 111 settlements, 98.2% success |
-| Distinct paying wallets | **1** |
-| **External paying wallets** | **0** |
+| Distinct paying wallets | **2** |
+| **External paying wallets** | **1** — a friend I asked to test the quickstart |
 | Infrastructure cost | **$0** |
 | Automated tests | **81** — written after the bugs below, and checked by putting each bug back |
 
 The number that decides whether any of this is interesting is the sixth one.
-Every payment this API has ever taken came from a wallet I own. I built a thing
-that sells, and then I bought from myself 382 times.
+Apart from one friend I asked to try the quickstart, every payment this API has
+ever taken came from a wallet I own. I built a thing that sells, and then I
+bought from myself 382 times.
+
+The friend matters for a different reason. Starting with no wallet, they paid in
+about fifteen minutes, and on the way they hit two problems in my docs that I had
+never hit myself.
 
 That is not a failure of the technology. It is a failure to have shown it to
 anyone, and those are different problems with different fixes.

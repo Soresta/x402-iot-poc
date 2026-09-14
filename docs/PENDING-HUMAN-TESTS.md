@@ -8,8 +8,7 @@ Each entry names the DoD it closes, the exact steps, and what must be visible in
 the evidence. Nothing here is marked PASS until it has actually been run —
 several of these correspond to DoD rows currently sitting at NOT VERIFIED.
 
-**Status (2026-09-14):** #2, #3, #6 **PASS**. Screenshots in `docs/evidence/`. #7 ran as PARTIAL, not 24 h. #1 not
-run (needs a person). #4 and #5 wait on decisions and on strangers.
+**Status (2026-09-14):** #2, #3, #6 **PASS**; screenshots in `docs/evidence/`. #5 **met by a recruited tester**. #1 **PARTIAL**: quickstart passed with one hint, and Part B needs someone who has not seen the page. #7 PARTIAL, not 24 h. #4 waits on the publish decision.
 
 ---
 
@@ -28,7 +27,13 @@ run (needs a person). #4 and #5 wait on decisions and on strangers.
 > Sepolia to MetaMask and finding the private key. The quickstart had one sentence
 > for it. Now a five-step MetaMask walkthrough, and the scripts accept a key without
 > `0x` as MetaMask exports it.
-> Time to the stall, and the rest of the run: to be recorded.
+> **Result:** after the hint, the tester completed the quickstart. From a standing
+> start with no wallet to a settled payment took **about 15 minutes**, as reported by
+> the intern who watched. First payment `2026-09-14T17:02:34Z`, verified on-chain.
+> They then ran `buyer/agent.mjs`, which bought both resources (7 settlements by
+> 17:07Z). **Verdict: PARTIAL.** The quickstart path works for a newcomer, with
+> one hint that is now unnecessary. The README's "run your own seller" path was not
+> attempted. The tester has now seen the demo page, so Part B needs a different person.
 
 Recruit one person who has not seen this project. A friend or a community member
 is fine; it must not be you.
@@ -132,6 +137,12 @@ construction, and the reports say so.
 ## 5. External agent adoption
 
 **Closes:** W7 Milestone 4 — ≥1 external agent settles a testnet payment
+
+> **Met 2026-09-14 — by a recruited tester, not organically.** The #1 tester's
+> wallet `0xc078…3b25` is not in `OWN_WALLETS`, so `/api/payers` counts it:
+> `external_payers: 1`, `milestone_w7_met: true`. Report it as exactly that. It
+> proves a stranger *can* pay from the docs alone. It does not show that anyone
+> *wants* to.
 **Why a person:** it requires a developer who is not us, choosing to pay.
 
 Cannot be manufactured. A second wallet we control is a useful smoke test of the

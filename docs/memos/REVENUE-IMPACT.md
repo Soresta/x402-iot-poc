@@ -27,7 +27,7 @@ Attribution classes: **direct** (traceable to this work), **assisted**
 | Backlinks + mentions | 0 | **0** | 0 | — | manual search |
 | Watch subscriptions | 0 | not available | — | — | your confirmation |
 | **Email list** | 0 | **0** | **0** | direct (mechanism), none (result) | `/api/subscribers/count` |
-| **External agent payments** | 0 | **0** | **0** | direct (mechanism), none (result) | `/api/payers` |
+| **External agent payments** | 0 | **1 wallet** *(recruited tester, 2026-09-14)* · organic **0** | +1 | direct (recruited) | `/api/payers` |
 | B2B briefings booked | 0 | **0** | 0 | — | CRM |
 | Native-AI-agents (SEO/AEO-GEO) | 0 | not available | — | — | your analytics |
 
@@ -52,8 +52,8 @@ guess. **No row in this table is classified `assisted` or `unknown` on a hunch.*
 |---|---|
 | Purchases by the buyer agent | **382** *(2026-09-14; 189 when this memo was drafted)* |
 | Volume settled | **$0.405** testnet USDC *(was $0.191)* |
-| Distinct paying wallets | **1** — ours |
-| External paying wallets | **0** |
+| Distinct paying wallets | **2** |
+| External paying wallets | **1** — a first-time tester we recruited to follow the quickstart; **organic: 0** |
 | Infrastructure spend | **$0** |
 | Paid acquisition spend | **$0** |
 
@@ -119,7 +119,7 @@ rather than escalating it once, hard, in Week 3.
 | Real-value readiness memo — 12 counsel questions | delivered | **none directly.** Shortens a future legal review; the saving is real and unquantified |
 | Agentic-payments research board — 11 technologies, 20 dated signals | drafted | **none yet.** This is the Watch subscription's content |
 | Flagship tutorial, 3 posts, 2 X threads, Show HN, 2 subreddit posts, outreach template, 10-slide deck, 90-second video script | written, unpublished | **none** |
-| Sixteen documented defects, each with its failing output | published in-repo | **none.** Credible material for the briefings |
+| Eighteen documented defects, each with its failing output | published in-repo | **none.** Credible material for the briefings |
 
 **The honest summary of cost versus value:** the programme produced reusable
 assets and zero revenue. The assets are real and the zero is real, and I would
@@ -160,7 +160,7 @@ unreachable and I will not sign up for a number I cannot influence.
 Three things.
 
 **The build is defensible.** Every claim in the README can be reproduced from a
-clean clone; sixteen real defects are documented with their failing output; the
+clean clone; eighteen real defects are documented with their failing output; the
 external-payer count is computed in code precisely so it cannot be flattered.
 
 **The distribution is not started, and that is the whole gap.** Not

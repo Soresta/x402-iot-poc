@@ -10,11 +10,11 @@ pass has one list to work from instead of eight weekly reports.
 | Section | 🟢 | 🔴 | What the 🔴 are |
 |---|---:|---:|---|
 | A · Correctness and safety | 10 | 0 | — |
-| B · Verification gaps | 2 | 6 | stranger tests (B1, B2), tutorial clean run (B5), 24 h run partial (B6), rehearsals (B7), fallback video (B8) |
+| B · Verification gaps | 2 | 6 | README stranger test partial (B1), 30-second demo test (B2), tutorial clean run (B5), 24 h run partial (B6), rehearsals (B7), fallback video (B8) |
 | C · Test suite | 4 | 0 | — |
 | D · Documentation | 7 | 0 | — |
-| E · Blocked on someone else | 0 | 6 | all six wait on the manager |
-| F · Programme tasks W1–W9 | 29 | 21 | see §F; most need the manager or a publish decision |
+| E · Blocked on someone else | 1 | 5 | E3 met by a recruited tester; the other five wait on the manager |
+| F · Programme tasks W1–W9 | 30 | 20 | see §F; most need the manager or a publish decision |
 
 **Nothing here is hidden elsewhere.** Each item says where it came from and what
 "done" looks like. Items are ordered by what would embarrass us most if a
@@ -44,7 +44,7 @@ Last updated: 2026-09-14 (submission pass — v1.1.0). Full check-by-check resul
 
 | # | Item | Status | Done when |
 |---|---|---|---|
-| 🔴 B1 | **Stranger test — README reproducibility** | Open since W4 | One person, watched, ≤15 min, findings recorded — see `PENDING-HUMAN-TESTS.md` |
+| 🔴 B1 | **Stranger test — README reproducibility** | **PARTIAL 2026-09-14.** A first-time tester (macOS) followed `QUICKSTART.md` from no wallet to a settled payment in ≈ 15 minutes. They needed **one hint**, because step 4 could not work as written. That defect and the wallet-setup gap are fixed. Not covered: the "run your own seller" path in the README | One person, watched, ≤15 min, findings recorded — see `PENDING-HUMAN-TESTS.md` |
 | 🔴 B2 | **30-second demo comprehension test** | Open since W3 | One person, 30 s, their answer written down verbatim even if wrong |
 | 🟢 B3 | **Real `Ctrl+C` clean exit** | **PASS 2026-09-14.** Console screenshot shows `[agent] SIGINT received. Flushing and exiting cleanly.` after two purchases. The ledger's last line is `{"ts":"2026-09-14T09:18:58.791Z","result":"agent_stopped","signal":"SIGINT"}` (first observed 2026-09-11 09:51:07Z) | — |
 | 🟢 B4 | **Explorer link followed by a human** | **PASS 2026-09-14.** `sepolia.basescan.org` opened by hand for the first purchase above: Status **Success**, block 46804595, 09:17:58 UTC, ERC-20 transfer **0.001 USDC from `0x936F…8945` (buyer) to `0x219b…d99E` (seller)**. The transaction's own `From` is `0xd407…f1bf`, the facilitator's relayer, which pays the gas. The buyer signs an EIP-3009 authorization and never sends a transaction itself | — |
@@ -82,7 +82,7 @@ Not ours to fix, listed so the final report can say what was blocked and for how
 |---|---|---|
 | 🔴 E1 | **Publish decision.** Ten assets written, none posted. Every GTM and REV metric is zero by construction. | W4 |
 | 🔴 E2 | **Channel #1 inputs** — five book posts with verified checkout links. | W2 |
-| 🔴 E3 | **Milestone 4** — ≥1 external agent settles. Unreachable without E1. | W7 |
+| 🟢 E3 | **Milestone 4** — ≥1 external agent settles. **Met 2026-09-14, with a caveat that belongs in every report:** the wallet (`0xc078…3b25`) is a first-time tester recruited for the stranger test, who needed one hint on the way. First payment 17:02:34Z, verified on-chain (buyer → seller, 1000 atomic USDC). Then they ran the agent, which bought both resources. `milestone_w7_met: true`. Organic external payers remain 0, and that still waits on E1. | W7 → 2026-09-14 |
 | 🔴 E4 | **Research board loading** — manager action. | W4 |
 | 🔴 E5 | **Counsel review** of the real-value memo. | W7 |
 | 🔴 E6 | **Analytics access** for the KPIs we cannot measure ourselves. | W4 |
@@ -133,7 +133,7 @@ deliberately, because it names people.
 | | Task | DoD | State |
 |---|---|---|---|
 | 🟢 | Hardening pass | Abuse-case checklist passes | PASS, 7 of 7 |
-| 🔴 | Docs that survive a stranger | Stranger reproduces from README ≤ 15 min | **Not run** (B1) |
+| 🔴 | Docs that survive a stranger | Stranger reproduces from README ≤ 15 min | **PARTIAL 2026-09-14** — the quickstart path, wallet creation included, took ≈ 15 min with one hint, and two doc defects were found and fixed. The "run your own seller" path is not tested (B1) |
 | 🔴 | Midpoint gate demo ⚑ | Manager accepts or redirects | **Not held** — manager unavailable |
 | 🔴 | Publish wave #1 ⚑ | Live links, referral traffic | Drafts ready; **not published** (E1) |
 | 🟢 | Research-board package ⚑ | Accepted for loading | Delivered and source-checked; **loading pending** (E4) |
@@ -162,7 +162,7 @@ deliberately, because it names people.
 
 | | Task | DoD | State |
 |---|---|---|---|
-| 🔴 | External-adoption push | ≥ 1 external agent settles (Milestone 4) | **0 external payers** (E3) |
+| 🟢 | External-adoption push | ≥ 1 external agent settles (Milestone 4) | **1 external wallet, 2026-09-14**: a recruited first-time tester, via the quickstart. Organic: 0 (E3) |
 | 🟢 | Real-value readiness memo ⚑ | Memo + 30-min walkthrough | Memo delivered; walkthrough pending |
 | 🔴 | B2B wave #2 | 3 briefings booked; 10-slide deck | Deck ready; **0 briefings** |
 | 🟢 | Post #3 draft ⚑ | Draft to manager | Delivered, figures refreshed 2026-09-14 |
@@ -207,7 +207,7 @@ deliberately, because it names people.
 5. 🔴 *Optional:* write up the W1 distribution scouting, if notes exist anywhere
 
 **You and one other person (about 20 minutes):**
-6. 🔴 Stranger test — README in ≤ 15 min, then the demo page in 30 s (B1, B2)
+6. 🔴 30-second demo test with someone who has **not** seen the page (B2). The quickstart tester has seen it now, so it has to be someone else. B1 is partial: the quickstart passed, with one hint
 
 **Needs a machine that stays awake, or stays PARTIAL:**
 7. 🔴 24-hour unattended run (B6)
@@ -218,7 +218,7 @@ deliberately, because it names people.
 10. 🔴 Outreach, briefings, CFP submissions, first paid engagement
 11. 🔴 Research board loading (E4), counsel review (E5), analytics access (E6)
 12. 🔴 Midpoint demo, Friday demos, Demo Day
-13. 🔴 An external paying agent — Milestone 4 (E3), reachable only after 9
+13. 🟢 ~~An external paying agent — Milestone 4 (E3)~~ — met 2026-09-14 by a recruited tester. An *organic* one still needs 9
 
 ---
 

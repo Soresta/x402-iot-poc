@@ -120,7 +120,9 @@ between runs of `test_mandate.mjs`**, or it trips the seller's own rate limiter.
 | Live feed shows each settlement once | **PASS since 2026-09-14**: 145 s observed on the deployed Worker, one payment shown once, status "Live" throughout. Before: one payment shown 31 times |
 | Live feed works with an ad blocker installed | **PASS 2026-09-14**, confirmed in the affected browser after moving the feed to `/api/feed/settlements` |
 | Understood by a stranger in 30 s | **NOT VERIFIED** |
-| README reproduced by a stranger in ≤ 15 min | **NOT VERIFIED** |
+| Quickstart followed by a first-time user | **PASS with one hint, 2026-09-14**: no wallet to a settled payment in ≈ 15 min on macOS. The hint was for a doc defect, since fixed |
+| README "run your own seller" reproduced by a stranger | **NOT VERIFIED** |
+| An external wallet settles | **PASS 2026-09-14**: recruited tester, verified on-chain. Organic external payers: 0 |
 | Tutorial run from an empty directory | **NOT VERIFIED** |
 
 The NOT VERIFIED rows need a person. The steps are in
@@ -151,6 +153,8 @@ the CHANGELOG entry for the version that fixed it.
 | 09-14 | Demo stats said "today" and meant "last 20" | Visible in a screenshot |
 | 09-14 | Live feed replayed one settlement every 25 s | Visible once watched |
 | 09-14 | Live feed blocked by an ad blocker | Visible only in a browser with one |
+| 09-14 | Quickstart step 4 could not work as written (`pay.mjs` ignored `SELLER_URL`) | Found by the first stranger to follow it |
+| 09-14 | No wallet guidance; MetaMask keys exported without `0x` were rejected | Found by the same stranger |
 
 What they have in common: **almost none of them produced an error.** Each
 response was well-formed and each check passed. The ones found late were found by

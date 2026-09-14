@@ -75,7 +75,7 @@ consented list that nobody honours is worse than not having collected it.
 The repository ends in a state where:
 
 - every claim in the README can be reproduced from a clean clone;
-- every defect found — sixteen, listed in `docs/VERIFICATION.md` — is documented
+- every defect found — eighteen, listed in `docs/VERIFICATION.md` — is documented
   with its failing output, in the version where it was fixed, and eleven are
   re-checked by the mutation script;
 - the one metric that would flatter us is computed in code that excludes our own
@@ -101,7 +101,8 @@ secrets in repo none — 312 history matches (270 distinct), all Base Sepolia
                 transaction hashes; .env never tracked
 buyer purchases 382 in the agent ledger, $0.405 testnet, across 8 days
                 (excludes one-off test scripts, which do not write the ledger)
-external payers 0 (milestone_w7_met: false)
+external payers 1 (milestone_w7_met: true) — a recruited quickstart tester;
+                organic external payers 0
 open            A: none · B: 5 open, 1 partial · E: 6 blocked on decisions
 ```
 
