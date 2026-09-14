@@ -23,6 +23,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { createMandate, verifyMandate, checkPriceInScope } from "./mandate.mjs";
 import { spentInWindow } from "./budget.mjs";
 import { verifyCard } from "./card-verify.mjs";
+import { readBuyerPrivateKey } from "./buyer-key.mjs";
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
@@ -31,7 +32,7 @@ import { join, dirname } from "node:path";
 // Config from environment
 // ---------------------------------------------------------------------------
 
-const BUYER_PRIVATE_KEY = process.env.BUYER_PRIVATE_KEY;
+const BUYER_PRIVATE_KEY = readBuyerPrivateKey("[agent] ");
 const SELLER_URL = process.env.SELLER_URL || "http://127.0.0.1:8787";
 const LOOP_INTERVAL_MS = Number(process.env.LOOP_INTERVAL_MS) || 30_000;
 const DAILY_CAP = parseFloat(process.env.DAILY_CAP || "0.05");    // USDC, over any rolling 24 h
@@ -58,11 +59,6 @@ if (process.env.SELLER_CARD_PUBLIC_JWK) {
     console.error("[agent] FATAL: SELLER_CARD_PUBLIC_JWK is not a valid P-256 public key. Exiting.");
     process.exit(1);
   }
-}
-
-if (!BUYER_PRIVATE_KEY) {
-  console.error("[agent] FATAL: BUYER_PRIVATE_KEY not set. Exiting.");
-  process.exit(1);
 }
 
 if (isNaN(DAILY_CAP) || DAILY_CAP <= 0) {

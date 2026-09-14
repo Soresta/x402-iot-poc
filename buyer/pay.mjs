@@ -3,6 +3,7 @@ import { wrapFetchWithPayment, decodePaymentResponseHeader } from "@x402/fetch";
 import { x402Client } from "@x402/core/client";
 import { registerExactEvmScheme } from "@x402/evm/exact/client";
 import { privateKeyToAccount } from "viem/accounts";
+import { readBuyerPrivateKey } from "./buyer-key.mjs";
 
 // RESOURCE_URL wins when set (the Week 2 behaviour). Otherwise buy a reading from
 // SELLER_URL, which is what QUICKSTART.md tells people to set. Until 2026-09-14
@@ -11,7 +12,7 @@ import { privateKeyToAccount } from "viem/accounts";
 const SELLER_URL = (process.env.SELLER_URL || "http://127.0.0.1:8787").replace(/\/+$/, "");
 const RESOURCE_URL = process.env.RESOURCE_URL || `${SELLER_URL}/api/readings`;
 
-const account = privateKeyToAccount(process.env.BUYER_PRIVATE_KEY);
+const account = privateKeyToAccount(readBuyerPrivateKey());
 console.log("buyer:", account.address);
 console.log("resource:", RESOURCE_URL);
 

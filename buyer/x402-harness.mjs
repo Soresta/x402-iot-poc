@@ -13,6 +13,7 @@ import { wrapFetchWithPayment } from "@x402/fetch";
 import { x402Client } from "@x402/core/client";
 import { registerExactEvmScheme } from "@x402/evm/exact/client";
 import { privateKeyToAccount } from "viem/accounts";
+import { readBuyerPrivateKey } from "./buyer-key.mjs";
 
 /**
  * Request header carrying the signed payment proof in the installed x402
@@ -24,12 +25,7 @@ export const SELLER_URL = process.env.SELLER_URL || "http://127.0.0.1:8787";
 export const READINGS_URL = `${SELLER_URL}/api/readings`;
 
 export function buildAccount() {
-  const key = process.env.BUYER_PRIVATE_KEY;
-  if (!key) {
-    console.error("FATAL: BUYER_PRIVATE_KEY not set.");
-    process.exit(1);
-  }
-  return privateKeyToAccount(key);
+  return privateKeyToAccount(readBuyerPrivateKey());
 }
 
 /**

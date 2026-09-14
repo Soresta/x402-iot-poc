@@ -31,6 +31,28 @@ Week 7, and nobody had followed it from scratch.
   the script prints.
 - `.env.example`: `RESOURCE_URL` commented out, both `SELLER_URL` values explained.
 
+### Added — a wallet walkthrough for people who have never used one
+
+Same tester. **The wallet was the hardest part:** adding Base Sepolia to MetaMask
+and finding the private key. The quickstart said "create an account and copy its
+private key" and nothing more.
+
+- `QUICKSTART.md` step 1 is now five sub-steps, checked against MetaMask's own
+  help pages and Base's network documentation: create an account, copy the
+  address, the faucet (20 USDC every 2 hours), adding the network and the USDC
+  token (marked optional, because paying does not need it), and exporting the key.
+  Safety notes (throwaway account, `.env` only) and three new troubleshooting
+  entries: address pasted instead of key, wrong account funded, wrong network at
+  the faucet.
+- **`buyer/buyer-key.mjs`**: MetaMask shows exported keys without `0x`, which viem
+  rejects with a stack trace. Keys are now accepted with or without `0x`, with
+  stray quotes or spaces. An address pasted by mistake gets a plain message.
+  Nothing about the key is ever printed. Checked: `0x`, no `0x`, and quoted keys
+  give the same address; an address and an empty value are refused. Used by
+  `pay.mjs`, `agent.mjs` and the test harness.
+- The README and the tutorial link to the walkthrough. The quickstart no longer
+  promises five minutes to someone starting without a wallet.
+
 ## [1.1.0] — 2026-09-14
 
 The verification and submission release. v1.0.0 was the point at which the

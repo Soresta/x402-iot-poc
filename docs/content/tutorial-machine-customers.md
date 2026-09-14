@@ -57,7 +57,9 @@ exactly what you want while learning.
 | Test USDC on Base Sepolia | what the buyer spends | free, from a faucet |
 
 Create two accounts in any EVM wallet. Call them **buyer** and **seller**. You
-need the buyer's *private key* and the seller's *address*.
+need the buyer's *private key* and the seller's *address*. First time with a
+wallet? The project quickstart has a step-by-step MetaMask walkthrough: account,
+network, faucet and private key export.
 
 > **Use throwaway keys.** Not an account that has ever held real value. The habit
 > matters more than the amount.

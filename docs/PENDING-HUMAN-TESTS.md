@@ -24,6 +24,10 @@ run (needs a person). #4 and #5 wait on decisions and on strangers.
 > defect, not the tester. The quickstart sets `SELLER_URL`, and `pay.mjs` read only
 > `RESOURCE_URL`. The tester was told the one-line `.env` fix, **so from this point
 > the attempt is assisted.** Fixed in the repo the same day (CHANGELOG, Unreleased).
+> **Second finding, same tester: the wallet was the hardest part** — adding Base
+> Sepolia to MetaMask and finding the private key. The quickstart had one sentence
+> for it. Now a five-step MetaMask walkthrough, and the scripts accept a key without
+> `0x` as MetaMask exports it.
 > Time to the stall, and the rest of the run: to be recorded.
 
 Recruit one person who has not seen this project. A friend or a community member

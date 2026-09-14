@@ -3,7 +3,9 @@
 You are going to make a piece of software buy something. No account, no API key,
 no signup form. Testnet, so it costs nothing real.
 
-If it takes you longer than five minutes, that is a bug in this page — please
+Five minutes once you have a funded testnet wallet; allow ten more if you are
+creating one for the first time (step 1). If it takes you longer than that, it is a
+bug in this page — please
 [open an issue](https://github.com/Soresta/x402-iot-poc/issues) saying where you
 stalled. That feedback is more useful to us than the payment.
 
@@ -11,21 +13,92 @@ stalled. That feedback is more useful to us than the payment.
 
 ## What you need
 
-- **Node 20+**
-- **A throwaway EVM wallet.** Not one that has ever held real value.
-- **About 60 seconds at a faucet.**
+- **Node 20+** — check with `node -v`
+- **MetaMask** (or any EVM wallet). Never used one? Step 1 walks through it.
+- **About 5 minutes for the wallet and the faucet.** It is the slowest part, and
+  you only do it once.
 
-## 1 · Get a wallet and some test USDC
+## 1 · Get a wallet, test USDC and the private key
 
-Create a new account in any EVM wallet and copy its **private key**.
+The steps below use the **MetaMask browser extension**. Button names change
+between MetaMask versions; if one is not where described, the linked MetaMask help
+page has the current wording.
 
-Fund it with test USDC on **Base Sepolia**:
-[faucet.circle.com](https://faucet.circle.com/) → select *Base Sepolia* → paste
-your address.
+> **Use a throwaway account.** If you already keep real funds in MetaMask, create a
+> separate account for this (1a). Better still, use a separate browser profile
+> with a brand-new wallet. The private key you export in 1e controls that account
+> completely. It goes into one file on your machine, `.env`, and nowhere else:
+> not a chat, not a screenshot, not a commit. `.env` is gitignored in this repo.
 
-You do **not** need test ETH. The facilitator submits the transaction and pays
-the gas, so your wallet needs no gas of its own. That is the trick that makes
-tenth-of-a-cent payments possible at all.
+### 1a · Create an account
+
+No MetaMask yet: install it from [metamask.io](https://metamask.io/download/),
+choose **Create a new wallet**, set a password and store the Secret Recovery
+Phrase somewhere safe. The account it creates is the one you will use.
+
+Already have MetaMask: open the **account selector** at the top →
+**Add account or hardware wallet** → **+ Ethereum account** → name it, e.g.
+`x402-test` → **Add account**.
+([MetaMask help](https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/))
+
+### 1b · Copy your address
+
+Click the account name at the top to copy its **address**: `0x` followed by 40
+characters. The address is public and safe to share. It is **not** the private key.
+
+### 1c · Get test USDC
+
+1. Open [faucet.circle.com](https://faucet.circle.com/). No account is needed.
+2. Choose **USDC**, and **Base Sepolia** as the network.
+3. Paste your address and request the tokens.
+
+You get 20 test USDC, and you can request again every 2 hours. This project
+charges $0.001 a call, so one request lasts a long time.
+
+**You do not need test ETH.** The facilitator submits the transaction and pays the
+gas, so your wallet needs no gas of its own. That is what makes
+tenth-of-a-cent payments possible.
+
+### 1d · (Optional) See the USDC in MetaMask
+
+Paying works without this step: the script signs with the key directly, and your
+address is the same on every EVM network. Do it if you want to confirm the faucet
+delivered.
+
+**Add the network.** Open the menu at the top right → **Networks** →
+**Add a custom network**, and enter:
+
+| Field | Value |
+|---|---|
+| Network name | `Base Sepolia` |
+| Default RPC URL | `https://sepolia.base.org` |
+| Chain ID | `84532` |
+| Currency symbol | `ETH` |
+| Block explorer URL | `https://sepolia.basescan.org` |
+
+Save and switch to it. If MetaMask already lists Base Sepolia under test networks,
+turn on **Show test networks** in the same Networks list and pick it instead.
+([MetaMask help](https://support.metamask.io/configure/networks/how-to-add-a-custom-network-rpc/))
+
+**Show USDC.** In the token list use **Import tokens** and paste the USDC contract
+on Base Sepolia:
+
+```
+0x036CbD53842c5426634e7929541eC2318f3dCF7e
+```
+
+The balance should read 20 USDC.
+
+### 1e · Export the private key
+
+Click the **three dots** next to the account → **Account details** → **Private
+key** → enter your MetaMask password → **hold** the reveal button → copy.
+([MetaMask help](https://support.metamask.io/configure/accounts/how-to-export-an-accounts-private-key/))
+
+It is 64 characters long. MetaMask usually shows it **without** the leading `0x`.
+You can paste it either way, because the scripts add the `0x` if it is missing.
+
+Paste it straight into `.env` in step 3, and do not keep it anywhere else.
 
 ## 2 · Clone and install
 
@@ -43,6 +116,10 @@ Create a `.env` file in the `x402-iot-poc` folder with **exactly these two lines
 BUYER_PRIVATE_KEY=0xYOUR_TESTNET_KEY
 SELLER_URL=https://x402-iot-poc.akifk-x402-26.workers.dev
 ```
+
+Replace `0xYOUR_TESTNET_KEY` with the private key from 1e, with or without `0x`.
+On macOS or Linux, `nano .env` opens an editor in the terminal; on Windows,
+`notepad .env`.
 
 Do not start from `.env.example`. It is set up for running your own seller locally,
 and its `RESOURCE_URL` line points at `127.0.0.1`.
@@ -118,8 +195,17 @@ setting `MAX_PER_CALL=0.001`.
 `.env` points at a local server that is not running. Usually it was copied from
 `.env.example`. Remove the `RESOURCE_URL` line and set `SELLER_URL` as in step 3.
 
-**`402` and it never retries** — check the wallet actually received test USDC.
-The faucet can take a minute.
+**`402` and it never retries** — check the wallet actually received test USDC
+(step 1d shows how to see it). Also check you requested **Base Sepolia**, not
+another network. The faucet can take a minute.
+
+**`BUYER_PRIVATE_KEY does not look like a private key`** — you probably pasted the
+**address** (`0x` + 40 characters) instead of the **private key** (64
+characters). Go back to step 1e.
+
+**The `buyer:` address printed is not the one you funded** — the key in `.env`
+belongs to a different MetaMask account. Export the key from the account you sent
+the USDC to.
 
 **`429 rate_limit_exceeded`** — 10 requests per minute per wallet. Wait a minute.
 

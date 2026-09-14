@@ -130,7 +130,7 @@ npm install
 
 **2. Get two addresses and test USDC**
 
-Create two accounts on Base Sepolia (chain ID `84532`). The **buyer** needs test USDC from the [Circle faucet](https://faucet.circle.com/). The **seller** needs nothing, and neither needs ETH, because the facilitator pays the gas.
+Create two accounts on Base Sepolia (chain ID `84532`). The **buyer** needs test USDC from the [Circle faucet](https://faucet.circle.com/). The **seller** needs nothing, and neither needs ETH, because the facilitator pays the gas. Never set up a wallet before? [QUICKSTART.md step 1](./QUICKSTART.md#1--get-a-wallet-test-usdc-and-the-private-key) walks through MetaMask: creating the account, adding Base Sepolia, the faucet, and exporting the private key.
 
 **3. Configure the seller:** in `wrangler.jsonc`, set `vars.PAY_TO` to your seller address and add both addresses to `OWN_WALLETS`.
 
