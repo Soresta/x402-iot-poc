@@ -11,6 +11,26 @@ USDC. No release has ever been wired for real value.
 
 ---
 
+## [Unreleased]
+
+### Fixed — the quickstart could not work as written
+
+Found by the first stranger test (B1). The tester stalled at step 4 with
+`ECONNREFUSED 127.0.0.1:8787`. `QUICKSTART.md` told them to set `SELLER_URL`, but
+`buyer/pay.mjs` only ever read `RESOURCE_URL`: unset it throws, and copied from
+`.env.example` it points at localhost. The quickstart has shipped like this since
+Week 7, and nobody had followed it from scratch.
+
+- `pay.mjs` falls back to `${SELLER_URL}/api/readings` when `RESOURCE_URL` is unset,
+  prints the URL it is about to pay, and on a refused connection says which
+  variable caused it. Checked both paths: the localhost case prints the hint and
+  pays nothing; the quickstart's two-line `.env` returns `200` against the live
+  Worker.
+- `QUICKSTART.md`: "exactly these two lines", do not start from `.env.example`.
+  Troubleshooting now gives the real cause, and the expected output matches what
+  the script prints.
+- `.env.example`: `RESOURCE_URL` commented out, both `SELLER_URL` values explained.
+
 ## [1.1.0] — 2026-09-14
 
 The verification and submission release. v1.0.0 was the point at which the

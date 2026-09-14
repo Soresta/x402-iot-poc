@@ -198,7 +198,7 @@ It discovers the seller, creates a signed mandate, then loops: check mandate →
 | `LOOP_INTERVAL_MS` | No | Pause between purchases, default 30000 |
 | `BUYER_ENABLED` | No | Kill switch. `false` stops the loop within one iteration |
 | `SELLER_CARD_PUBLIC_JWK` | No | The seller's pinned **public** card key. Set: the agent refuses an unsigned or invalid card. Unset: it trusts TLS alone and prints a warning |
-| `RESOURCE_URL` | No | Target for the single-purchase `buyer/pay.mjs` |
+| `RESOURCE_URL` | No | Exact URL for the single-purchase `buyer/pay.mjs`. Unset: it buys `${SELLER_URL}/api/readings` |
 
 ---
 

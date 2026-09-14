@@ -18,6 +18,14 @@ run (needs a person). #4 and #5 wait on decisions and on strangers.
 **Closes:** W4 "Docs that survive a stranger" · also the W3 30-second demo-page test
 **Currently:** NOT VERIFIED, open since W3
 
+> **Attempt 1, 2026-09-14 (in progress).** A first-time tester followed
+> `QUICKSTART.md` on macOS, Node 24.12.0, and **stalled at step 4**:
+> `TypeError: fetch failed … ECONNREFUSED 127.0.0.1:8787`. Cause: a documentation
+> defect, not the tester. The quickstart sets `SELLER_URL`, and `pay.mjs` read only
+> `RESOURCE_URL`. The tester was told the one-line `.env` fix, **so from this point
+> the attempt is assisted.** Fixed in the repo the same day (CHANGELOG, Unreleased).
+> Time to the stall, and the rest of the run: to be recorded.
+
 Recruit one person who has not seen this project. A friend or a community member
 is fine; it must not be you.
 

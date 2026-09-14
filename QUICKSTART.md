@@ -37,12 +37,15 @@ npm install
 
 ## 3 · Point it at the live seller
 
-Create a `.env` file:
+Create a `.env` file in the `x402-iot-poc` folder with **exactly these two lines**:
 
 ```
 BUYER_PRIVATE_KEY=0xYOUR_TESTNET_KEY
 SELLER_URL=https://x402-iot-poc.akifk-x402-26.workers.dev
 ```
+
+Do not start from `.env.example`. It is set up for running your own seller locally,
+and its `RESOURCE_URL` line points at `127.0.0.1`.
 
 ## 4 · Buy something
 
@@ -54,6 +57,7 @@ Expected:
 
 ```text
 buyer: 0xYOUR_ADDRESS
+resource: https://x402-iot-poc.akifk-x402-26.workers.dev/api/readings
 status: 200
 body: {
   seq: 1834,
@@ -63,6 +67,7 @@ body: {
   ts: '2026-09-08T...',
   note: 'TESTNET — no real value'
 }
+settlement: { success: true, transaction: '0x...', network: 'eip155:84532', ... }
 explorer: https://sepolia.basescan.org/tx/0x...
 ```
 
@@ -109,8 +114,9 @@ setting `MAX_PER_CALL=0.001`.
 
 ## Troubleshooting
 
-**`ECONNREFUSED 127.0.0.1:8787`** — `SELLER_URL` is not set, so it defaulted to
-localhost. Set it in `.env` as in step 3.
+**`ECONNREFUSED 127.0.0.1:8787`** (or "Nothing is listening at 127.0.0.1") — your
+`.env` points at a local server that is not running. Usually it was copied from
+`.env.example`. Remove the `RESOURCE_URL` line and set `SELLER_URL` as in step 3.
 
 **`402` and it never retries** — check the wallet actually received test USDC.
 The faucet can take a minute.
@@ -139,7 +145,7 @@ Two HTTP requests. The status code has been in the spec, unused, since 1997.
 
 ## Before you build on this
 
-Read the [limitations](./README.md#known-gotchas--things-that-cost-real-time-here)
+Read the [limitations](./README.md#known-gotchas-things-that-cost-real-time-here)
 first. Short version: nobody outside this project has paid it yet — so if you
 do, you are the first.
 
