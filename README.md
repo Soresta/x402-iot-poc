@@ -149,7 +149,7 @@ MAX_PER_CALL=0.002
 
 **5. Run the seller.** Pick one:
 
-- **With a Cloudflare account**: run `npx wrangler login` once, then `npx wrangler dev`. Both products work. The login is not optional here: Workers AI always runs on Cloudflare, even in local development, so without it `wrangler dev` stops with *"Failed to start the remote proxy session … Timed out waiting for authorization code"*.
+- **With a Cloudflare account**: run `npx wrangler login` once, then `npx wrangler dev`. Both products work. **A brand-new account must first register its free `workers.dev` subdomain**: open *Workers & Pages* in the [Cloudflare dashboard](https://dash.cloudflare.com/) once and pick a name. Otherwise `wrangler dev` stops with *"You need to register a workers.dev subdomain before running the dev command in remote mode"*. The login is not optional here: Workers AI always runs on Cloudflare, even in local development, so without it `wrangler dev` stops with *"Failed to start the remote proxy session … Timed out waiting for authorization code"*.
 - **Without an account**: `npm run dev:local`. It starts the same seller minus the AI binding. Readings work and settle on testnet as normal; `/api/inference` answers `503 inference_unavailable` and nothing is charged for it.
 
 **6. Run the buyer agent** in a second terminal: `node buyer/agent.mjs`
@@ -301,7 +301,7 @@ app.use(async (c, next) => {
 
 **10. Ad blockers block `/api/events`.** Some tracker filter lists treat it as an analytics endpoint, so an SSE feed at that path never connects in those browsers, with only `net::ERR_BLOCKED_BY_CLIENT` in the console. The feed here lives at `/api/feed/settlements`.
 
-**11. An AI binding makes `wrangler dev` need a login.** Workers AI has no local simulation, so a project with an `ai` binding cannot start `wrangler dev` without Cloudflare credentials. The error says "remote proxy session" and "authorization code", not "log in". `npm run dev:local` here starts without the binding.
+**11. An AI binding makes `wrangler dev` need a login.** Workers AI has no local simulation, so a project with an `ai` binding cannot start `wrangler dev` without Cloudflare credentials. The error says "remote proxy session" and "authorization code", not "log in". Logged in on a **new** account, it fails again until the account has a `workers.dev` subdomain, because the AI proxy runs through a remote preview. `npm run dev:local` here starts without the binding and needs neither.
 
 **12. Only run one `wrangler dev` at a time.** Two instances against the same local Durable Object database produce `SQLITE_BUSY`, and the error does not mention the real problem.
 

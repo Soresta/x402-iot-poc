@@ -73,6 +73,11 @@ Cloudflare account" as a requirement but never said to log in, or why.
   does not settle responses of `400` and above, which is the path verified on-chain
   for a failing device. Not yet observed end to end with the agent against `dev:local`.
 - The requirements line and a new gotcha say which parts need an account.
+- **Second stop on the same path.** After logging in, the tester's new account
+  failed with *"You need to register a workers.dev subdomain before running the dev
+  command in remote mode"*. The AI proxy uses a remote preview, and a fresh account
+  has no subdomain. README step 5 and gotcha 11 now say to register the free
+  subdomain once in the dashboard, or to use `npm run dev:local`.
 
 ## [1.1.0] — 2026-09-14
 
