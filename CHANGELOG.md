@@ -11,6 +11,18 @@ USDC. No release has ever been wired for real value.
 
 ---
 
+## [Unreleased]
+
+### Documentation
+
+- `OPEN-ITEMS.md` and `PENDING-HUMAN-TESTS.md` now list only what is still open.
+  `OPEN-ITEMS.md` ends with a done / not-done summary for the manager. Closed items
+  and their write-ups stay in `VERIFICATION.md`, this changelog, and both files as
+  tagged at v1.2.0, which each file links.
+- References elsewhere to closed items (the Agent Card "still to sign", the human
+  tests "open since Week 3") updated in the revenue memo, role proposal, funnel
+  fixes, distribution calendar, handoff and clean-exit checklist.
+
 ## [1.2.0] — 2026-09-14
 
 The stranger-test release. v1.1.0 was checked by the people who built it. This

@@ -58,9 +58,9 @@ sixteen visits to these sites are machines, and none of them can pay.**
 **Expected impact:** the largest of the three, because it is the widest point of
 the funnel. Everything downstream is gated on someone staying past ten seconds.
 
-**How we would know:** the 30-second comprehension test (`PENDING-HUMAN-TESTS.md`
-item 1B). If a stranger cannot say what the page shows, this is confirmed. That
-test is one person and thirty seconds, and has been open since Week 3.
+**How we would know:** the 30-second comprehension test. *Run 2026-09-14:* the
+stranger understood the transaction but missed that the payer is software, which
+confirms the finding. The page now opens with "No human is paying here".
 
 ---
 
@@ -120,7 +120,7 @@ and a mild security instinct working against it ("paste a private key where?").
 highest-value action in the whole funnel — someone who completes the quickstart
 has a working x402 seller on their machine.
 
-**How we would know:** the tutorial clean-machine run (`OPEN-ITEMS` B5) and any
+**How we would know:** the tutorial clean-machine run (done 2026-09-14, about 40 min, no problems) and any
 issue opened saying "stuck at step 1". The quickstart already asks people to
 report where they stalled, which is the instrument for this.
 

@@ -125,8 +125,8 @@ between runs of `test_mandate.mjs`**, or it trips the seller's own rate limiter.
 | An external wallet settles | **PASS 2026-09-14**: recruited tester, verified on-chain. Organic external payers: 0 |
 | Tutorial run from an empty directory | **PASS 2026-09-14**: run on a separate computer, about 40 min, no problems (reported by the intern) |
 
-The NOT VERIFIED rows need a person. The steps are in
-[`PENDING-HUMAN-TESTS.md`](./PENDING-HUMAN-TESTS.md).
+No row reads NOT VERIFIED now. What is still open (rehearsals, the fallback
+video, the 24 h run) is in [`PENDING-HUMAN-TESTS.md`](./PENDING-HUMAN-TESTS.md).
 
 ---
 

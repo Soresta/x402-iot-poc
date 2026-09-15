@@ -73,7 +73,7 @@ for what people actually asked, and fix the demo page accordingly using
 | Thu | Post #3 (the numbers post) — re-measure the figures first | `post-3-the-numbers.md` |
 | Fri | Metrics row; CRM updated same-day per message |  |
 
-**The tutorial does not go out before its clean-machine run** (`OPEN-ITEMS` B5).
+**The tutorial does not go out before its clean-machine run** (done 2026-09-14: about 40 min, no problems).
 Publishing a "copy-paste runnable" tutorial that has not been run from an empty
 directory is the one failure mode that costs credibility rather than traffic.
 

@@ -39,8 +39,8 @@ one exception: item 8 (rehearsals and the fallback video) is mine. It is in
       `node scripts/backup-kv.mjs`
 - [ ] Buyer wallet kept funded from the faucet, or the demo goes quiet
 - [x] A4 (signed Agent Card) done before any real-value conversation — 2026-09-14
-- [ ] The remaining human tests (B1, B2, B5) run as one batch —
-      `docs/PENDING-HUMAN-TESTS.md`
+- [x] The human tests (B1, B2, B5) run — 2026-09-14. Left: rehearsals and the
+      fallback video, in `docs/PENDING-HUMAN-TESTS.md`
 - [ ] Counsel review commissioned from `REAL-VALUE-READINESS.md` §5
 
 ## If the programme ends

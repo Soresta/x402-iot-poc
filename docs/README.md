@@ -15,8 +15,8 @@ Start with **[VERIFICATION.md](./VERIFICATION.md)** for what works and
 | File | What it answers |
 |---|---|
 | [`VERIFICATION.md`](./VERIFICATION.md) | What was checked, how, and the result, row by row. Also the mutation list and every defect found |
-| [`OPEN-ITEMS.md`](./OPEN-ITEMS.md) | Everything wrong, missing, unverified or blocked, each with what "done" looks like |
-| [`PENDING-HUMAN-TESTS.md`](./PENDING-HUMAN-TESTS.md) | Checks a script cannot run, with exact steps and what the evidence must show |
+| [`OPEN-ITEMS.md`](./OPEN-ITEMS.md) | Only what is still open, plus a done / not-done summary for the manager. Closed items live in `VERIFICATION.md` and the CHANGELOG |
+| [`PENDING-HUMAN-TESTS.md`](./PENDING-HUMAN-TESTS.md) | The checks still needing a person (rehearsals, video, 24 h run, publish wave), with exact steps |
 
 ## 2. Evidence
 

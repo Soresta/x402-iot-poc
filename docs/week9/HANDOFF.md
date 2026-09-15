@@ -283,13 +283,15 @@ Written down because each one cost time here.
 
 ## 7 · What is unfinished
 
-`docs/OPEN-ITEMS.md` is the full list. As of 2026-09-14:
+`docs/OPEN-ITEMS.md` lists only what is left, with a done / not-done summary at the
+end. As of 2026-09-15:
 
-- **Section A (correctness) is closed**, the signed Agent Card included.
-- **Open checks needing a person:** the stranger tests (B1, B2), a clean-machine
-  tutorial run (B5), two rehearsals (B7) and the fallback video (B8). B6, the 24 h
-  run, is PARTIAL with real numbers. Steps: `docs/PENDING-HUMAN-TESTS.md`.
-- **E1–E6**: decisions, not work.
+- **Correctness, the test suite and the documentation are closed**, as are the
+  stranger tests and the tutorial clean run.
+- **Left for the intern:** two rehearsals (B7) and the fallback video (B8). Steps
+  are in `docs/PENDING-HUMAN-TESTS.md`.
+- **Left for the manager:** the publish decision, outreach sign-off, sign-offs, the
+  meetings, and whether the 24 h run (B6, PARTIAL) is accepted.
 
 Nothing in this handoff is blocked on me. Every runbook above was executed on the
 day it was written.

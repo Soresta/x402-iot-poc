@@ -1,7 +1,7 @@
 # Evidence: human-run checks, 2026-09-14
 
-Screenshots taken by hand. Each closes a row in [`../OPEN-ITEMS.md`](../OPEN-ITEMS.md)
-and [`../PENDING-HUMAN-TESTS.md`](../PENDING-HUMAN-TESTS.md). All three show the
+Screenshots taken by hand. Each is the evidence for a PASS row in
+[`../VERIFICATION.md`](../VERIFICATION.md). All three show the
 same run: one `node buyer/agent.mjs` against the public Worker, with the Agent
 Card key pinned in `.env`. Clock times on screen are local (UTC+3), and the
 ledger and explorer times are UTC.

@@ -145,9 +145,9 @@ unreachable and I will not sign up for a number I cannot influence.
 
 1. **Publish, then fix what the first fifty readers break.** Everything is
    written. This is days, not weeks.
-2. **Sign the Agent Card** — the one correctness item still open in `docs/OPEN-ITEMS.md`.
-3. **Run the human tests** — stranger test, comprehension test, clean-machine
-   tutorial run. About an hour in total, open since Week 3.
+2. ~~**Sign the Agent Card**~~ — done 2026-09-11, verified with a pinned key 2026-09-14.
+3. ~~**Run the human tests**~~ — done 2026-09-14: stranger test, comprehension test,
+   clean-machine tutorial run. What is left is in `docs/OPEN-ITEMS.md`.
 4. **Counsel review** of the readiness memo. Cheap now, and the answer expires
    slowly.
 5. **Then, and only then, consider a paid micro-test**, with score maths from an

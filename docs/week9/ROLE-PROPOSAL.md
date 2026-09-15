@@ -116,7 +116,7 @@ number to explain away rather than hit.
 ## The first thirty days
 
 1. **Publish.** Everything is written. Days, not weeks.
-2. **Sign the Agent Card** — the last correctness item open in `docs/OPEN-ITEMS.md`, and the one that gates real
+2. ~~**Sign the Agent Card**~~ — done 2026-09-11. It was the last correctness item, and the one that gates real
    value and that the briefings will be asked about.
 3. **Sign the Agent Card.** The clearest gap between what we built and what open
    discovery needs, and the most credible single upgrade to show a briefing
