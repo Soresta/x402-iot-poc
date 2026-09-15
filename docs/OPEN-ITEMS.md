@@ -3,7 +3,7 @@
 **Last updated: 2026-09-15.** This file lists only what is still open, and ends with
 a one-page done / not-done summary for the manager.
 
-Closed items are no longer listed here: A1–A10, B1–B5, C1–C4, D1–D7, E3 and 33 of
+Closed items are no longer listed here: A1–A10, B1–B5, C1–C4, D1–D7, E3 and 41 of
 the 56 programme tasks. Each is recorded with its evidence in
 [`VERIFICATION.md`](./VERIFICATION.md) (what was checked and the result) and
 [`../CHANGELOG.md`](../CHANGELOG.md) (what was fixed, when). The full list as it
@@ -35,7 +35,7 @@ Item IDs are unchanged, so older documents that cite them still resolve.
 | 🔴 B6 | **Accept the 24 h run as partial, or not.** 1 h continuous, plus 8 h 50 m wall clock (≈ 2 h 37 m buying) on 2026-09-11; the cap was never exceeded. Decision 2026-09-14: not re-run, reported with real numbers. [Write-up](./soak-runs/SOAK-2026-09-11.md) | W3 buyer DoD | W3 |
 | 🔴 — | **Outreach sign-off**: target list and messages | B2B waves #1 and #2, briefings, CFP and podcast submissions, first paid engagement | W6 |
 | 🔴 — | **Sign-offs on delivered work**: IoT one-pager, baselines, audience map, posts #1–#3, funnel map, readiness memo walkthrough, channel #2 proposal, role proposal | The ⚑ gates on those tasks | W1–W9 |
-| 🔴 — | **Meetings**: Friday demos #1–#8, the midpoint gate, Demo Day and the decision | Milestones 2 and 5 | W1 |
+| 🔴 — | **Demo Day** and the decision that follows | Milestone 5 | W9 |
 
 ### Not done, and nothing blocking it
 
@@ -47,32 +47,24 @@ Item IDs are unchanged, so older documents that cite them still resolve.
 
 ## 2 · Remaining programme tasks, by week
 
-These are the 23 boxes still empty in the ticked handbook
+These are the 15 boxes still empty in the ticked handbook
 (`machine-payments-revenue-sprint-INTERN-status-2026-09-14.html`).
 
 | Week | Task | Why it is open |
 |---|---|---|
 | W1 | Distribution scouting | No record (see above) |
-| W1 | Friday demo #1 | Manager unavailable |
 | W2 | Channel #1 goes live | E2, E1 |
-| W2 | Friday demo #2 | Manager unavailable |
 | W3 | Buyer: 24 h unattended run | B6, partial |
 | W3 | Channel #1 follow-through | No channel live |
-| W3 | Friday demo #3 | Manager unavailable |
-| W4 | Midpoint gate demo ⚑ | Manager unavailable |
 | W4 | Publish wave #1 ⚑ | E1 |
 | W4 | Channel #1 maintenance | No channel live |
-| W4 | Friday demo #4 | Manager unavailable |
 | W5 | 90-second demo video ⚑ | B8 |
-| W5 | Friday demo #5 | Manager unavailable |
 | W6 | Coordinated launch | E1 |
 | W6 | Tutorial live + cross-link triangle ⚑ | E1 (tutorial itself passed its clean run) |
 | W6 | B2B outreach wave #1 ⚑ | Outreach sign-off |
-| W6 | Friday demo #6 | Manager unavailable |
 | W7 | B2B wave #2 + follow-ups | Outreach sign-off (the 10-slide deck is ready) |
 | W8 | CFPs + podcast pitch submitted | Outreach sign-off (drafts ready) |
 | W8 | B2B follow-ups → first paid engagement ⚑ | No leads to follow up |
-| W8 | Friday demo #8 | Manager unavailable |
 | W9 | Demo Day prep | B7, B8 (deck ready) |
 | W9 | Demo Day ⚑ | Manager |
 
@@ -80,7 +72,7 @@ These are the 23 boxes still empty in the ticked handbook
 
 ## 3 · Summary for the manager — done ✅ / not done ❌
 
-**Programme tasks: 33 of 56 done, 233 of 360 hours (65 %).** Most of what is not
+**Programme tasks: 41 of 56 done, 261 of 360 hours (73 %).** Most of what is not
 done waits on a decision or a meeting, not on work.
 
 ### ✅ Done
@@ -94,6 +86,9 @@ done waits on a decision or a meeting, not on work.
 - 81 automated tests; 11 of 11 known bugs are caught when put back into the code
 - 20 defects found and documented, each with the output that exposed it; all fixed or withdrawn
 - A secrets scan of the full git history: no private keys
+
+**Weekly rhythm**
+- Friday demos #1–#8 and the midpoint review, held as online meetings with a weekly report each week, and the manager reviewing the repo
 
 **Tested by real people**
 - A first-time user set everything up from the README in 14 minutes, and paid from their own wallet through the quickstart in about 15. The 4 documentation problems they hit were fixed the same day
@@ -117,7 +112,7 @@ done waits on a decision or a meeting, not on work.
 - Outreach sign-off: B2B messages, briefings, CFP submissions, first paid engagement
 - Loading the research board, counsel review, analytics access
 - Sign-offs on the delivered drafts and memos
-- Friday demos, the midpoint gate, Demo Day
+- Demo Day
 - Whether the 24 h run, which reached 8 h 50 m, is accepted as partial
 
 **Still mine to do**

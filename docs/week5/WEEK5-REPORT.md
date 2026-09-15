@@ -2,6 +2,8 @@
 
 > **Status after the submission pass (2026-09-14):** Later: the tutorial passed a clean run on a separate computer (about 40 min), and the first CSV export was run with the real token. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
 
+> **Correction 2026-09-15:** the Friday demo this week was held as an online meeting, with the weekly report and the manager reviewing the repo. This is as reported by the intern, and it supersedes the "NOT HELD" in the table below.
+
 **Date:** 2026-09-06 · **Deployed version:** `e286ca43-7499-4048-bc19-351d19ed7d20`
 **Evidence:** `docs/week5/BUILD-LOG.md`
 

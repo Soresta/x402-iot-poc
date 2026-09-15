@@ -2,6 +2,8 @@
 
 > **Status after the submission pass (2026-09-14):** Later: the suite grew to 81 tests with 11/11 mutations caught, and v1.1.0 and v1.2.0 were tagged. The 26-test figure below is as of this week. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
 
+> **Correction 2026-09-15:** the Friday demo this week was held as an online meeting, with the weekly report and the manager reviewing the repo. This is as reported by the intern, and it supersedes the "NOT HELD" in the table below.
+
 **Date:** 2026-09-08 · **Deployed:** `a39edbbc-e0ae-4c77-9dd2-bc62bf5fd3ef` · **Tagged:** `v1.0.0`
 **Evidence:** `docs/week8/BUILD-LOG.md`
 

@@ -2,6 +2,8 @@
 
 > **Status after the submission pass (2026-09-14):** Later: Milestone 4 was met by a **recruited** first-time tester who paid via the quickstart. Organic external payers: 0. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
 
+> **Correction 2026-09-15:** Friday demo #7 was held as an online meeting, with the weekly report and the manager reviewing the repo. This is as reported by the intern, and it supersedes "demo not held" below.
+
 **Date:** 2026-09-08 · **Deployed version:** `fa271a80-8f79-434f-811a-314ac593ccce`
 **Evidence:** `docs/week7/BUILD-LOG.md`
 

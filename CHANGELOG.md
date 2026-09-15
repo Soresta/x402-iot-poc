@@ -15,6 +15,8 @@ USDC. No release has ever been wired for real value.
 
 ### Documentation
 
+- **Friday demos #1–#8 and the W4 midpoint gate recorded as held**: online meetings, with a weekly report each week and the manager reviewing the repo. Recorded as reported by the intern on 2026-09-15; it corrects the "NOT HELD" entries in the W4–W8 reports, each of which now carries a dated correction note. Programme tasks: 41 of 56, 261 of 360 h. Demo Day is still open.
+
 - `OPEN-ITEMS.md` and `PENDING-HUMAN-TESTS.md` now list only what is still open.
   `OPEN-ITEMS.md` ends with a done / not-done summary for the manager. Closed items
   and their write-ups stay in `VERIFICATION.md`, this changelog, and both files as

@@ -2,6 +2,8 @@
 
 > **Status after the submission pass (2026-09-14):** Later: "Docs that survive a stranger" passed. A first-time tester reproduced the README in 14 minutes, after three doc defects were found and fixed. This report is kept as written; current state: [`docs/VERIFICATION.md`](../VERIFICATION.md), [`docs/OPEN-ITEMS.md`](../OPEN-ITEMS.md).
 
+> **Correction 2026-09-15:** the midpoint gate demo and Friday demo #4 were held as online meetings, with the weekly report and the manager reviewing the repo. This is as reported by the intern, and it supersedes the "NOT HELD" rows in the table below.
+
 **Date:** 2026-09-06 · **Deployed version:** `b15e7b09-d1be-4058-b364-fab697af3a60`
 **Evidence:** `docs/week4/BUILD-LOG.md` — every result below traces to a block there.
 
