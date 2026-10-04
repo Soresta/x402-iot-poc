@@ -28,13 +28,17 @@ Start with **[VERIFICATION.md](./VERIFICATION.md)** for what works and
 
 ## 3. Week by week
 
-Each week has a **BUILD-LOG** (what was done, with the commands run and what they
-printed) and a **WEEK-REPORT** (tasks against their definition of done). There
-are no folders for Weeks 1–2. That work is recorded in `CHANGELOG.md` (0.1.0,
-0.2.0) and in `evidence/week2-402-transcript.txt`.
+Weeks 3–9 each have a **BUILD-LOG** (what was done, with the commands run and what
+they printed) and a **WEEK-REPORT** (tasks against their definition of done).
+Weeks 1–2 have a **README** with the task table and the deliverables that can be
+published. The rest (internal feedback on the company's sites, the manager's
+metrics sheet, the audience map that names people) was delivered privately, and
+each README says so.
 
 | Week | Folder | Focus | Extra documents |
 |---|---|---|---|
+| 1 | [`week1/`](./week1/) | Ground truth: setup, baselines, x402 / AP2 / A2A landscape note | `landscape-note.pdf`, `research/` |
+| 2 | [`week2/`](./week2/) | Use-case one-pager and the first 402 payment on Base Sepolia | `use-case-one-pager.pdf`, `hello-402-report.pdf` |
 | 3 | [`week3/`](./week3/) | DeviceTwin, receipts, replay protection, buyer agent, demo page; the header-name defect | `soak-run.log` |
 | 4 | [`week4/`](./week4/) | Midpoint "ship it": hardening pass, seller-side mandate verification (401/403) | — |
 | 5 | [`week5/`](./week5/) | PoC into a funnel: second resource (inference), shared payment gate, email capture | — |
