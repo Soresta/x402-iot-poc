@@ -13,7 +13,7 @@ public Worker.
 | IoT use-case one-pager ⚑ | Manager sign-off (Milestone 1) | ✅ Delivered; sign-off pending | [`use-case-one-pager.pdf`](./use-case-one-pager.pdf) |
 | "Hello-402" spike | curl transcript + explorer link in README; second call returns data + receipt | ✅ Done 27–28 July | [`hello-402-report.pdf`](./hello-402-report.pdf) · [`../evidence/week2-402-transcript.txt`](../evidence/week2-402-transcript.txt) · README |
 | Channel #1 goes live | 2 posts live, UTM-tagged, scored | ❌ Blocked: the book posts never arrived | [`../OPEN-ITEMS.md`](../OPEN-ITEMS.md) (E1, E2) |
-| Audience map ⚑ | 30 companies + 15 communities | ✅ Done (97 rows) | Kept private — see note |
+| Audience map ⚑ | 30 companies + 15 communities | ✅ Done: 50 rows after trimming the long tail (36 companies, 14 communities) | Kept private — see note |
 | Build-in-public post #1 (draft) ⚑ | 600–900 word draft to the manager | ✅ Delivered | [`../content/post-1-build-in-public.md`](../content/post-1-build-in-public.md) |
 | Friday demo #2 | The live testnet payment demonstrated | ✅ Held online | — |
 
